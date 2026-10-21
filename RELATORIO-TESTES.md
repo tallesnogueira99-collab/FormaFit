@@ -16,3 +16,10 @@
 - Não foi executado teste interativo em navegador nem teste real de importação de laudos.
 - PDFs escaneados como imagem continuam sem OCR; o importador depende de texto selecionável.
 - A leitura reconhece somente os rótulos e formatos cobertos pelo parser atual. Confira os valores apresentados antes de confirmar.
+
+
+## v49 — ícones da janela de conta
+- Ícones de sincronização, gerenciamento, sair e exclusão substituídos por SVGs vetoriais de traço consistente.
+- Setas de navegação alinhadas e estilos dimensionados para telas móveis.
+- Cache PWA atualizado para forma-pwa-v49.
+- Validação de sintaxe JavaScript e integridade do ZIP executada; testes reais de login/Supabase não executados.
