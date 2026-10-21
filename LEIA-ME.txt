@@ -1,10 +1,13 @@
-FORMA v45 — melhorias da aba Progresso > Corpo.
+FORMA v48 — Importação de bioimpedância compacta
 
-Inclui resumo corporal, gráfico histórico de cintura e mantém os gráficos e históricos existentes. Publique o conteúdo desta pasta no Netlify após fazer backup da versão atual. Mantenha index.html, sw.js, manifest.webmanifest e os ícones juntos. Consulte RELATORIO-TESTES.md para validações e limitações.
+Esta versão parte do FORMA v47 e altera a apresentação da importação de bioimpedância na Visão geral.
 
+Como publicar no Vercel:
+1. Baixe e extraia o ZIP.
+2. Publique os arquivos do projeto completo usando o mesmo projeto Vercel já configurado.
+3. Preserve as variáveis de ambiente e a configuração existente do Supabase.
+4. Após a publicação, abra a Visão geral no celular e teste a seleção de arquivo, a data, a prévia e a confirmação da importação.
 
-VERSÃO 46 — REFINO VISUAL
-- Importação de bioimpedância com cabeçalho, etapas, orientação de revisão e controles reorganizados.
-- Mais espaçamento entre cartões consecutivos na seção Corpo da aba Progresso.
-- Janela de conta com identidade visual FORMA, hierarquia de texto e campos/botões refinados.
-- Mantidos IDs e fluxos existentes de importação, Google, e-mail e sincronização.
+O cartão agora é mais compacto e inclui seleção de arquivo, data da medição e orientações expansíveis. A lógica existente de leitura e gravação foi mantida. PDFs escaneados como imagem podem não ser reconhecidos automaticamente; confira sempre os dados antes de confirmar.
+
+Consulte RELATORIO-TESTES.md para as verificações realizadas e limitações conhecidas.
