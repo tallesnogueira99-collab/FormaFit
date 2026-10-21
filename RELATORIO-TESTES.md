@@ -18,8 +18,8 @@
 - A leitura reconhece somente os rótulos e formatos cobertos pelo parser atual. Confira os valores apresentados antes de confirmar.
 
 
-## v49 — ícones da janela de conta
+## v50 — ícones da janela de conta
 - Ícones de sincronização, gerenciamento, sair e exclusão substituídos por SVGs vetoriais de traço consistente.
 - Setas de navegação alinhadas e estilos dimensionados para telas móveis.
-- Cache PWA atualizado para forma-pwa-v49.
+- Cache PWA atualizado para forma-pwa-v50.
 - Validação de sintaxe JavaScript e integridade do ZIP executada; testes reais de login/Supabase não executados.

@@ -1,4 +1,4 @@
-FORMA v49 — Importação de bioimpedância compacta
+FORMA v50 — Importação de bioimpedância compacta
 
 Esta versão parte do FORMA v47 e altera a apresentação da importação de bioimpedância na Visão geral.
 

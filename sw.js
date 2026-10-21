@@ -1,4 +1,4 @@
-const CACHE_NAME = "forma-pwa-v49";
+const CACHE_NAME = "forma-pwa-v50";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", event => {
