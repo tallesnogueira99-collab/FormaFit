@@ -1,0 +1,3 @@
+FORMA v44 — revisão adicional da aba Progresso.
+
+Publique o conteúdo desta pasta no Netlify após fazer backup da versão atual. Mantenha index.html, sw.js, manifest.webmanifest e os ícones juntos. Consulte RELATORIO-TESTES.md para validações e limitações.
