@@ -1,0 +1,53 @@
+name: Limpar Repositório (Exceto Workflows)
+
+on:
+  workflow_dispatch: # Acionamento manual por segurança (evita acidentes)
+
+permissions:
+  contents: write
+
+jobs:
+  clean-everything:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Remover tudo exceto workflows
+        run: |
+          echo "1. Salvando os workflows atuais em um diretório temporário..."
+          mkdir -p /tmp/workflows_backup
+          if [ -d ".github/workflows" ]; then
+            cp -r .github/workflows/* /tmp/workflows_backup/
+          fi
+
+          echo "2. Removendo todos os arquivos e pastas da raiz (exceto .git e .github)..."
+          find . -maxdepth 1 ! -name '.' ! -name '..' ! -name '.git' ! -name '.github' -exec rm -rf {} +
+
+          echo "3. Limpando a pasta .github (mantendo apenas a subpasta workflows)..."
+          if [ -d ".github" ]; then
+            find .github -maxdepth 1 ! -name '.' ! -name 'workflows' -exec rm -rf {} +
+          fi
+
+          echo "4. Restaurando os workflows..."
+          mkdir -p .github/workflows
+          if [ -d "/tmp/workflows_backup" ]; then
+            cp -r /tmp/workflows_backup/* .github/workflows/
+          fi
+
+          echo "Limpeza concluída localmente. Verificando status..."
+          git status
+
+      - name: Enviar alterações (commit e push) para o GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add -A
+          
+          if git diff --staged --quiet; then
+            echo "O repositório já está limpo. Nenhuma alteração feita."
+          else
+            git commit -m "🧹 Limpeza total: removido tudo exceto workflows"
+            git push
+          fi
