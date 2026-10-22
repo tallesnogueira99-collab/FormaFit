@@ -1,0 +1,49 @@
+name: Descompactar ZIP Automaticamente
+
+on:
+  push:
+    paths:
+      - '**/*.zip' # Executa automaticamente sempre que um arquivo .zip for enviado
+  workflow_dispatch: # Permite que você execute manualmente pela aba "Actions" do GitHub
+
+# Permite que a Action grave alterações de volta no repositório
+permissions:
+  contents: write
+
+jobs:
+  unzip-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Descompactar arquivos ZIP
+        run: |
+          echo "Procurando arquivos ZIP..."
+          # Procura por arquivos .zip na raiz e descompacta na pasta atual.
+          # Se preferir uma pasta específica, troque o '-d .' por '-d sua-pasta/'
+          for file in *.zip; do
+            if [ -f "$file" ]; then
+              echo "Extraindo: $file"
+              unzip -o "$file" -d .
+              
+              # (Opcional) Descomente a linha abaixo se quiser apagar 
+              # o arquivo .zip original do repositório após descompactá-lo:
+              # rm "$file"
+            fi
+          done
+
+      - name: Enviar arquivos descompactados de volta ao repositório
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git status
+          git add .
+          
+          # Verifica se há alterações reais para commitar
+          if git diff --staged --quiet; then
+            echo "Nenhuma alteração detectada para commit."
+          else
+            git commit -m "🤖 Descompactação automática de arquivos ZIP via GitHub Actions"
+            git push
+          fi
