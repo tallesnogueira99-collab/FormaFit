@@ -1,0 +1,68 @@
+{
+  "format": "FORMA_WORKOUT_PLAN",
+  "version": 1,
+  "name": "Exemplo — plano personalizado",
+  "objective": "Hipertrofia e condicionamento",
+  "days": [
+    {
+      "day": "Segunda-feira",
+      "short": "SEG",
+      "title": "Peito e tríceps",
+      "subtitle": "Ênfase em movimentos estáveis",
+      "exercises": [
+        {
+          "name": "Supino inclinado na máquina",
+          "sets": 3,
+          "reps": "8–12 reps",
+          "rest": "120–180 s"
+        },
+        {
+          "name": "Tríceps testa na polia",
+          "sets": 3,
+          "reps": "10–12 reps",
+          "rest": "60–90 s"
+        }
+      ]
+    },
+    {
+      "day": "Quarta-feira",
+      "short": "QUA",
+      "title": "Costas e bíceps",
+      "subtitle": "Puxadas e remadas",
+      "exercises": [
+        {
+          "name": "Puxada frontal com pegada neutra",
+          "sets": 3,
+          "reps": "8–12 reps",
+          "rest": "120 s"
+        },
+        {
+          "name": "Rosca bíceps na polia",
+          "sets": 3,
+          "reps": "10–15 reps",
+          "rest": "60–90 s"
+        }
+      ]
+    },
+    {
+      "day": "Sexta-feira",
+      "short": "SEX",
+      "title": "Pernas e ombros",
+      "subtitle": "Volume moderado",
+      "exercises": [
+        {
+          "name": "Cadeira extensora",
+          "sets": 3,
+          "reps": "10–15 reps",
+          "rest": "60–90 s"
+        },
+        {
+          "name": "Elevação lateral na máquina",
+          "sets": 3,
+          "reps": "12–20 reps",
+          "rest": "60–90 s"
+        }
+      ]
+    }
+  ]
+}
