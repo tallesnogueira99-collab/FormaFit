@@ -1,0 +1,23 @@
+FORMA v50 — Importação de bioimpedância compacta
+
+Esta versão parte do FORMA v47 e altera a apresentação da importação de bioimpedância na Visão geral.
+
+Como publicar no Vercel:
+1. Baixe e extraia o ZIP.
+2. Publique os arquivos do projeto completo usando o mesmo projeto Vercel já configurado.
+3. Preserve as variáveis de ambiente e a configuração existente do Supabase.
+4. Após a publicação, abra a Visão geral no celular e teste a seleção de arquivo, a data, a prévia e a confirmação da importação.
+
+O cartão agora é mais compacto e inclui seleção de arquivo, data da medição e orientações expansíveis. A lógica existente de leitura e gravação foi mantida. PDFs escaneados como imagem podem não ser reconhecidos automaticamente; confira sempre os dados antes de confirmar.
+
+Consulte RELATORIO-TESTES.md para as verificações realizadas e limitações conhecidas.
+
+Versão 49: refinamento dos ícones SVG da janela de conta.
+
+
+Versão 51 — correções da auditoria de Progresso > Alimentação.
+- Gráfico passa a representar todos os dias do intervalo, com rolagem horizontal em períodos longos.
+- Contagem, médias, gráficos, micronutrientes e relatórios compartilham a validação e o intervalo de datas.
+- Valores nutricionais ausentes não são convertidos automaticamente em zero para validar um registro.
+- Relatórios CSV/JSON passam a incluir o histórico de peso e de composição corporal disponível no período.
+- Cache do service worker atualizado para forma-pwa-v51.
