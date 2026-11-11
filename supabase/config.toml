@@ -1,4 +1,0 @@
-# Configuração da função do Assistente FORMA.
-# Se já existir um supabase/config.toml no projeto, mescle este bloco em vez de substituí-lo.
-[functions.forma-assistant]
-verify_jwt = true
