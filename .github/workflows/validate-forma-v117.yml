@@ -8,6 +8,7 @@ on:
       - "FORMA_v117_navegacao_duas_areas.zip"
       - "index.html"
       - "sw.js"
+      - ".github/workflows/validate-forma-v117.yml"
 
 jobs:
   validate-package:
@@ -33,18 +34,15 @@ jobs:
           for icon in manifest.get("icons", []):
               assert (root / icon["src"]).is_file(), f"Ícone ausente: {icon['src']}"
           for icon_name in ("icon-192.png", "icon-512.png"):
-              assert (root / icon_name).read_bytes().startswith(b"\\x89PNG\\r\\n\\x1a\\n"), f"PNG inválido: {icon_name}"
+              assert (root / icon_name).read_bytes().startswith(b"\x89PNG\r\n\x1a\n"), f"PNG inválido: {icon_name}"
           sw = (root / "sw.js").read_text(encoding="utf-8")
           assert "forma-pwa-v117" in sw, "Cache v117 ausente"
           html = (root / "index.html").read_text(encoding="utf-8")
           assert "forma-v117-area-navigation" in html and "forma-v117-area-styles" in html
-          scripts = re.findall(r'<script\\b([^>]*)>([\\s\\S]*?)</script\\s*>', html, flags=re.I)
+          scripts = re.findall(r'<script[^>]*>(.*?)</script\s*>', html, flags=re.I | re.S)
           checked = 0
-          for index, (attrs, body) in enumerate(scripts):
-              if re.search(r'\\bsrc\\s*=', attrs, flags=re.I) or not body.strip():
-                  continue
-              kind = re.search(r'\\btype\\s*=\\s*["\\']?([^"\\'\\s>]+)', attrs, flags=re.I)
-              if kind and kind.group(1).lower() not in ("text/javascript", "application/javascript"):
+          for index, body in enumerate(scripts):
+              if not body.strip():
                   continue
               path = Path(f"/tmp/forma-v117-inline-{index}.js")
               path.write_text(body, encoding="utf-8")
