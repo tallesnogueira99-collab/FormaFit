@@ -23,12 +23,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Gerar pacote completo
         run: |
           rm -f FORMA_v118_nutricao_estruturada.zip
           zip -j FORMA_v118_nutricao_estruturada.zip index.html manifest.webmanifest sw.js icon.svg icon-192.png icon-512.png
-
       - name: Validar estrutura, integridade e scripts
         shell: bash
         run: |
@@ -47,17 +45,17 @@ jobs:
           for icon in manifest.get("icons", []):
               assert (root / icon["src"]).is_file(), f"Ícone ausente: {icon['src']}"
           for name in ("icon-192.png", "icon-512.png"):
-              assert (root / name).read_bytes().startswith(b"\\x89PNG\\r\\n\\x1a\\n"), f"PNG inválido: {name}"
+              assert (root / name).read_bytes().startswith(b"\x89PNG\r\n\x1a\n"), f"PNG inválido: {name}"
           sw = (root / "sw.js").read_text(encoding="utf-8")
           assert "forma-pwa-v118" in sw, "Cache v118 não encontrado"
           html = (root / "index.html").read_text(encoding="utf-8")
           for marker in ('id="nutritionOverview"', 'id="nutritionPlanningIntro"', 'nutritionPlanning:"nutricao"', 'nutritionLibrary:"nutricao"', "function renderNutritionOverview()"):
               assert marker in html, f"Marcador ausente: {marker}"
           assert "__formaV117AreaNavigation" not in html, "Guard de navegação antigo permaneceu"
-          ids = re.findall(r'\\bid="([^"]+)"', html)
+          ids = re.findall(r'\bid="([^"]+)"', html)
           for ident in ("nutritionOverview", "nutritionOverviewDate", "nutritionOverviewKcal", "nutritionOverviewMacros", "nutritionPlanningIntro", "foodGoalsBtn"):
               assert ids.count(ident) == 1, f"ID ausente ou duplicado: {ident} ({ids.count(ident)})"
-          scripts = re.findall(r'<script[^>]*>(.*?)</script\\s*>', html, flags=re.I | re.S)
+          scripts = re.findall(r'<script[^>]*>(.*?)</script\s*>', html, flags=re.I | re.S)
           checked = 0
           for index, body in enumerate(scripts):
               if not body.strip():
@@ -71,7 +69,6 @@ jobs:
               assert archive.testzip() is None, "CRC do ZIP inválido"
           print(f"v118 validada: {len(required)} arquivos, {checked} scripts JavaScript, manifesto e ícones íntegros.")
           PY
-
       - name: Commit do pacote validado
         run: |
           git config user.name "github-actions[bot]"
