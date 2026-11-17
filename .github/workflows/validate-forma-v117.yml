@@ -1,0 +1,55 @@
+name: Validar pacote FORMA v117
+
+on:
+  push:
+    branches:
+      - forma/v117-navegacao-duas-areas
+    paths:
+      - "FORMA_v117_navegacao_duas_areas.zip"
+      - "index.html"
+      - "sw.js"
+      - ".github/workflows/validate-forma-v117.yml"
+
+jobs:
+  validate-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validar integridade e estrutura do ZIP
+        run: |
+          unzip -t "FORMA_v117_navegacao_duas_areas.zip"
+          mkdir -p /tmp/forma-v117
+          unzip -q "FORMA_v117_navegacao_duas_areas.zip" -d /tmp/forma-v117
+      - name: Validar manifesto, cache, ícones e scripts JavaScript
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, re, subprocess, zipfile
+          root = Path("/tmp/forma-v117")
+          required = {"index.html", "manifest.webmanifest", "sw.js", "icon.svg", "icon-192.png", "icon-512.png"}
+          assert {p.name for p in root.iterdir()} == required, "Estrutura inesperada do pacote"
+          manifest = json.loads((root / "manifest.webmanifest").read_text(encoding="utf-8"))
+          for icon in manifest.get("icons", []):
+              assert (root / icon["src"]).is_file(), f"Ícone ausente: {icon['src']}"
+          for icon_name in ("icon-192.png", "icon-512.png"):
+              assert (root / icon_name).read_bytes().startswith(b"\x89PNG\r\n\x1a\n"), f"PNG inválido: {icon_name}"
+          sw = (root / "sw.js").read_text(encoding="utf-8")
+          assert "forma-pwa-v117" in sw, "Cache v117 ausente"
+          html = (root / "index.html").read_text(encoding="utf-8")
+          assert "forma-v117-area-navigation" in html and "forma-v117-area-styles" in html
+          scripts = re.findall(r'<script[^>]*>(.*?)</script\s*>', html, flags=re.I | re.S)
+          checked = 0
+          for index, body in enumerate(scripts):
+              if not body.strip():
+                  continue
+              path = Path(f"/tmp/forma-v117-inline-{index}.js")
+              path.write_text(body, encoding="utf-8")
+              subprocess.run(["node", "--check", str(path)], check=True)
+              checked += 1
+          assert checked >= 5, "Poucos scripts JavaScript verificados"
+          with zipfile.ZipFile("FORMA_v117_navegacao_duas_areas.zip") as archive:
+              assert archive.testzip() is None, "Falha no CRC do ZIP"
+          print(f"Pacote íntegro: {len(required)} arquivos; {checked} scripts JavaScript verificados.")
+          PY
