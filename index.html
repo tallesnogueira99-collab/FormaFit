@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- FORMA v117 — navegação independente entre Treinos e Nutrição -->
+<!-- FORMA v118 — área de Nutrição reestruturada e navegação refinada -->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -622,6 +622,39 @@ input[type=checkbox],input[type=radio],progress { accent-color:var(--lime); }
 
 
 .catalog-edit-section label{display:block;margin:10px 0 5px;font-size:12px;color:var(--muted)}.catalog-edit-section input,.catalog-edit-section select{width:100%;min-height:42px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:inherit}.catalog-edit-section .detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.catalog-edit-section .btn.danger{background:#a92f37;color:#fff;border-color:#a92f37}
+
+/* v118 — painel nutricional e iconografia consistente */
+.top-tab{display:inline-flex;align-items:center;gap:7px}.nav-icon{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.top-tab.active .nav-icon,.menu-item.active .nav-icon{color:var(--lime)}.menu-item .nav-icon{width:19px;height:19px;flex:0 0 19px}.menu-item .menu-item-label{min-width:0}
+.top-tab:focus-visible,.menu-item:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+@media(max-width:520px){.top-tab{gap:6px;padding:10px 11px;font-size:12px}.top-tab .nav-icon{width:16px;height:16px;flex-basis:16px}}
+#dieta .food-section-nav{display:none!important}.nutrition-overview-view{min-width:0}
+.nutrition-overview-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:4px 0 16px}.nutrition-overview-hero h2{margin:5px 0 4px;font-size:clamp(23px,3vw,30px);letter-spacing:-.8px}.nutrition-overview-hero p{margin:0;color:var(--muted);font-size:13px}
+.nutrition-overview-date{width:min(190px,42%);margin:0}.nutrition-overview-date input{width:100%;min-height:42px;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text)}
+.nutrition-overview-primary{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:13px;margin-bottom:13px}.nutrition-energy-card,.nutrition-macros-card{min-width:0;padding:18px}
+.nutrition-overview-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.nutrition-overview-kicker{display:block;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:1px}
+.nutrition-energy-card .nutrition-overview-card-head h3{margin:6px 0 0;font-size:clamp(24px,3.6vw,34px);letter-spacing:-1px}.nutrition-energy-card .nutrition-overview-card-head h3 small{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:0}.nutrition-macros-card .nutrition-overview-card-head h3{margin:6px 0 0;font-size:17px;letter-spacing:-.2px}
+.nutrition-overview-symbol{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--accent) 16%,var(--panel2));color:var(--lime)}.nutrition-overview-symbol .nav-icon{width:23px;height:23px}
+.nutrition-overview-track{height:9px;margin:17px 0 10px;border-radius:99px;background:var(--panel2);overflow:hidden}.nutrition-overview-track>i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--lime));transition:width .25s ease}
+.nutrition-overview-energy-foot{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:11px;color:var(--muted)}.nutrition-overview-energy-foot strong{color:var(--text);font-size:11px;text-align:right}
+.nutrition-overview-macros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:17px}.nutrition-overview-macro{min-width:0;padding:11px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--panel2) 68%,transparent)}
+.nutrition-overview-macro-top{display:flex;flex-direction:column;gap:6px}.nutrition-overview-macro-top span{font-size:11px;color:var(--muted)}.nutrition-overview-macro-top strong{font-size:17px;letter-spacing:-.3px}
+.nutrition-overview-macro .nutrition-overview-track{height:5px;margin:10px 0 7px}.nutrition-overview-macro small{display:block;color:var(--muted);font-size:10px;line-height:1.4}
+.nutrition-overview-columns{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:13px;margin-bottom:13px}.nutrition-overview-columns>.card{min-width:0;padding:17px}
+.nutrition-overview-section-title{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px}.nutrition-overview-section-title h3{margin:0 0 4px;font-size:15px}.nutrition-overview-section-title .sub{margin:0;font-size:11px;line-height:1.45}
+.nutrition-overview-icon,.nutrition-quick-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,var(--accent) 15%,var(--panel2));color:var(--lime)}.nutrition-overview-icon .nav-icon,.nutrition-quick-icon .nav-icon{width:19px;height:19px}
+.nutrition-overview-next-card #nutritionOverviewNextMeal h3{font-size:13px}.nutrition-overview-next-card #nutritionOverviewNextMeal .today-food-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.nutrition-overview-next-card #nutritionOverviewNextMeal .food-stat{padding:9px;border-radius:10px;background:var(--panel2)}.nutrition-overview-next-card #nutritionOverviewNextMeal .food-stat strong{font-size:16px}
+.nutrition-overview-meal-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.nutrition-overview-meal-row:first-child{border-top:0;padding-top:0}.nutrition-overview-meal-row>div:last-child{text-align:right}.nutrition-overview-meal-row strong{display:block;font-size:12px}.nutrition-overview-meal-row small{display:block;margin-top:3px;color:var(--muted);font-size:10px;line-height:1.4}
+.nutrition-overview-empty{padding:12px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:12px;line-height:1.55}.nutrition-overview-empty span{font-size:11px}
+.nutrition-overview-status{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}.nutrition-overview-status strong,.nutrition-overview-status span{display:block}.nutrition-overview-status strong{font-size:13px}.nutrition-overview-status span{margin-top:4px;color:var(--muted);font-size:11px;line-height:1.45}
+.nutrition-overview-action{margin-top:12px;min-height:38px;padding:9px 12px;font-size:12px}.nutrition-overview-week-number{display:flex;align-items:baseline;gap:8px}.nutrition-overview-week-number strong{font-size:30px;letter-spacing:-1px}.nutrition-overview-week-number strong small{font-size:15px;color:var(--muted)}.nutrition-overview-week-number span{font-size:12px;color:var(--muted)}
+.nutrition-overview-week-dots{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:11px 0}.nutrition-overview-week-dots span{height:8px;border-radius:99px;background:var(--panel2);border:1px solid var(--line)}.nutrition-overview-week-dots span.has-record{background:var(--lime);border-color:var(--lime)}
+.nutrition-overview-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:3px 0 12px}.nutrition-overview-quick button{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;min-height:112px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--text);text-align:left;cursor:pointer;transition:border-color .16s ease,transform .16s ease}
+.nutrition-overview-quick button:hover{border-color:var(--accent);transform:translateY(-1px)}.nutrition-overview-quick button strong{font-size:12px;line-height:1.35}.nutrition-overview-quick button small{font-size:10px;color:var(--muted);line-height:1.4}.nutrition-quick-icon{width:32px;height:32px;flex-basis:32px;border-radius:10px}.nutrition-overview-footnote{margin:0;color:var(--muted);font-size:10px;line-height:1.5}
+.nutrition-planning-intro{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;padding:17px}.nutrition-planning-intro h3{margin:5px 0;font-size:16px}.nutrition-planning-intro .sub{margin:0;max-width:620px;line-height:1.5}.nutrition-planning-actions{display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}.nutrition-planning-actions button{display:inline-flex;align-items:center;gap:7px}.nutrition-planning-actions .nav-icon{width:16px;height:16px;flex-basis:16px}
+@media(max-width:760px){.nutrition-overview-primary,.nutrition-overview-columns{grid-template-columns:1fr}.nutrition-planning-intro{align-items:flex-start;flex-direction:column}.nutrition-planning-actions{width:100%}.nutrition-planning-actions button{flex:1;justify-content:center}}
+@media(max-width:520px){.nutrition-overview-hero{align-items:flex-start;flex-direction:column;gap:12px}.nutrition-overview-date{width:100%}.nutrition-overview-primary{gap:10px}.nutrition-energy-card,.nutrition-macros-card{padding:14px}.nutrition-overview-macros{gap:6px}.nutrition-overview-macro{padding:8px}.nutrition-overview-macro-top strong{font-size:14px}.nutrition-overview-macro-top span{font-size:10px}.nutrition-overview-next-card #nutritionOverviewNextMeal .today-food-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.nutrition-overview-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.nutrition-overview-quick button{min-height:104px}.nutrition-overview-columns>.card{padding:14px}}
+
 </style>
 
 <style>
@@ -1525,7 +1558,14 @@ body.forma-area-picker-open{overflow:hidden}
  <div class="header-actions"><div class="header-tools-wrap"><button class="header-tools-trigger" id="toolsTrigger" type="button" aria-label="Abrir atalhos e ajuda" aria-haspopup="true" aria-expanded="false" title="Atalhos e ajuda">⋯</button><div class="tools-popover" id="toolsMenu" role="menu" aria-label="Atalhos e ajuda"><div class="menu-caption">ATALHOS</div><div class="menu-caption" style="padding-top:5px">APLICATIVO</div><button class="menu-item" id="installAppBtn" role="menuitem"><span>＋</span>Instalar aplicativo</button><button class="menu-item" id="customizeBtn" role="menuitem"><span>⚙</span>Personalizar aparência</button><button class="menu-item" id="settingsMenuBtn" role="menuitem"><span class="menu-icon-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4v4M14 3.5v4h4M5 13v7.5h14V13"/><path d="M9 16.5l3-3 3 3M12 13.5v6"/></svg></span>Importar e exportar</button><button class="menu-item" id="refreshPageBtn" role="menuitem" title="Recarregar o FORMA"><span aria-hidden="true">↻</span>Atualizar página</button><div style="height:1px;background:var(--line);margin:7px 4px"></div><div class="menu-caption" style="padding-top:4px">SUPORTE</div><button class="menu-item" id="helpMenuBtn" role="menuitem"><span>?</span>Ajuda e orientações</button><input id="importBackupFile" type="file" accept="application/json,.json" hidden><input id="importFoodsFile" type="file" accept=".json,.csv,application/json,text/csv" hidden><input id="importMealsFile" type="file" accept=".json,.csv,application/json,text/csv" hidden><input id="importExercisesFile" type="file" accept=".json,.csv,application/json,text/csv" hidden></div></div><button class="profile-chip" id="profileBadge" type="button" aria-label="Abrir perfil e conta" title="Perfil e conta"><span class="profile-avatar" id="profileAvatar" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.6-3.6 3.2-5.5 7-5.5s6.4 1.9 7 5.5"></path></svg></span><span class="profile-name-label" id="profileNameLabel">Meu perfil</span></button></div>
 </header>
 <nav class="top-tabs" aria-label="Seções do FORMA">
- <button class="top-tab active" data-tab="inicio">Visão geral</button><button class="top-tab" data-tab="treino">Treinos</button><button class="top-tab" data-tab="dieta">Alimentação</button><button class="top-tab" data-tab="progresso">Progresso</button><button class="top-tab" data-tab="biblioteca">Biblioteca</button>
+ <button class="top-tab active" data-tab="inicio"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>Visão geral</button>
+ <button class="top-tab" data-tab="treino"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M3.5 10v4M18 8v8m2.5-6v4M6 12h12"/></svg>Treinos</button>
+ <button class="top-tab" data-tab="biblioteca"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h6"/></svg>Biblioteca</button>
+ <button class="top-tab" data-tab="nutritionOverview"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>Visão geral</button>
+ <button class="top-tab" data-tab="dieta"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg>Diário</button>
+ <button class="top-tab" data-tab="nutritionPlanning"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4zM8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg>Planejamento</button>
+ <button class="top-tab" data-tab="nutritionLibrary"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h6"/></svg>Biblioteca</button>
+ <button class="top-tab" data-tab="progresso"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7"/></svg>Progresso</button>
 </nav>
 <section class="hero" id="heroLayout">
  <div class="hero-main" id="onboardingCard"><div class="eyebrow">Projeto físico atlético</div><h2>Construa um corpo forte.<br>Sem complicar sua rotina.</h2><p>Treinos organizados, evolução de desempenho e progresso corporal em um só lugar.</p><button class="btn" id="startPlanBtn">Começar meu treino&nbsp; →</button></div>
@@ -1547,11 +1587,14 @@ body.forma-area-picker-open{overflow:hidden}
    <button type="button" class="area-menu-choice" data-area-choice="nutricao" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7M7 3v7M4 7h3M5.5 10v11M16 3c-2.2 2.1-3 4.5-3 7v2h5V3M15.5 12v9"/></svg><span>Nutrição</span></button>
   </div>
   <div class="menu-caption" id="areaTabsCaption">ABAS DE TREINOS</div>
-  <button class="menu-item active" role="menuitem" data-tab="inicio"><span>⌂</span>Visão geral</button>
-  <button class="menu-item" role="menuitem" data-tab="treino"><span>◈</span>Treinos</button>
-  <button class="menu-item" role="menuitem" data-tab="dieta"><span>♧</span>Alimentação</button>
-  <button class="menu-item" role="menuitem" data-tab="progresso"><span>↗</span>Progresso</button>
-  <button class="menu-item" role="menuitem" data-tab="biblioteca"><span>▦</span>Biblioteca de exercícios</button>
+  <button class="menu-item active" role="menuitem" data-tab="inicio"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg><span class="menu-item-label">Visão geral</span></button>
+  <button class="menu-item" role="menuitem" data-tab="treino"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M3.5 10v4M18 8v8m2.5-6v4M6 12h12"/></svg><span class="menu-item-label">Treinos</span></button>
+  <button class="menu-item" role="menuitem" data-tab="biblioteca"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h6"/></svg><span class="menu-item-label">Biblioteca</span></button>
+  <button class="menu-item" role="menuitem" data-tab="nutritionOverview"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg><span class="menu-item-label">Visão geral</span></button>
+  <button class="menu-item" role="menuitem" data-tab="dieta"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg><span class="menu-item-label">Diário</span></button>
+  <button class="menu-item" role="menuitem" data-tab="nutritionPlanning"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4zM8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg><span class="menu-item-label">Planejamento</span></button>
+  <button class="menu-item" role="menuitem" data-tab="nutritionLibrary"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h6"/></svg><span class="menu-item-label">Biblioteca</span></button>
+  <button class="menu-item" role="menuitem" data-tab="progresso"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7"/></svg><span class="menu-item-label">Progresso</span></button>
  </div>
 </nav>
 <section class="view active" id="inicio">
@@ -1677,10 +1720,32 @@ body.forma-area-picker-open{overflow:hidden}
  <div class="section-head"><div><h2>Cardiovascular</h2><p>O planejamento e a execução do cardio ficam na aba Treinos. O histórico e os registros de atividades ficam em Progresso.</p></div><button class="btn secondary" id="cardioBackToPlan" type="button">← Treinos</button></div>
  <div class="card cardio-legacy-guide"><div class="cardio-workspace-mark" aria-hidden="true">↗</div><div><h3>Seu espaço cardiovascular foi reorganizado</h3><p class="sub">Use <strong>Treinos</strong> para montar ou iniciar uma sessão. Em <strong>Progresso → Cardio</strong>, você pode registrar atividades anteriores e consultar seu histórico.</p><div class="cardio-builder-actions"><button class="btn" type="button" onclick="showTab('treino')">Planejar ou iniciar cardio</button><button class="btn secondary" type="button" onclick="showTab('progresso');setTimeout(()=>document.getElementById('progressCardioTab')?.click(),0)">Ver progresso cardiovascular</button></div></div></div>
 </section>
-<section class="view" id="dieta">
+
+<section class="view nutrition-overview-view" id="nutritionOverview" aria-labelledby="nutritionOverviewTitle">
+ <div class="nutrition-overview-hero"><div><div class="eyebrow">ÁREA DE NUTRIÇÃO · RESUMO DIÁRIO</div><h2 id="nutritionOverviewTitle">Sua nutrição hoje</h2><p>Consumo, metas e próximos passos em um só lugar.</p></div><div class="nutrition-overview-date field"><label for="nutritionOverviewDate">Dia acompanhado</label><input id="nutritionOverviewDate" type="date"></div></div>
+ <div class="nutrition-overview-primary">
+  <article class="card nutrition-energy-card"><div class="nutrition-overview-card-head"><div><span class="nutrition-overview-kicker">ENERGIA CONSUMIDA</span><h3><strong id="nutritionOverviewKcal">0</strong><small> / <span id="nutritionOverviewKcalGoal">1.900</span> kcal</small></h3></div><span class="nutrition-overview-symbol"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M4.2 7.2l2.1 2.1m11.4 5.4 2.1 2.1M3 12h3m12 0h3M4.2 16.8l2.1-2.1m11.4-5.4 2.1-2.1M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg></span></div><div class="nutrition-overview-track"><i id="nutritionOverviewKcalBar"></i></div><div class="nutrition-overview-energy-foot"><span id="nutritionOverviewKcalNote">Sem registros neste dia.</span><strong id="nutritionOverviewKcalBalance">Meta diária</strong></div></article>
+  <article class="card nutrition-macros-card"><div class="nutrition-overview-card-head"><div><span class="nutrition-overview-kicker">DISTRIBUIÇÃO DE MACRONUTRIENTES</span><h3>Seus macros</h3></div></div><div id="nutritionOverviewMacros" class="nutrition-overview-macros"></div></article>
+ </div>
+ <div class="nutrition-overview-columns">
+  <article class="card nutrition-overview-next-card"><div class="nutrition-overview-section-title"><span class="nutrition-overview-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><div><h3>Próxima refeição</h3><p class="sub">Sugestão baseada no que já foi registrado e nas metas ativas.</p></div></div><div id="nutritionOverviewNextMeal"><p class="food-note">A recomendação aparecerá quando o resumo diário for atualizado.</p></div></article>
+  <article class="card nutrition-overview-meals-card"><div class="nutrition-overview-section-title"><span class="nutrition-overview-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span><div><h3>Refeições registradas</h3><p class="sub">Resumo do consumo real no dia selecionado.</p></div></div><div id="nutritionOverviewMeals"></div></article>
+ </div>
+ <div class="nutrition-overview-columns nutrition-overview-secondary">
+  <article class="card"><div class="nutrition-overview-section-title"><span class="nutrition-overview-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4zM8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/></svg></span><div><h3>Seu planejamento</h3><p class="sub">O que está organizado para sua rotina alimentar.</p></div></div><div id="nutritionOverviewPlanStatus"></div><button class="btn secondary nutrition-overview-action" type="button" onclick="showTab('nutritionPlanning')">Abrir planejamento</button></article>
+  <article class="card"><div class="nutrition-overview-section-title"><span class="nutrition-overview-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7"/></svg></span><div><h3>Consistência recente</h3><p class="sub">Dias com registros nos últimos sete dias.</p></div></div><div id="nutritionOverviewWeek"></div><button class="btn secondary nutrition-overview-action" type="button" onclick="showTab('progresso')">Ver evolução nutricional</button></article>
+ </div>
+ <div class="nutrition-overview-quick">
+  <button type="button" onclick="showTab('dieta');setupFoodAreaNavToDiary()"><span class="nutrition-quick-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><strong>Registrar alimento</strong><small>Adicionar ao diário</small></button>
+  <button type="button" onclick="showTab('dieta');document.getElementById('chooseRegisterMeal')?.click()"><span class="nutrition-quick-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M6 12a6 6 0 0 0 12 0M8 7.5a4 4 0 0 1 8 0"/></svg></span><strong>Registrar refeição</strong><small>Usar uma combinação salva</small></button>
+  <button type="button" onclick="showTab('nutritionPlanning')"><span class="nutrition-quick-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4zM8 3v4M16 3v4M4 10h16"/></svg></span><strong>Planejar alimentação</strong><small>Organizar o cardápio</small></button>
+  <button type="button" onclick="showTab('nutritionLibrary')"><span class="nutrition-quick-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM8 7h8"/></svg></span><strong>Abrir biblioteca</strong><small>Alimentos e refeições</small></button>
+ </div>
+ <p class="nutrition-overview-footnote">Os valores refletem apenas registros salvos no diário. Dias sem registros não são tratados como consumo zero.</p>
+</section><section class="view" id="dieta">
  <div class="diet-legacy-content nutrition-workspace">
- <div class="section-head diet-section-head"><div><h2 id="dietHeading">Alimentação</h2><p>Registre o que você come, acompanhe seus nutrientes e organize sua rotina com mais facilidade.</p></div><button class="btn secondary diet-goals-btn" id="foodGoalsBtn" type="button" onclick="openFoodGoals()"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 2.94-.08-.02a1.7 1.7 0 0 0-1.75.48l-.06.06h-3.4l-.03-.08a1.7 1.7 0 0 0-1.4-1.16l-.08-.01-1.7-2.94.06-.06A1.7 1.7 0 0 0 9.99 14.3l-.03-.08v-3.4l.08-.03a1.7 1.7 0 0 0 1.16-1.4l.01-.08 2.94-1.7.06.06a1.7 1.7 0 0 0 1.88.34l.08-.03h3.4l.03.08a1.7 1.7 0 0 0 1.16 1.16l.08.01v3.4l-.08.03A1.7 1.7 0 0 0 19.4 15Z" transform="translate(-2 -2) scale(1.16)"/></svg><span>Metas nutricionais</span></button></div>
- <nav class="food-section-nav" aria-label="Seções da alimentação"><button type="button" class="active" data-food-area="diary" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M6 12a6 6 0 0 0 12 0M8 7.5a4 4 0 0 1 8 0M12 3v2M5 18h14"/><path d="M7 21h10"/></svg><span class="food-nav-copy"><strong>Diário</strong><small>Consumo</small></span></button><button type="button" data-food-area="schedule"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M7.5 3v4M16.5 3v4M4 9.5h16M8 13h3M8 17h3M14 13h2M14 17h2"/></svg><span class="food-nav-copy"><strong>Cronograma</strong><small>Planejamento</small></span></button><button type="button" data-food-area="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h6"/><path d="M2 5v12"/></svg><span class="food-nav-copy"><strong>Biblioteca</strong><small>Alimentos</small></span></button><button type="button" data-food-area="tester"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5.5 9.2A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.8L14 9V3"/><path d="M8 15h8M10 12h4M9 18h6"/></svg><span class="food-nav-copy"><strong>Simulador</strong><small>Testar refeição</small></span></button></nav>
+ <div class="section-head diet-section-head"><div><h2 id="dietHeading">Alimentação</h2><p>Registre o que você come, acompanhe seus nutrientes e organize sua rotina com mais facilidade.</p></div></div>
+ <nav class="food-section-nav" aria-label="Seções da alimentação"><button type="button" class="active" data-food-area="diary" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M6 12a6 6 0 0 0 12 0M8 7.5a4 4 0 0 1 8 0M12 3v2M5 18h14"/><path d="M7 21h10"/></svg><span class="food-nav-copy"><strong>Diário</strong><small>Consumo</small></span></button><button type="button" data-food-area="schedule"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M7.5 3v4M16.5 3v4M4 9.5h16M8 13h3M8 17h3M14 13h2M14 17h2"/></svg><span class="food-nav-copy"><strong>Cronograma</strong><small>Planejamento</small></span></button><button type="button" data-food-area="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h6"/><path d="M2 5v12"/></svg><span class="food-nav-copy"><strong>Biblioteca</strong><small>Alimentos</small></span></button><button type="button" data-food-area="tester"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5.5 9.2A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.8L14 9V3"/><path d="M8 15h8M10 12h4M9 18h6"/></svg><span class="food-nav-copy"><strong>Simulador</strong><small>Testar refeição</small></span></button></nav><section class="card nutrition-planning-intro" id="nutritionPlanningIntro"><div><div class="eyebrow">ORGANIZAÇÃO E METAS</div><h3>Planeje sua alimentação com intenção</h3><p class="sub">Ajuste referências nutricionais, revise seus dados e organize o cardápio sem misturar o planejamento com o consumo registrado.</p></div><div class="nutrition-planning-actions"><button class="btn" id="foodGoalsBtn" type="button" onclick="openFoodGoals()"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>Metas e avaliação</button><button class="btn secondary" type="button" onclick="openFoodGoals()"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM8 7h8"/></svg>Planos e importação</button></div></section>
  <section class="nutrition-builder-panel" id="nutritionPlanPanel" hidden>
   <div class="nutrition-builder-intro"><div><div class="eyebrow">CALCULADORA E AVALIAÇÃO</div><h3>Calcule suas referências nutricionais</h3><p class="sub">Informe os dados principais. As preferências complementares são opcionais e podem ser preenchidas depois.</p></div></div>
   <form id="nutritionAssessmentForm" novalidate>
@@ -2737,16 +2802,17 @@ function setupFoodAreaNavToDiary(){const diary=document.querySelector('[data-foo
 function setFoodLibraryView(view){foodLibraryView=view==='meals'?'meals':'foods';const foods=$('foodLibraryFoodsPanel'),meals=$('foodLibraryMealsPanel');if(foods)foods.hidden=foodLibraryView!=='foods';if(meals)meals.hidden=foodLibraryView!=='meals';document.querySelectorAll('[data-food-library-view]').forEach(b=>{const active=b.dataset.foodLibraryView===foodLibraryView;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});if(foodLibraryView==='meals')renderFoodLibraryMeals();}
 function setupFoodAreaNav(){
  const buttons=[...document.querySelectorAll('[data-food-area]')];
- const groups={diary:['.food-day-controls','.food-kcal-card','#foodDiaryMacros','.food-week-card','#foodEntryChoice','#foodAddCard','#foodDiaryCard','#foodPlanningDetails'],schedule:['#nutritionSchedulePanel'],library:['#foodLibrary'],tester:['#mealTester']};
+ const groups={diary:['.food-day-controls','.food-kcal-card','#foodDiaryMacros','.food-week-card','#foodEntryChoice','#foodAddCard','#foodDiaryCard','#foodPlanningDetails'],schedule:['#nutritionPlanningIntro','#nutritionSchedulePanel'],library:['#foodLibrary','#mealTester'],tester:['#mealTester']};
  const all=[...new Set(Object.values(groups).flat())];
  function show(area){
   const selected=groups[area]?area:'diary';
   if(selected!=='diary')foodAddFormOpen=false;
   buttons.forEach(b=>{const active=b.dataset.foodArea===selected;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   all.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{const visible=groups[selected].includes(sel)&&!(sel==='#foodAddCard'&&!foodAddFormOpen);el.hidden=!visible;el.style.display=visible?'':'none';}));
-  const heading=$('dietHeading');if(heading)heading.textContent=selected==='library'?'Alimentos e refeições':selected==='tester'?'Simulador de refeições':selected==='schedule'?'Cronograma alimentar':'Diário alimentar';
-  const desc=document.querySelector('#dieta > .section-head p');if(desc)desc.textContent=selected==='library'?'Cadastre alimentos, monte refeições personalizadas e salve sugestões para reutilizar.':selected==='tester'?'Monte combinações, ajuste as porções e confira os totais antes de registrar.':selected==='schedule'?'Organize seu cardápio diário, ajuste porções e exporte seu cronograma.':'Escolha registrar um alimento ou uma refeição pronta e acompanhe calorias e macronutrientes.';if(selected==='schedule')window.renderFormaNutritionSchedule?.();
+  const heading=$('dietHeading');if(heading)heading.textContent=selected==='library'?'Biblioteca alimentar':selected==='tester'?'Simulador de refeições':selected==='schedule'?'Planejamento nutricional':'Diário alimentar';
+  const desc=document.querySelector('#dieta > .section-head p');if(desc)desc.textContent=selected==='library'?'Alimentos, refeições salvas e simulador em um só lugar.':selected==='tester'?'Monte combinações, ajuste as porções e confira os totais antes de registrar.':selected==='schedule'?'Organize seu cronograma, revise metas e importe planos sem alterar o diário.':'Registre o que você consumiu e acompanhe calorias e macronutrientes.';if(selected==='schedule')window.renderFormaNutritionSchedule?.();
  }
+ window.setFoodAreaSection=show;
  buttons.forEach(b=>b.addEventListener('click',()=>show(b.dataset.foodArea)));
  document.querySelectorAll('[data-food-library-view]').forEach(b=>b.addEventListener('click',()=>setFoodLibraryView(b.dataset.foodLibraryView)));
  $('chooseRegisterFood')?.addEventListener('click',()=>{foodAddFormOpen=true;const add=$('foodAddCard');if(add){add.hidden=false;add.style.display='';add.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('foodSearch')?.focus({preventScroll:true}),180);}});
@@ -2794,7 +2860,7 @@ function renderFoodDiary(){const date=getFoodDiaryDate(),entries=(state.foodEntr
  $('foodEntryCount').textContent=`${entries.length} ${entries.length===1?'ITEM':'ITENS'}`;const host=$('foodDiaryMeals');const standardMealNames=['Café da manhã','Lanche da manhã','Almoço','Jantar','Lanche da tarde','Ceia','Outro'];const mealNames=[...standardMealNames,...Array.from(new Set(entries.map(e=>String(e.meal||'Outro').trim()||'Outro')).values()).filter(name=>!standardMealNames.includes(name))];if(!entries.length){host.innerHTML='<div class="food-empty">Ainda não há alimentos registrados neste dia.<br>Adicione o primeiro alimento acima ou use “Repetir ontem”.</div>';}else{host.innerHTML=mealNames.map(meal=>{const rows=entries.filter(e=>(String(e.meal||'Outro').trim()||'Outro')===meal);if(!rows.length)return '';const mt=foodEntryTotals(rows);return `<div class="food-meal-group"><div class="food-meal-title"><strong>${esc(meal)}</strong><span class="muted" style="font-size:12px;text-align:right">${foodFmt(mt.k)} kcal<br><span style="font-size:10px">P ${foodFmt(mt.p,1)} g · C ${foodFmt(mt.c,1)} g · G ${foodFmt(mt.f,1)} g</span></span></div>${rows.map(e=>`<div class="food-entry-row ${e.entryType==='savedMeal'?'is-saved-meal':''}"><div class="food-entry-main"><strong>${esc(e.name)}</strong><small>${e.entryType==='savedMeal'?`${foodFmt(e.servings||1,2)} porção(ões)`: `${foodFmt(e.amount,1)} ${esc(e.unit||'g')}`} · ${foodFmt(e.kcal)} kcal · P ${foodFmt(e.protein,1)} g · C ${foodFmt(e.carbs,1)} g · G ${foodFmt(e.fat,1)} g</small>${e.entryType==='savedMeal'?`<button type="button" class="food-entry-expand" data-food-expand="${esc(e.id)}" aria-expanded="false">Ver ingredientes</button><div class="food-entry-components" data-food-components="${esc(e.id)}" hidden>${(Array.isArray(e.components)?e.components:[]).map(c=>`<div>${esc(c.name)} — ${foodFmt((Number(c.amount)||0)*(Number(e.servings)||1),1)} ${esc(c.unit||'g')}</div>`).join('')}</div>`:''}</div><div class="food-entry-actions"><button type="button" title="Editar registro" aria-label="Editar ${esc(e.name)}" data-food-edit="${esc(e.id)}">✎</button><button type="button" title="Usar este alimento novamente" aria-label="Usar ${esc(e.name)} novamente" data-food-repeat="${esc(e.id)}">↶</button><button type="button" title="Excluir registro" aria-label="Excluir ${esc(e.name)}" data-food-delete="${esc(e.id)}">×</button></div></div>`).join('')}</div>`}).join('');}
  document.querySelectorAll('[data-food-expand]').forEach(b=>b.onclick=()=>{const box=document.querySelector(`[data-food-components="${CSS.escape(b.dataset.foodExpand)}"]`);if(!box)return;box.hidden=!box.hidden;b.setAttribute('aria-expanded',String(!box.hidden));b.textContent=box.hidden?'Ver ingredientes':'Ocultar ingredientes';});
  document.querySelectorAll('[data-food-delete]').forEach(b=>b.onclick=()=>{const target=state.foodEntries.find(e=>String(e.id)===b.dataset.foodDelete);if(!target)return;if(!confirm(`Excluir o registro de “${target.name}” (${foodFmt(target.amount,1)} ${target.unit||'g'}) deste dia? Esta ação não pode ser desfeita.`))return;const before=state.foodEntries.map(e=>({...e}));state.foodEntries=state.foodEntries.filter(e=>String(e.id)!==b.dataset.foodDelete);if(!save()){state.foodEntries=before;renderFoodDiary();const status=$('foodSearchStatus');if(status)status.textContent='Não foi possível excluir: o registro foi restaurado porque o salvamento falhou.';return;}renderFoodDiary();renderFoodShortcuts();const status=$('foodSearchStatus');if(status)status.textContent=`Registro de ${target.name} excluído do diário.`;});document.querySelectorAll('[data-food-edit]').forEach(b=>b.onclick=()=>{const e=state.foodEntries.find(x=>String(x.id)===b.dataset.foodEdit);if(e?.entryType==='savedMeal'){const next=prompt('Quantidade de porções para este registro',String(e.servings||1));if(next===null)return;const servings=Number(String(next).trim().replace(',','.'));if(!Number.isFinite(servings)||servings<=0||servings>100){alert('Informe um número de porções maior que zero e até 100.');return;}const before=state.foodEntries.map(x=>({...x}));const factor=servings/(Number(e.servings)||1);const idx=state.foodEntries.findIndex(x=>String(x.id)===String(e.id));state.foodEntries[idx]={...e,servings,amount:servings,unit:'porção(ões)',kcal:e.kcal*factor,protein:e.protein*factor,carbs:e.carbs*factor,fat:e.fat*factor,updatedAt:new Date().toISOString()};if(!save()){state.foodEntries=before;renderFoodDiary();return;}renderFoodDiary();return;}const key=ensureFoodForEntry(e);if(!e||!key){alert('Este registro antigo não contém dados nutricionais suficientes para reconstruir o alimento. Os valores históricos foram preservados; registre novamente usando a lista atual se precisar editá-lo.');return;}editingFoodEntryId=e.id;chooseFood(key,e.measureKey||'base');$('foodAmount').value=String(e.amount).replace('.',',');$('foodMealType').value=e.meal||'Outro';$('foodLogForm').querySelector('button[type=submit]').textContent='✓ Salvar alterações';$('cancelFoodEdit').hidden=false;$('foodSearchStatus').textContent='Editando registro existente. Os valores serão recalculados com o snapshot salvo desse alimento.';$('foodLogForm').scrollIntoView({behavior:'smooth',block:'center'});});
- document.querySelectorAll('[data-food-repeat]').forEach(b=>b.onclick=()=>{const e=state.foodEntries.find(x=>String(x.id)===b.dataset.foodRepeat);if(e?.entryType==='savedMeal'){const date=getFoodDiaryDate();if(date>dateKey()&&!confirm('Você está registrando uma refeição em uma data futura. Deseja continuar?'))return;const copy={...e,id:'food_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),date,createdAt:new Date().toISOString()};state.foodEntries.push(copy);if(!save()){state.foodEntries.pop();return;}renderFoodDiary();renderFoodShortcuts();return;}const key=ensureFoodForEntry(e);if(!e||!key){alert('Este registro antigo não tem um snapshot nutricional completo para repetir com segurança.');return;}editingFoodEntryId=null;$('foodLogForm').querySelector('button[type=submit]').textContent='＋ Registrar alimento';$('cancelFoodEdit').hidden=true;chooseFood(key,e.measureKey||'base');$('foodAmount').value=e.amount;$('foodMealType').value=e.meal||'Outro';$('foodLogForm').scrollIntoView({behavior:'smooth',block:'center'});});renderNextMealRecommendation(entries,tot);renderFoodShortcuts();renderFoodSummary();renderFoodWeekStrip();}
+ document.querySelectorAll('[data-food-repeat]').forEach(b=>b.onclick=()=>{const e=state.foodEntries.find(x=>String(x.id)===b.dataset.foodRepeat);if(e?.entryType==='savedMeal'){const date=getFoodDiaryDate();if(date>dateKey()&&!confirm('Você está registrando uma refeição em uma data futura. Deseja continuar?'))return;const copy={...e,id:'food_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),date,createdAt:new Date().toISOString()};state.foodEntries.push(copy);if(!save()){state.foodEntries.pop();return;}renderFoodDiary();renderFoodShortcuts();return;}const key=ensureFoodForEntry(e);if(!e||!key){alert('Este registro antigo não tem um snapshot nutricional completo para repetir com segurança.');return;}editingFoodEntryId=null;$('foodLogForm').querySelector('button[type=submit]').textContent='＋ Registrar alimento';$('cancelFoodEdit').hidden=true;chooseFood(key,e.measureKey||'base');$('foodAmount').value=e.amount;$('foodMealType').value=e.meal||'Outro';$('foodLogForm').scrollIntoView({behavior:'smooth',block:'center'});});renderNextMealRecommendation(entries,tot);renderFoodShortcuts();renderFoodSummary();renderFoodWeekStrip();if(typeof renderNutritionOverview==='function')renderNutritionOverview();}
 let mealTestEntries=[];
 let mealTestCustomFood=null;
 let mealTestUsingCustom=false;
@@ -2864,6 +2930,7 @@ $('foodSearch')?.addEventListener('input',()=>{const raw=$('foodSearch').value.t
 $('foodSearch')?.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const selected=$('foodSelected').value;if(selected&&FOOD_DB[selected]){e.preventDefault();$('foodAmount').focus();return;}const first=$('foodSearchResults')?.querySelector('[data-food-search-pick]');if(first){e.preventDefault();chooseFood(first.dataset.foodSearchPick);}});
 $('foodFavoriteToggle')?.addEventListener('click',()=>{const key=$('foodSelected').value;if(!FOOD_DB[key]){alert('Selecione primeiro um alimento para salvá-lo como favorito.');return;}state.foodFavorites=Array.isArray(state.foodFavorites)?state.foodFavorites:[];if(state.foodFavorites.includes(key))state.foodFavorites=state.foodFavorites.filter(k=>k!==key);else state.foodFavorites.push(key);save();renderFoodShortcuts();$('foodFavoriteToggle').textContent=state.foodFavorites.includes(key)?'★ Remover dos favoritos':'☆ Salvar como favorito';});
 $('foodDiaryDate')?.addEventListener('change',renderFoodDiary);
+$('nutritionOverviewDate')?.addEventListener('change',()=>{const input=$('foodDiaryDate');if(input)input.value=$('nutritionOverviewDate').value||dateKey();renderFoodDiary();});
 function shiftFoodDate(days){const input=$('foodDiaryDate');const d=new Date((input?.value||dateKey())+'T12:00:00');d.setDate(d.getDate()+days);input.value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;renderFoodDiary();}
 $('foodDayPrev')?.addEventListener('click',()=>shiftFoodDate(-1));$('foodDayNext')?.addEventListener('click',()=>shiftFoodDate(1));$('foodTodayBtn')?.addEventListener('click',()=>{$('foodDiaryDate').value=dateKey();renderFoodDiary();});
 $('repeatYesterdayFood')?.addEventListener('click',()=>{const target=getFoodDiaryDate(),d=new Date(target+'T12:00:00');d.setDate(d.getDate()-1);const prev=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,source=state.foodEntries.filter(e=>e.date===prev);if(!source.length){alert('Não há alimentos registrados no dia anterior para repetir.');return;}if(state.foodEntries.some(e=>e.date===target)&&!confirm('Este dia já tem registros. Deseja acrescentar uma cópia dos alimentos de ontem?'))return;const before=state.foodEntries.map(e=>({...e}));source.forEach(e=>state.foodEntries.push({...e,id:'food_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),date:target,createdAt:new Date().toISOString()}));if(!save()){state.foodEntries=before;renderFoodDiary();return;}renderFoodDiary();renderFoodShortcuts();});
@@ -2920,6 +2987,31 @@ function getNutritionDailyData(start,end){
  });
  return [...byDate.values()].sort((a,b)=>a.date.localeCompare(b.date));
 }
+
+function renderNutritionOverview(){
+ const date=getFoodDiaryDate(),dateInput=$('nutritionOverviewDate');if(dateInput&&dateInput.value!==date)dateInput.value=date;
+ const entries=(Array.isArray(state.foodEntries)?state.foodEntries:[]).filter(e=>e.date===date),totals=foodEntryTotals(entries),targets=state.targets||{};
+ const goal={k:Number(targets.kcal)||1900,p:Number(targets.protein)||130,c:Number(targets.carbs)||210,f:Number(targets.fat)||60};
+ const consumed=$('nutritionOverviewKcal'),goalEl=$('nutritionOverviewKcalGoal'),bar=$('nutritionOverviewKcalBar'),note=$('nutritionOverviewKcalNote'),balance=$('nutritionOverviewKcalBalance');
+ if(consumed)consumed.textContent=foodFmt(totals.k);if(goalEl)goalEl.textContent=foodFmt(goal.k);if(bar)bar.style.width=Math.min(100,goal.k>0?totals.k/goal.k*100:0)+'%';
+ if(note)note.textContent=entries.length?entries.length+' registro(s) no dia selecionado.':'Sem registros neste dia. Isso não significa consumo zero.';
+ if(balance){const diff=goal.k-totals.k;balance.textContent=diff>=0?foodFmt(diff)+' kcal restantes':foodFmt(Math.abs(diff))+' kcal acima da meta';}
+ const macros=[{label:'Proteínas',key:'p',target:goal.p,color:'var(--lime)'},{label:'Carboidratos',key:'c',target:goal.c,color:'var(--orange)'},{label:'Gorduras',key:'f',target:goal.f,color:'var(--blue)'}],macroHost=$('nutritionOverviewMacros');
+ if(macroHost)macroHost.innerHTML=macros.map(m=>{const value=totals[m.key],pct=m.target>0?Math.round(value/m.target*100):0,remaining=m.target-value;return '<div class="nutrition-overview-macro"><div class="nutrition-overview-macro-top"><span>'+m.label+'</span><strong>'+foodFmt(value,1)+' g</strong></div><div class="nutrition-overview-track"><i style="width:'+Math.min(100,pct)+'%;background:'+m.color+'"></i></div><small>Meta: '+foodFmt(m.target,1)+' g · '+(remaining>=0?'faltam '+foodFmt(remaining,1)+' g':foodFmt(Math.abs(remaining),1)+' g acima')+'</small></div>';}).join('');
+ if(typeof renderNextMealRecommendation==='function')renderNextMealRecommendation(entries,totals);
+ const source=$('nextMealRecommendation'),destination=$('nutritionOverviewNextMeal');if(destination)destination.innerHTML=source&&source.innerHTML?source.innerHTML:'<p class="food-note">Registre suas refeições para receber uma sugestão contextualizada.</p>';
+ const mealHost=$('nutritionOverviewMeals');
+ if(mealHost){if(!entries.length)mealHost.innerHTML='<div class="nutrition-overview-empty">Nenhuma refeição registrada neste dia.<br><span>Use os atalhos para adicionar alimentos ou uma refeição salva.</span></div>';else{
+  const order=['Café da manhã','Lanche da manhã','Almoço','Lanche da tarde','Jantar','Ceia','Outro'],names=[...order,...Array.from(new Set(entries.map(e=>String(e.meal||'Outro').trim()||'Outro'))).filter(n=>!order.includes(n))];
+  mealHost.innerHTML=names.map(name=>{const rows=entries.filter(e=>(String(e.meal||'Outro').trim()||'Outro')===name);if(!rows.length)return '';const t=foodEntryTotals(rows);return '<div class="nutrition-overview-meal-row"><div><strong>'+esc(name)+'</strong><small>'+rows.length+' item(ns)</small></div><div><strong>'+foodFmt(t.k)+' kcal</strong><small>P '+foodFmt(t.p,1)+' · C '+foodFmt(t.c,1)+' · G '+foodFmt(t.f,1)+' g</small></div></div>';}).join('');
+ }}
+ const schedule=state.nutritionSchedule&&Array.isArray(state.nutritionSchedule.meals)?state.nutritionSchedule.meals:[],planHost=$('nutritionOverviewPlanStatus');
+ if(planHost)planHost.innerHTML=schedule.length?'<div class="nutrition-overview-status"><strong>'+schedule.length+' refeições planejadas</strong><span>O cronograma está separado do diário. Registre o consumo somente quando a refeição acontecer.</span></div>':'<div class="nutrition-overview-empty">Nenhum cronograma alimentar configurado.<br><span>Você pode montar ou importar um planejamento sem alterar seus registros.</span></div>';
+ const weekHost=$('nutritionOverviewWeek');
+ if(weekHost){const anchor=new Date(date+'T12:00:00'),days=[];for(let i=6;i>=0;i--){const d=new Date(anchor);d.setDate(anchor.getDate()-i);const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),count=(state.foodEntries||[]).filter(e=>e.date===key).length;days.push({date:d,count});}
+  const active=days.filter(d=>d.count>0).length;weekHost.innerHTML='<div class="nutrition-overview-week-number"><strong>'+active+'<small>/7</small></strong><span>dias com registros</span></div><div class="nutrition-overview-week-dots">'+days.map(d=>'<span class="'+(d.count?'has-record':'')+'" title="'+d.date.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'})+': '+(d.count?d.count+' registro(s)':'sem registro')+'"></span>').join('')+'</div><p class="food-note">Dias sem registro permanecem como ausência de informação, não como zero consumo.</p>';
+ }}
+
 function renderNutritionProgress(){
  const host=$('progressNutritionView');if(!host)return;
  const periodEl=$('nutritionProgressPeriod'),startEl=$('nutritionProgressStart'),endEl=$('nutritionProgressEnd'),controls=$('nutritionProgressPeriod')?.closest('.nutrition-progress-controls');
@@ -5090,15 +5182,15 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
 <script id="forma-v117-area-navigation">
 (function(){
   "use strict";
-  if(window.__formaV117AreaNavigation)return;
-  window.__formaV117AreaNavigation=true;
+  if(window.__formaV118AreaNavigation)return;
+  window.__formaV118AreaNavigation=true;
 
   var appRoot=document.querySelector(".app");
   var topNav=document.querySelector(".top-tabs");
   var tabMenu=document.getElementById("tabMenu");
   var brand=document.querySelector(".brand");
-  var areaMap={inicio:"treinos",treino:"treinos",sessaoTreino:"treinos",cardioRegistro:"treinos",biblioteca:"treinos",dieta:"nutricao",progresso:"shared"};
-  var primaryTabs={treinos:["inicio","treino","biblioteca"],nutricao:["dieta"]};
+  var areaMap={inicio:"treinos",treino:"treinos",sessaoTreino:"treinos",cardioRegistro:"treinos",biblioteca:"treinos",nutritionOverview:"nutricao",dieta:"nutricao",nutritionPlanning:"nutricao",nutritionLibrary:"nutricao",progresso:"shared"};
+  var primaryTabs={treinos:["inicio","treino","biblioteca"],nutricao:["nutritionOverview","dieta","nutritionPlanning","nutritionLibrary"]};
   var currentTab=(document.querySelector(".view.active")||{}).id||"inicio";
   var storagePrefix="forma.navigation.v117.";
   function validArea(value){return value==="treinos"||value==="nutricao";}
@@ -5107,9 +5199,10 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
   var savedArea=readStored("area");
   var savedTraining=readStored("treinos");
   var savedNutrition=readStored("nutricao");
-  var lastTabByArea={treinos:"inicio",nutricao:"dieta"};
+  var lastTabByArea={treinos:"inicio",nutricao:"nutritionOverview"};
   if(primaryTabs.treinos.indexOf(savedTraining)>=0)lastTabByArea.treinos=savedTraining;
-  if(primaryTabs.nutricao.indexOf(savedNutrition)>=0)lastTabByArea.nutricao=savedNutrition;
+  if(savedNutrition==="dieta")lastTabByArea.nutricao="nutritionOverview";
+  else if(primaryTabs.nutricao.indexOf(savedNutrition)>=0)lastTabByArea.nutricao=savedNutrition;
   var explicitInitialTab=currentTab!=="inicio"&&currentTab!=="progresso";
   var activeArea=explicitInitialTab&&validArea(areaMap[currentTab])?areaMap[currentTab]:(validArea(savedArea)?savedArea:"treinos");
   if(primaryTabs.treinos.indexOf(currentTab)>=0)lastTabByArea.treinos=currentTab;
@@ -5158,7 +5251,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
         '</button>'+
         '<button type="button" class="area-picker-choice" data-area-choice="nutricao" aria-pressed="false">'+
           '<span class="area-picker-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7M7 3v7M4 7h3M5.5 10v11M16 3c-2.2 2.1-3 4.5-3 7v2h5V3M15.5 12v9"/></svg></span>'+
-          '<strong>Nutrição</strong><small>Diário alimentar, planejamento, alimentos e macronutrientes.</small><span class="area-picker-enter">Entrar na área <span aria-hidden="true">→</span></span>'+
+          '<strong>Nutrição</strong><small>Visão geral, diário, planejamento, biblioteca e evolução alimentar.</small><span class="area-picker-enter">Entrar na área <span aria-hidden="true">→</span></span>'+
         '</button>'+
       '</div>'+
       '<p class="area-picker-footnote">Progresso, histórico e informações corporais continuam conectados às duas áreas.</p>'+
@@ -5225,16 +5318,17 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
   var originalShowTab=window.showTab;
   if(typeof originalShowTab==="function"){
     window.showTab=function(tab){
-      var area=areaMap[tab];
+      var requestedTab=tab,actualTab=(tab==="nutritionPlanning"||tab==="nutritionLibrary")?"dieta":tab;
+      var area=areaMap[requestedTab]||areaMap[actualTab];
       if(area==="treinos"||area==="nutricao"){
         activeArea=area;
-        if(primaryTabs[area].indexOf(tab)>=0)lastTabByArea[area]=tab;
+        if(primaryTabs[area].indexOf(requestedTab)>=0)lastTabByArea[area]=requestedTab;
         else if(area==="treinos")lastTabByArea.treinos="treino";
       }
-      var result=originalShowTab.apply(this,arguments);
-      currentTab=tab;
-      syncAreaUI();
-      return result;
+      var result=originalShowTab.call(this,actualTab);currentTab=requestedTab;
+      if(area==="nutricao"&&requestedTab!=="nutritionOverview"&&requestedTab!=="progresso"&&typeof window.setFoodAreaSection==="function")window.setFoodAreaSection(requestedTab==="nutritionPlanning"?"schedule":requestedTab==="nutritionLibrary"?"library":"diary");
+      document.querySelectorAll(".top-tabs .top-tab[data-tab],#tabMenu .menu-item[data-tab]").forEach(function(button){button.classList.toggle("active",button.dataset.tab===requestedTab);});
+      syncAreaUI();if(requestedTab==="nutritionOverview"&&typeof renderNutritionOverview==="function")renderNutritionOverview();return result;
     };
   }
 
@@ -5244,7 +5338,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
     activeArea=area;
     syncAreaUI();
     if(currentTab==="progresso")return;
-    var target=lastTabByArea[area]||(area==="treinos"?"inicio":"dieta");
+    var target=lastTabByArea[area]||(area==="treinos"?"inicio":"nutritionOverview");
     if(currentTab!==target&&typeof window.showTab==="function")window.showTab(target);
   }
 
@@ -5340,7 +5434,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
   }
 
   syncAreaUI();
-  if(currentTab==="inicio"&&activeArea==="nutricao"&&typeof window.showTab==="function")window.showTab("dieta");
+  if(currentTab==="inicio"&&activeArea==="nutricao"&&typeof window.showTab==="function")window.showTab("nutritionOverview");
   else if(currentTab==="progresso")syncProgressTabs();
 })();
 </script>
