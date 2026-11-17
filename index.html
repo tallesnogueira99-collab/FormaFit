@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- FORMA v116 — macros por refeição, recomendação nutricional e ordem do diário -->
+<!-- FORMA v117 — navegação independente entre Treinos e Nutrição -->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -1460,18 +1460,75 @@ body.session-mode{background:radial-gradient(ellipse at 50% -15%,color-mix(in sr
 #biblioteca .library-modality-btn.active>span:first-child{color:var(--accent)}
 @media(max-width:480px){#progresso .progress-switch-btn{padding-inline:9px;font-size:11px}#progresso .progress-switch-btn .progress-tab-icon{width:16px;height:16px;flex-basis:16px}#biblioteca .library-modality-btn{gap:5px;padding:9px 7px}#biblioteca .library-modality-btn strong{font-size:11px}}
 </style>
+
+<style id="forma-v117-area-styles">
+.area-brand-trigger{cursor:pointer;user-select:none;border-radius:14px;outline-offset:5px;transition:opacity .18s,transform .18s}
+.area-brand-trigger:hover{opacity:.94;transform:translateY(-1px)}
+.area-brand-trigger:focus-visible{outline:2px solid var(--lime);outline-offset:5px}
+.area-menu-switcher{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px;margin:3px 2px 9px;border:1px solid var(--line);border-radius:13px;background:#0b1524;touch-action:pan-y;user-select:none}
+.area-menu-choice{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:42px;padding:8px 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--muted);font-family:inherit;font-size:12px;font-weight:750;line-height:1.2;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.area-menu-choice svg{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.area-menu-choice.active{background:color-mix(in srgb,var(--accent) 22%,#17263a);border-color:color-mix(in srgb,var(--accent) 42%,var(--line));color:var(--lime)}
+.area-menu-choice:focus-visible,.area-picker-choice:focus-visible,.area-picker-close:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+#tabMenu{width:min(310px,calc(100vw - 20px));max-width:calc(100vw - 20px)}
+#tabMenu [hidden],.top-tabs [hidden],#progresso .progress-switch-btn[hidden]{display:none!important}
+#tabMenu .menu-caption{padding-top:5px}
+#progresso .progress-switch[data-forma-area="treinos"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+#progresso .progress-switch[data-forma-area="nutricao"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.stats.forma-training-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+#progressBodyView>#updatePanel{margin:14px 0;gap:12px}
+#progressBodyView>#overviewBioImport{margin:14px 0 16px!important}
+body.forma-area-picker-open{overflow:hidden}
+.area-picker-backdrop{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;padding:20px;background:rgba(3,8,16,.64);backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);opacity:1}
+.area-picker-backdrop[hidden]{display:none!important}
+.area-picker-dialog{width:min(560px,100%);max-height:90vh;max-height:min(90dvh,720px);overflow:auto;padding:clamp(18px,4vw,28px);border:1px solid color-mix(in srgb,var(--line) 82%,white 18%);border-radius:24px;background:linear-gradient(155deg,#17263a,#101a2a 72%);box-shadow:0 28px 90px #0009;color:var(--text);animation:formaAreaIn .22s ease-out}
+@keyframes formaAreaIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.area-picker-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px}
+.area-picker-heading .eyebrow{margin-bottom:7px}
+.area-picker-heading h2{margin:0;font-size:clamp(20px,4vw,25px);letter-spacing:-.5px}
+.area-picker-heading p{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.area-picker-close{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:1px solid var(--line);border-radius:12px;background:#0d1726;color:var(--muted);font-size:22px;cursor:pointer}
+.area-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.area-picker-choice{display:flex;flex-direction:column;align-items:flex-start;gap:11px;min-width:0;min-height:190px;padding:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(150deg,#1b2c42,#111d2e);color:var(--text);text-align:left;cursor:pointer;transition:transform .18s,border-color .18s,background .18s,box-shadow .18s}
+.area-picker-choice:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 65%,var(--line));box-shadow:0 12px 28px #0003}
+.area-picker-choice:active{transform:scale(.99)}
+.area-picker-choice[aria-pressed="true"]{border-color:color-mix(in srgb,var(--accent) 70%,var(--line));background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 17%,#1b2c42),#111d2e)}
+.area-picker-icon{display:grid;place-items:center;width:48px;height:48px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:15px;background:color-mix(in srgb,var(--accent) 20%,#0e1928);color:var(--lime)}
+.area-picker-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.area-picker-choice strong{font-size:17px;letter-spacing:-.2px}
+.area-picker-choice small{color:var(--muted);font-size:12px;line-height:1.45}
+.area-picker-enter{margin-top:auto;color:var(--lime);font-size:12px;font-weight:800}
+.area-picker-footnote{margin:16px 0 0;color:var(--muted);font-size:11px;line-height:1.5;text-align:center}
+@media(max-width:520px){
+ .area-picker-backdrop{padding:14px}
+ .area-picker-dialog{padding:18px;border-radius:20px}
+ .area-picker-grid{gap:9px}
+ .area-picker-choice{min-height:178px;padding:14px;gap:9px}
+ .area-picker-choice strong{font-size:15px}
+ .area-picker-choice small{font-size:11px}
+ .area-picker-icon{width:43px;height:43px}
+ .area-menu-choice{gap:6px;padding-inline:6px;font-size:11px}
+ #tabMenu{right:0;width:min(310px,calc(100vw - 20px))}
+ #progresso .progress-switch{gap:5px;padding:4px}
+ #progresso .progress-switch-btn{min-width:0;padding-inline:5px}
+}
+@media(max-width:350px){.area-picker-grid{grid-template-columns:1fr}.area-picker-choice{min-height:130px}}
+@media(prefers-reduced-motion:reduce){
+ .area-picker-dialog,.area-picker-choice,.area-menu-choice,.area-brand-trigger{animation:none!important;transition:none!important}
+}
+</style>
 </head>
 <body>
 <div class="app overview-active">
 <header>
- <div class="brand"><div class="logo">F</div><div><h1>FORMA<span style="color:var(--lime)">.</span></h1><p>Seu plano. Seu ritmo. Sua evolução.</p></div></div>
+ <div class="brand area-brand-trigger" role="button" tabindex="0" aria-label="Escolher entre Treinos e Nutrição" aria-haspopup="dialog" aria-controls="formaAreaPicker" aria-expanded="false" title="Alternar entre Treinos e Nutrição"><div class="logo">F</div><div><h1>FORMA<span style="color:var(--lime)">.</span></h1><p>Seu plano. Seu ritmo. Sua evolução.</p></div></div>
  <div class="header-actions"><div class="header-tools-wrap"><button class="header-tools-trigger" id="toolsTrigger" type="button" aria-label="Abrir atalhos e ajuda" aria-haspopup="true" aria-expanded="false" title="Atalhos e ajuda">⋯</button><div class="tools-popover" id="toolsMenu" role="menu" aria-label="Atalhos e ajuda"><div class="menu-caption">ATALHOS</div><div class="menu-caption" style="padding-top:5px">APLICATIVO</div><button class="menu-item" id="installAppBtn" role="menuitem"><span>＋</span>Instalar aplicativo</button><button class="menu-item" id="customizeBtn" role="menuitem"><span>⚙</span>Personalizar aparência</button><button class="menu-item" id="settingsMenuBtn" role="menuitem"><span class="menu-icon-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4v4M14 3.5v4h4M5 13v7.5h14V13"/><path d="M9 16.5l3-3 3 3M12 13.5v6"/></svg></span>Importar e exportar</button><button class="menu-item" id="refreshPageBtn" role="menuitem" title="Recarregar o FORMA"><span aria-hidden="true">↻</span>Atualizar página</button><div style="height:1px;background:var(--line);margin:7px 4px"></div><div class="menu-caption" style="padding-top:4px">SUPORTE</div><button class="menu-item" id="helpMenuBtn" role="menuitem"><span>?</span>Ajuda e orientações</button><input id="importBackupFile" type="file" accept="application/json,.json" hidden><input id="importFoodsFile" type="file" accept=".json,.csv,application/json,text/csv" hidden><input id="importMealsFile" type="file" accept=".json,.csv,application/json,text/csv" hidden><input id="importExercisesFile" type="file" accept=".json,.csv,application/json,text/csv" hidden></div></div><button class="profile-chip" id="profileBadge" type="button" aria-label="Abrir perfil e conta" title="Perfil e conta"><span class="profile-avatar" id="profileAvatar" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.6-3.6 3.2-5.5 7-5.5s6.4 1.9 7 5.5"></path></svg></span><span class="profile-name-label" id="profileNameLabel">Meu perfil</span></button></div>
 </header>
 <nav class="top-tabs" aria-label="Seções do FORMA">
  <button class="top-tab active" data-tab="inicio">Visão geral</button><button class="top-tab" data-tab="treino">Treinos</button><button class="top-tab" data-tab="dieta">Alimentação</button><button class="top-tab" data-tab="progresso">Progresso</button><button class="top-tab" data-tab="biblioteca">Biblioteca</button>
 </nav>
 <section class="hero" id="heroLayout">
- <div class="hero-main" id="onboardingCard"><div class="eyebrow">Projeto físico atlético</div><h2>Construa um corpo forte.<br>Sem complicar sua rotina.</h2><p>Treinos organizados, alimentação ovolactovegetariana e progresso acompanhado em um só lugar.</p><button class="btn" id="startPlanBtn">Começar meu treino&nbsp; →</button></div>
+ <div class="hero-main" id="onboardingCard"><div class="eyebrow">Projeto físico atlético</div><h2>Construa um corpo forte.<br>Sem complicar sua rotina.</h2><p>Treinos organizados, evolução de desempenho e progresso corporal em um só lugar.</p><button class="btn" id="startPlanBtn">Começar meu treino&nbsp; →</button></div>
  <div class="hero-stat" id="goalCard"><div><div class="label">Meta inicial de peso</div><div class="big-number"><span id="goalWeight">85</span><small style="font-size:22px"> kg</small></div><p id="goalCardSub">Primeiro marco da sua evolução</p></div><div class="stat-foot"><span>Atual: <b id="heroWeight">90 kg</b></span><span>Foco: <b id="focusLabel">definição natural</b></span></div></div>
 </section>
 <section class="stats">
@@ -1483,8 +1540,13 @@ body.session-mode{background:radial-gradient(ellipse at 50% -15%,color-mix(in sr
 <section class="update-panel" id="updatePanel" style="display:none"><div><h3>Manter seu plano atualizado</h3><p>Registre o peso da semana e adicione novos dados de composição corporal para acompanhar tendências.</p></div><button class="btn update-data-btn" id="updateDataBtn">Atualizar dados ↗</button></section>
 <nav class="menu-wrap" aria-label="Acesso rápido às abas">
  <button class="menu-trigger" id="menuTrigger" type="button" aria-label="Abrir lista de abas" aria-haspopup="true" aria-expanded="false" title="Ir para uma aba"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.5"></rect><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.5"></rect><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.5"></rect><rect x="14" y="14" width="6.5" height="6.5" rx="1.5"></rect></svg></button>
- <div class="menu-popover" id="tabMenu" role="menu" aria-label="Lista de abas">
-  <div class="menu-caption">Ir para uma aba</div>
+ <div class="menu-popover" id="tabMenu" role="menu" aria-label="Navegação do aplicativo">
+  <div class="menu-caption">ÁREA DO APLICATIVO</div>
+  <div class="area-menu-switcher" id="areaMenuSwitcher" role="group" aria-label="Escolher área do aplicativo">
+   <button type="button" class="area-menu-choice" data-area-choice="treinos" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M3.5 10v4M18 8v8m2.5-6v4M6 12h12"/></svg><span>Treinos</span></button>
+   <button type="button" class="area-menu-choice" data-area-choice="nutricao" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7M7 3v7M4 7h3M5.5 10v11M16 3c-2.2 2.1-3 4.5-3 7v2h5V3M15.5 12v9"/></svg><span>Nutrição</span></button>
+  </div>
+  <div class="menu-caption" id="areaTabsCaption">ABAS DE TREINOS</div>
   <button class="menu-item active" role="menuitem" data-tab="inicio"><span>⌂</span>Visão geral</button>
   <button class="menu-item" role="menuitem" data-tab="treino"><span>◈</span>Treinos</button>
   <button class="menu-item" role="menuitem" data-tab="dieta"><span>♧</span>Alimentação</button>
@@ -1498,7 +1560,7 @@ body.session-mode{background:radial-gradient(ellipse at 50% -15%,color-mix(in sr
   <div class="card"><h3 id="todayWorkoutTitle">Treino de segunda</h3><p class="sub" id="todayWorkoutSub">Peitoral e tríceps</p><div id="todaySummary" aria-live="polite" aria-atomic="true"></div><button class="btn wide" style="margin-top:15px" onclick="showTab('treino')">Abrir ficha completa</button></div>
   <div class="side-stack">
    <div class="card center"><h3>Semana em movimento</h3><p class="sub">Treinos concluídos</p><div class="progress-ring" id="weekRing"><span id="ringText">0/5</span></div><p class="muted" style="font-size:12px" id="weekMessage">Sua próxima sessão começa com uma decisão.</p></div>
-   <div class="card"><h3>Seu foco</h3><p class="sub">Prioridades do plano</p><div style="display:grid;gap:10px;font-size:12px"><div>↗ <b>Musculação progressiva</b><div class="muted">Técnica e evolução de cargas</div></div><div>◉ <b>Déficit moderado</b><div class="muted">Perder gordura sem sacrificar força</div></div><div>⌁ <b>Proteína suficiente</b><div class="muted">Ovos, laticínios, soja e leguminosas</div></div></div></div>
+   <div class="card"><h3>Seu foco</h3><p class="sub">Prioridades do plano</p><div style="display:grid;gap:10px;font-size:12px"><div>↗ <b>Musculação progressiva</b><div class="muted">Técnica e evolução de cargas</div></div><div>◉ <b>Consistência semanal</b><div class="muted">Mantenha a frequência planejada</div></div><div>⌁ <b>Recuperação adequada</b><div class="muted">Respeite o descanso entre sessões</div></div></div></div>
   </div>
  </div>
  <div class="card bio-import-card bio-import-compact" id="overviewBioImport" style="margin-top:18px">
@@ -5024,5 +5086,263 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
 })();
 </script>
 
+
+<script id="forma-v117-area-navigation">
+(function(){
+  "use strict";
+  if(window.__formaV117AreaNavigation)return;
+  window.__formaV117AreaNavigation=true;
+
+  var appRoot=document.querySelector(".app");
+  var topNav=document.querySelector(".top-tabs");
+  var tabMenu=document.getElementById("tabMenu");
+  var brand=document.querySelector(".brand");
+  var areaMap={inicio:"treinos",treino:"treinos",sessaoTreino:"treinos",cardioRegistro:"treinos",biblioteca:"treinos",dieta:"nutricao",progresso:"shared"};
+  var primaryTabs={treinos:["inicio","treino","biblioteca"],nutricao:["dieta"]};
+  var currentTab=(document.querySelector(".view.active")||{}).id||"inicio";
+  var storagePrefix="forma.navigation.v117.";
+  function validArea(value){return value==="treinos"||value==="nutricao";}
+  function readStored(key){try{return window.localStorage.getItem(storagePrefix+key)}catch(error){return null}}
+  function writeStored(key,value){try{window.localStorage.setItem(storagePrefix+key,value)}catch(error){}}
+  var savedArea=readStored("area");
+  var savedTraining=readStored("treinos");
+  var savedNutrition=readStored("nutricao");
+  var lastTabByArea={treinos:"inicio",nutricao:"dieta"};
+  if(primaryTabs.treinos.indexOf(savedTraining)>=0)lastTabByArea.treinos=savedTraining;
+  if(primaryTabs.nutricao.indexOf(savedNutrition)>=0)lastTabByArea.nutricao=savedNutrition;
+  var explicitInitialTab=currentTab!=="inicio"&&currentTab!=="progresso";
+  var activeArea=explicitInitialTab&&validArea(areaMap[currentTab])?areaMap[currentTab]:(validArea(savedArea)?savedArea:"treinos");
+  if(primaryTabs.treinos.indexOf(currentTab)>=0)lastTabByArea.treinos=currentTab;
+  if(currentTab==="dieta")lastTabByArea.nutricao="dieta";
+  if(currentTab==="sessaoTreino"||currentTab==="cardioRegistro")lastTabByArea.treinos="treino";
+
+  var menuSwitcher=document.createElement("div");
+  menuSwitcher.className="area-menu-switcher";
+  menuSwitcher.id="areaMenuSwitcher";
+  menuSwitcher.setAttribute("role","group");
+  menuSwitcher.setAttribute("aria-label","Escolher área do aplicativo");
+  menuSwitcher.innerHTML=
+    '<button type="button" class="area-menu-choice" data-area-choice="treinos" aria-pressed="false">'+
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M3.5 10v4M18 8v8m2.5-6v4M6 12h12"/></svg><span>Treinos</span></button>'+
+    '<button type="button" class="area-menu-choice" data-area-choice="nutricao" aria-pressed="false">'+
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7M7 3v7M4 7h3M5.5 10v11M16 3c-2.2 2.1-3 4.5-3 7v2h5V3M15.5 12v9"/></svg><span>Nutrição</span></button>';
+  if(tabMenu&&!document.getElementById("areaMenuSwitcher")){
+    var firstCaption=tabMenu.querySelector(".menu-caption");
+    if(firstCaption)firstCaption.insertAdjacentElement("afterend",menuSwitcher);
+    else tabMenu.insertBefore(menuSwitcher,tabMenu.firstChild);
+    var captions=tabMenu.querySelectorAll(".menu-caption");
+    if(captions[0])captions[0].textContent="ÁREA DO APLICATIVO";
+    if(captions[1]){
+      captions[1].id="areaTabsCaption";
+      captions[1].textContent="ABAS DE TREINOS";
+    }else{
+      var caption=document.createElement("div");
+      caption.className="menu-caption";
+      caption.id="areaTabsCaption";
+      caption.textContent="ABAS DE TREINOS";
+      menuSwitcher.insertAdjacentElement("afterend",caption);
+    }
+  }
+
+  var backdrop=document.createElement("div");
+  backdrop.className="area-picker-backdrop";
+  backdrop.id="formaAreaPicker";
+  backdrop.hidden=true;
+  backdrop.innerHTML=
+    '<section class="area-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="formaAreaPickerTitle" tabindex="-1">'+
+      '<div class="area-picker-heading"><div><div class="eyebrow">FORMA · ESCOLHA SEU AMBIENTE</div><h2 id="formaAreaPickerTitle">Onde você quer entrar?</h2><p>Dois espaços especializados, com seu progresso e seus dados corporais integrados.</p></div><button type="button" class="area-picker-close" aria-label="Fechar seletor">×</button></div>'+
+      '<div class="area-picker-grid">'+
+        '<button type="button" class="area-picker-choice" data-area-choice="treinos" aria-pressed="false">'+
+          '<span class="area-picker-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M3.5 10v4M18 8v8m2.5-6v4M6 12h12"/></svg></span>'+
+          '<strong>Treinos</strong><small>Planejamento, execução, exercícios e desempenho físico.</small><span class="area-picker-enter">Entrar na área <span aria-hidden="true">→</span></span>'+
+        '</button>'+
+        '<button type="button" class="area-picker-choice" data-area-choice="nutricao" aria-pressed="false">'+
+          '<span class="area-picker-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7M7 3v7M4 7h3M5.5 10v11M16 3c-2.2 2.1-3 4.5-3 7v2h5V3M15.5 12v9"/></svg></span>'+
+          '<strong>Nutrição</strong><small>Diário alimentar, planejamento, alimentos e macronutrientes.</small><span class="area-picker-enter">Entrar na área <span aria-hidden="true">→</span></span>'+
+        '</button>'+
+      '</div>'+
+      '<p class="area-picker-footnote">Progresso, histórico e informações corporais continuam conectados às duas áreas.</p>'+
+    '</section>';
+  document.body.appendChild(backdrop);
+
+  function setHidden(element,hidden){if(element)element.hidden=!!hidden;}
+  function syncProgressTabs(){
+    var trainingTab=document.getElementById("progressTrainingTab");
+    var cardioTab=document.getElementById("progressCardioTab");
+    var nutritionTab=document.getElementById("progressNutritionTab");
+    var bodyTab=document.getElementById("progressBodyTab");
+    var isTraining=activeArea==="treinos";
+    setHidden(trainingTab,!isTraining);
+    setHidden(cardioTab,!isTraining);
+    setHidden(nutritionTab,isTraining);
+    setHidden(bodyTab,false);
+    var switcher=document.querySelector("#progresso .progress-switch");
+    if(switcher){
+      switcher.dataset.formaArea=activeArea;
+      switcher.setAttribute("aria-label",isTraining?"Progresso de treinos e corpo":"Progresso de nutrição e corpo");
+    }
+    var selected=document.querySelector("#progresso .progress-switch-btn[aria-selected='true']");
+    if(!selected||selected.hidden){
+      var fallback=isTraining?trainingTab:nutritionTab;
+      if(fallback)fallback.click();
+    }
+  }
+  function syncAreaUI(){
+    document.documentElement.setAttribute("data-forma-area",activeArea);
+    if(appRoot)appRoot.setAttribute("data-forma-area",activeArea);
+    if(topNav)topNav.setAttribute("aria-label",activeArea==="treinos"?"Navegação da área de Treinos":"Navegação da área de Nutrição");
+    document.querySelectorAll(".top-tabs .top-tab[data-tab],#tabMenu .menu-item[data-tab]").forEach(function(button){
+      var tab=button.dataset.tab;
+      var area=areaMap[tab];
+      setHidden(button,!(area==="shared"||area===activeArea));
+    });
+    var caption=document.getElementById("areaTabsCaption");
+    if(caption)caption.textContent=activeArea==="treinos"?"ABAS DE TREINOS":"ABAS DE NUTRIÇÃO";
+    document.querySelectorAll("[data-area-choice]").forEach(function(button){
+      var active=button.dataset.areaChoice===activeArea;
+      button.classList.toggle("active",active);
+      button.setAttribute("aria-pressed",String(active));
+      if(button.classList.contains("area-picker-choice")){
+        var label=button.querySelector(".area-picker-enter");
+        if(label)label.textContent=active?"Área atual":"Entrar na área →";
+      }
+    });
+    var stats=document.querySelector(".stats");
+    if(stats){
+      stats.classList.add("forma-training-stats");
+      ["kcalTargetStat","proteinTargetStat"].forEach(function(id){
+        var value=document.getElementById(id);
+        var card=value&&value.closest(".stat-card");
+        if(card)card.hidden=true;
+      });
+    }
+    syncProgressTabs();
+    writeStored("area",activeArea);
+    writeStored("treinos",lastTabByArea.treinos);
+    writeStored("nutricao",lastTabByArea.nutricao);
+  }
+
+  var originalShowTab=window.showTab;
+  if(typeof originalShowTab==="function"){
+    window.showTab=function(tab){
+      var area=areaMap[tab];
+      if(area==="treinos"||area==="nutricao"){
+        activeArea=area;
+        if(primaryTabs[area].indexOf(tab)>=0)lastTabByArea[area]=tab;
+        else if(area==="treinos")lastTabByArea.treinos="treino";
+      }
+      var result=originalShowTab.apply(this,arguments);
+      currentTab=tab;
+      syncAreaUI();
+      return result;
+    };
+  }
+
+  function switchArea(area){
+    if(!validArea(area))return;
+    if(activeArea===area){syncAreaUI();return;}
+    activeArea=area;
+    syncAreaUI();
+    if(currentTab==="progresso")return;
+    var target=lastTabByArea[area]||(area==="treinos"?"inicio":"dieta");
+    if(currentTab!==target&&typeof window.showTab==="function")window.showTab(target);
+  }
+
+  var previousFocus=null;
+  function focusSafely(element){
+    if(!element||typeof element.focus!=="function")return;
+    try{element.focus({preventScroll:true})}catch(error){element.focus()}
+  }
+  function openPicker(){
+    if(typeof window.closeTabMenu==="function")window.closeTabMenu();
+    previousFocus=document.activeElement;
+    backdrop.hidden=false;
+    document.body.classList.add("forma-area-picker-open");
+    if(brand)brand.setAttribute("aria-expanded","true");
+    focusSafely(backdrop.querySelector('[data-area-choice="'+activeArea+'"]'));
+  }
+  function closePicker(){
+    if(backdrop.hidden)return;
+    backdrop.hidden=true;
+    document.body.classList.remove("forma-area-picker-open");
+    if(brand)brand.setAttribute("aria-expanded","false");
+    focusSafely(previousFocus||brand);
+  }
+  if(brand){
+    brand.classList.add("area-brand-trigger");
+    brand.setAttribute("role","button");
+    brand.setAttribute("tabindex","0");
+    brand.setAttribute("aria-label","Escolher entre Treinos e Nutrição");
+    brand.setAttribute("aria-haspopup","dialog");
+    brand.setAttribute("aria-controls","formaAreaPicker");
+    brand.setAttribute("aria-expanded","false");
+    brand.setAttribute("title","Alternar entre Treinos e Nutrição");
+    brand.addEventListener("click",openPicker);
+    brand.addEventListener("keydown",function(event){
+      if(event.key==="Enter"||event.key===" "){event.preventDefault();openPicker();}
+    });
+  }
+  backdrop.addEventListener("click",function(event){
+    if(event.target===backdrop){closePicker();return;}
+    if(event.target.closest(".area-picker-close")){closePicker();return;}
+    var choice=event.target.closest(".area-picker-choice[data-area-choice]");
+    if(choice){switchArea(choice.dataset.areaChoice);closePicker();}
+  });
+  backdrop.addEventListener("keydown",function(event){
+    if(event.key!=="Tab")return;
+    var focusable=backdrop.querySelectorAll("button:not([disabled])");
+    if(!focusable.length)return;
+    var first=focusable[0],last=focusable[focusable.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();focusSafely(last);}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();focusSafely(first);}
+  });
+  document.addEventListener("keydown",function(event){
+    if(event.key==="Escape"&&!backdrop.hidden)closePicker();
+  });
+
+  if(menuSwitcher){
+    var startX=0,startY=0,tracking=false,suppressClick=false,suppressTimer=null;
+    menuSwitcher.addEventListener("pointerdown",function(event){
+      if(event.button!==0)return;
+      startX=event.clientX;startY=event.clientY;tracking=true;
+    },{passive:true});
+    document.addEventListener("pointerup",function(event){
+      if(!tracking)return;
+      tracking=false;
+      var dx=event.clientX-startX,dy=event.clientY-startY;
+      if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.25){
+        suppressClick=true;
+        if(suppressTimer)clearTimeout(suppressTimer);
+        suppressTimer=setTimeout(function(){suppressClick=false;},450);
+        switchArea(dx<0?"nutricao":"treinos");
+      }
+    });
+    document.addEventListener("pointercancel",function(){tracking=false;});
+    menuSwitcher.addEventListener("click",function(event){
+      if(suppressClick){event.preventDefault();event.stopImmediatePropagation();suppressClick=false;}
+    },true);
+  }
+
+  document.addEventListener("click",function(event){
+    var choice=event.target.closest("#areaMenuSwitcher [data-area-choice]");
+    if(choice)switchArea(choice.dataset.areaChoice);
+  });
+
+  var bodyView=document.getElementById("progressBodyView");
+  var bodyStats=document.getElementById("bodyOverviewStats");
+  var updatePanel=document.getElementById("updatePanel");
+  var bioImport=document.getElementById("overviewBioImport");
+  if(bodyView){
+    var anchor=bodyStats||bodyView.querySelector(".body-progress-intro");
+    if(anchor&&updatePanel)anchor.insertAdjacentElement("afterend",updatePanel);
+    if(updatePanel&&bioImport)updatePanel.insertAdjacentElement("afterend",bioImport);
+    else if(anchor&&bioImport)anchor.insertAdjacentElement("afterend",bioImport);
+  }
+
+  syncAreaUI();
+  if(currentTab==="inicio"&&activeArea==="nutricao"&&typeof window.showTab==="function")window.showTab("dieta");
+  else if(currentTab==="progresso")syncProgressTabs();
+})();
+</script>
 </body>
 </html>
