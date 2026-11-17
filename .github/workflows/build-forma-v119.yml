@@ -3,7 +3,7 @@ name: Build and validate FORMA v119
 on:
   push:
     branches:
-      - forma/v119-nutricao-reestruturada
+      - forma/v119-ajustes-navegacao-energia
     paths:
       - "index.html"
       - "sw.js"
