@@ -5116,7 +5116,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
   if(currentTab==="dieta")lastTabByArea.nutricao="dieta";
   if(currentTab==="sessaoTreino"||currentTab==="cardioRegistro")lastTabByArea.treinos="treino";
 
-  var menuSwitcher=document.createElement("div");
+  var menuSwitcher=document.getElementById("areaMenuSwitcher")||document.createElement("div");
   menuSwitcher.className="area-menu-switcher";
   menuSwitcher.id="areaMenuSwitcher";
   menuSwitcher.setAttribute("role","group");
