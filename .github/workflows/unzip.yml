@@ -70,7 +70,7 @@ jobs:
           ET.parse("icon.svg")
           for name in ("icon-192.png", "icon-512.png"):
               data = pathlib.Path(name).read_bytes()
-              if not data.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+              if not data.startswith(b"\x89PNG\r\n\x1a\n"):
                   raise SystemExit(f"PNG inválido: {name}")
           for name in ("index.html", "manifest.webmanifest", "sw.js",
                        "icon.svg", "icon-192.png", "icon-512.png"):
