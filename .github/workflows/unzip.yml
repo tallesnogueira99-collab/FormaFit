@@ -1,49 +1,96 @@
-name: Descompactar ZIP Automaticamente
+name: Publicar pacote FORMA v120
 
 on:
   push:
     paths:
-      - '**/*.zip' # Executa automaticamente sempre que um arquivo .zip for enviado
-  workflow_dispatch: # Permite que você execute manualmente pela aba "Actions" do GitHub
+      - 'FORMA_v120_documentos_PDF.zip'
+  workflow_dispatch:
 
-# Permite que a Action grave alterações de volta no repositório
 permissions:
   contents: write
 
+concurrency:
+  group: forma-v120-publication
+  cancel-in-progress: false
+
 jobs:
-  unzip-archive:
+  validate-and-publish:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar código do repositório
+      - name: Baixar repositório
         uses: actions/checkout@v4
 
-      - name: Descompactar arquivos ZIP
+      - name: Validar e extrair exclusivamente o pacote v120
+        shell: bash
         run: |
-          echo "Procurando arquivos ZIP..."
-          # Procura por arquivos .zip na raiz e descompacta na pasta atual.
-          # Se preferir uma pasta específica, troque o '-d .' por '-d sua-pasta/'
-          for file in *.zip; do
-            if [ -f "$file" ]; then
-              echo "Extraindo: $file"
-              unzip -o "$file" -d .
-              
-              # (Opcional) Descomente a linha abaixo se quiser apagar 
-              # o arquivo .zip original do repositório após descompactá-lo:
-              # rm "$file"
-            fi
-          done
+          set -euo pipefail
+          ARCHIVE="FORMA_v120_documentos_PDF.zip"
+          test -f "$ARCHIVE"
+          unzip -t "$ARCHIVE"
 
-      - name: Enviar arquivos descompactados de volta ao repositório
+          python3 - <<'PY'
+          import pathlib, zipfile, sys
+          archive = pathlib.Path("FORMA_v120_documentos_PDF.zip")
+          expected = {
+              "index.html",
+              "manifest.webmanifest",
+              "sw.js",
+              "icon.svg",
+              "icon-192.png",
+              "icon-512.png",
+          }
+          with zipfile.ZipFile(archive) as z:
+              names = z.namelist()
+              if len(names) != len(set(names)):
+                  raise SystemExit("Pacote inválido: entradas duplicadas.")
+              if set(names) != expected:
+                  raise SystemExit(
+                      "Conteúdo inesperado no pacote. "
+                      f"Esperado: {sorted(expected)}; recebido: {sorted(names)}"
+                  )
+              for name in names:
+                  info = z.getinfo(name)
+                  if info.is_dir() or "/" in name or "\\" in name:
+                      raise SystemExit(f"Caminho não permitido: {name}")
+                  data = z.read(name)
+                  if not data:
+                      raise SystemExit(f"Arquivo vazio: {name}")
+                  pathlib.Path(name).write_bytes(data)
+          PY
+
+      - name: Validar arquivos publicados
+        shell: bash
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git status
-          git add .
-          
-          # Verifica se há alterações reais para commitar
-          if git diff --staged --quiet; then
-            echo "Nenhuma alteração detectada para commit."
-          else
-            git commit -m "🤖 Descompactação automática de arquivos ZIP via GitHub Actions"
-            git push
+          set -euo pipefail
+          node --check sw.js
+          python3 - <<'PY'
+          import json, pathlib, xml.etree.ElementTree as ET
+          json.loads(pathlib.Path("manifest.webmanifest").read_text())
+          ET.parse("icon.svg")
+          for name in ("icon-192.png", "icon-512.png"):
+              data = pathlib.Path(name).read_bytes()
+              if not data.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+                  raise SystemExit(f"PNG inválido: {name}")
+          for name in ("index.html", "manifest.webmanifest", "sw.js",
+                       "icon.svg", "icon-192.png", "icon-512.png"):
+              if not pathlib.Path(name).is_file():
+                  raise SystemExit(f"Arquivo ausente: {name}")
+          print("Validação básica dos seis arquivos concluída.")
+          PY
+
+      - name: Registrar somente os seis arquivos da aplicação
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f FORMA_v120_documentos_PDF.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -- index.html manifest.webmanifest sw.js icon.svg icon-192.png icon-512.png
+          git rm --ignore-unmatch -- FORMA_v120_documentos_PDF.zip
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração de aplicação para publicar."
+            exit 0
           fi
+          git commit -m "🚀 Publica FORMA v120 — documentos PDF"
+          git push
