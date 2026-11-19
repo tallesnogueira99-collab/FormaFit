@@ -1,9 +1,6 @@
 name: Publicar pacote FORMA v120
 
 on:
-  push:
-    paths:
-      - 'FORMA_v120_documentos_PDF.zip'
   workflow_dispatch:
 
 permissions:
@@ -30,7 +27,7 @@ jobs:
           unzip -t "$ARCHIVE"
 
           python3 - <<'PY'
-          import pathlib, zipfile, sys
+          import pathlib, zipfile
           archive = pathlib.Path("FORMA_v120_documentos_PDF.zip")
           expected = {
               "index.html",
