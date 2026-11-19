@@ -7,6 +7,7 @@ on:
     paths:
       - '*.zip'
       - '**/*.zip'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -28,11 +29,14 @@ jobs:
         env:
           BEFORE_SHA: ${{ github.event.before }}
           CURRENT_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
         shell: bash
         run: |
           set -euo pipefail
 
-          if [[ "$BEFORE_SHA" =~ ^0+$ ]]; then
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            git ls-files > changed-files.txt
+          elif [[ "$BEFORE_SHA" =~ ^0+$ ]]; then
             git ls-tree -r --name-only "$CURRENT_SHA" > changed-files.txt
           else
             git diff --name-only --diff-filter=ACMR "$BEFORE_SHA" "$CURRENT_SHA" > changed-files.txt
@@ -52,7 +56,7 @@ jobs:
           })
 
           if not archives:
-              print("Nenhum ZIP novo ou alterado neste envio.")
+              print("Nenhum ZIP encontrado para extrair.")
               raise SystemExit(0)
 
           max_entries = 2000
