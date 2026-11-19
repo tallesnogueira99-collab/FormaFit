@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - '*.zip'
       - '**/*.zip'
 
 permissions:
@@ -38,7 +39,6 @@ jobs:
           fi
 
           python3 - <<'PY'
-          import os
           import pathlib
           import stat
           import zipfile
@@ -79,7 +79,7 @@ jobs:
                       seen = set()
                       for info in infos:
                           raw_name = info.filename
-                          if not raw_name or "\\\\" in raw_name or "\x00" in raw_name:
+                          if not raw_name or "\\" in raw_name or "\x00" in raw_name:
                               raise ValueError(f"Caminho inválido: {raw_name!r}")
 
                           relative = pathlib.PurePosixPath(raw_name)
@@ -127,6 +127,8 @@ jobs:
 
           print("Extração concluída.")
           PY
+
+          rm -f changed-files.txt
 
       - name: Salvar arquivos extraídos no repositório
         shell: bash
