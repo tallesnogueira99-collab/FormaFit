@@ -4327,6 +4327,7 @@ function openSessionReplacement(exIndex){
  const modal=$("sessionReplacementModal");if(!modal)return;modal.dataset.exerciseIndex=String(exIndex);$("sessionReplacementSubtitle").textContent=`Exercício atual: ${exercise[0]}. Somente equivalências biomecânicas rigorosas serão mostradas.`;
  $("sessionReplacementEquipment").value="";renderSessionReplacementOptions();modal.hidden=false;modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
 }
+window.openSessionReplacement=openSessionReplacement;
 function closeSessionReplacement(){const modal=$("sessionReplacementModal");if(!modal)return;modal.hidden=true;modal.setAttribute("aria-hidden","true");document.body.style.overflow="";}
 function renderSessionReplacementOptions(){const modal=$("sessionReplacementModal"),host=$("sessionReplacementResults");if(!modal||!host)return;const index=Number(modal.dataset.exerciseIndex),w=sessionWorkoutForDay(state.sessionDay),exercise=w?.ex?.[index];if(!exercise)return;const candidates=strictSessionReplacementCandidates(exercise[0],$("sessionReplacementEquipment").value);
  if(!candidates.length){host.innerHTML='<div class="session-replacement-empty"><strong>Nenhuma substituição suficientemente equivalente foi encontrada.</strong><br>O FORMA não vai recomendar um exercício apenas por trabalhar o mesmo músculo. Você pode retirar o filtro de equipamento ou continuar com o exercício planejado quando estiver disponível.</div>';return;}
