@@ -1890,7 +1890,7 @@ body.forma-area-picker-open{overflow:hidden}
   <article class="card nutrition-overview-meals-card"><div class="nutrition-overview-section-title"><span class="nutrition-overview-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span><div><h3>Refeições registradas</h3><p class="sub">Resumo do consumo real no dia selecionado.</p></div></div><div id="nutritionOverviewMeals"></div></article>
  </div>
  <div class="nutrition-overview-columns nutrition-overview-secondary">
-  <div class="nutrition-overview-plan-combined"> <section class="card nutrition-planning-intro nutrition-overview-plan-card" id="nutritionPlanningIntro">
+  <section class="card nutrition-planning-intro nutrition-overview-plan-card nutrition-overview-plan-combined" id="nutritionPlanningIntro">
   <div class="nutrition-overview-plan-copy">
    <div class="eyebrow">METAS E PLANEJAMENTO NUTRICIONAL</div>
    <h3>Metas que orientam seu diário</h3>
@@ -1898,7 +1898,8 @@ body.forma-area-picker-open{overflow:hidden}
   </div>
   <div class="nutrition-overview-targets" id="nutritionCurrentTargetsSummary" aria-live="polite"></div>
   <div class="nutrition-planning-actions"><button class="btn" id="foodGoalsBtn" type="button" onclick="openFoodGoals()"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>Gerenciar metas e planos</button></div>
- </section><div id="nutritionOverviewPlanStatus" aria-live="polite"></div><button class="btn secondary nutrition-overview-action" type="button" onclick="showTab('nutritionPlanning')">Abrir planejamento</button></div>
+  <div id="nutritionOverviewPlanStatus" aria-live="polite"></div><button class="btn secondary nutrition-overview-action" type="button" onclick="showTab('nutritionPlanning')">Abrir planejamento</button>
+ </section>
   <article class="card"><div class="nutrition-overview-section-title"><span class="nutrition-overview-icon"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17M7 15l4-4 3 2 6-7"/></svg></span><div><h3>Consistência recente</h3><p class="sub">Dias com registros nos últimos sete dias.</p></div></div><div id="nutritionOverviewWeek"></div><button class="btn secondary nutrition-overview-action" type="button" onclick="showTab('progresso')">Ver evolução nutricional</button></article>
  </div>
  <div class="nutrition-overview-quick">
@@ -5466,7 +5467,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
 .food-goal-manual{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--card)}
 .food-goal-manual .custom-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .food-goal-manual .custom-actions{margin-top:14px}
-.nutrition-overview-plan-combined{grid-column:1/-1;min-width:0;display:grid;gap:12px}.nutrition-overview-plan-combined .nutrition-overview-plan-card{margin:0}.nutrition-overview-plan-combined #nutritionOverviewPlanStatus{min-width:0}.nutrition-overview-meal-plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.nutrition-overview-meal-plan-card{min-width:0;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#101b2b)}.nutrition-overview-meal-plan-card>strong{display:block;font-size:13px;line-height:1.35;overflow-wrap:anywhere;margin-bottom:5px}.nutrition-overview-meal-plan-card .meal-plan-kcal{font-size:16px;font-weight:750;line-height:1.3}.nutrition-overview-meal-plan-card .meal-plan-macros{display:block;margin-top:4px;font-size:11px;line-height:1.45;color:var(--muted)}.nutrition-overview-plan-combined>.nutrition-overview-action{justify-self:start;margin:0}.nutrition-overview-plan-combined .nutrition-overview-empty{margin:0}.nutrition-overview-plan-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;margin:0 0 16px}
+.nutrition-overview-plan-combined{grid-column:1/-1;min-width:0;display:grid;grid-template-columns:minmax(0,1fr);align-items:stretch;gap:12px;margin:0}.nutrition-overview-plan-combined #nutritionOverviewPlanStatus{min-width:0}.nutrition-overview-plan-combined>.nutrition-overview-action{justify-self:stretch;width:100%;margin:0}.nutrition-overview-meal-plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.nutrition-overview-meal-plan-card{min-width:0;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#101b2b)}.nutrition-overview-meal-plan-card>strong{display:block;font-size:13px;line-height:1.35;overflow-wrap:anywhere;margin-bottom:5px}.nutrition-overview-meal-plan-card .meal-plan-kcal{font-size:16px;font-weight:750;line-height:1.3}.nutrition-overview-meal-plan-card .meal-plan-macros{display:block;margin-top:4px;font-size:11px;line-height:1.45;color:var(--muted)}.nutrition-overview-plan-combined .nutrition-overview-empty{margin:0}.nutrition-overview-plan-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;margin:0 0 16px}
 .nutrition-overview-plan-copy{min-width:0}
 .nutrition-overview-plan-copy h3{margin:4px 0}
 .nutrition-overview-plan-copy .sub{margin:0}
