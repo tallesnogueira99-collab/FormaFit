@@ -656,6 +656,156 @@ input[type=checkbox],input[type=radio],progress { accent-color:var(--lime); }
 @media(max-width:760px){.nutrition-overview-primary,.nutrition-overview-columns{grid-template-columns:1fr}.nutrition-planning-intro{align-items:flex-start;flex-direction:column}.nutrition-planning-actions{width:100%}.nutrition-planning-actions button{flex:1;justify-content:center}}
 @media(max-width:520px){.nutrition-overview-hero{align-items:flex-start;flex-direction:column;gap:12px}.nutrition-overview-date{width:100%}.nutrition-overview-primary{gap:10px}.nutrition-energy-card,.nutrition-macros-card{padding:14px}.nutrition-overview-macros{gap:6px}.nutrition-overview-macro{padding:8px}.nutrition-overview-macro-top strong{font-size:14px}.nutrition-overview-macro-top span{font-size:10px}.nutrition-overview-next-card #nutritionOverviewNextMeal .today-food-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.nutrition-overview-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.nutrition-overview-quick button{min-height:104px}.nutrition-overview-columns>.card{padding:14px}}
 
+
+/* FORMA v125 — acabamento visual dos quadros de refeição e ações */
+#nutritionOverviewNextMeal,
+#nextMealRecommendation{
+  display:grid;
+  gap:12px;
+  min-width:0;
+  line-height:1.55;
+  overflow-wrap:anywhere;
+}
+#nutritionOverviewNextMeal h3,
+#nextMealRecommendation h3{
+  margin:0;
+  font-size:14px;
+  line-height:1.35;
+  letter-spacing:-.15px;
+  overflow-wrap:anywhere;
+}
+#nutritionOverviewNextMeal .food-note,
+#nextMealRecommendation .food-note{
+  margin:0;
+  line-height:1.55;
+  overflow-wrap:anywhere;
+}
+#nutritionOverviewNextMeal .today-food-summary,
+#nextMealRecommendation .today-food-summary{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px!important;
+  margin:0!important;
+}
+#nutritionOverviewNextMeal .food-stat,
+#nextMealRecommendation .food-stat{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:5px;
+  min-width:0;
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel2);
+}
+#nutritionOverviewNextMeal .food-stat span,
+#nextMealRecommendation .food-stat span{
+  display:block;
+  line-height:1.35;
+}
+#nutritionOverviewNextMeal .food-stat strong,
+#nextMealRecommendation .food-stat strong{
+  display:block;
+  margin:0;
+  line-height:1.2;
+  overflow-wrap:anywhere;
+}
+#nutritionOverviewNextMeal .food-stat small,
+#nextMealRecommendation .food-stat small{
+  display:block;
+  margin:0;
+  font-size:10px;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+#nutritionOverviewNextMeal>p:last-child,
+#nextMealRecommendation>p:last-child{
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel2);
+  font-size:11px!important;
+  line-height:1.55;
+  overflow-wrap:anywhere;
+}
+#dieta .nutrition-schedule-meal{
+  min-width:0;
+  padding:16px;
+  border-radius:16px;
+}
+#dieta .nutrition-schedule-meal-head{
+  gap:10px;
+  align-items:center;
+}
+#dieta .nutrition-schedule-meal-head h3,
+#dieta .nutrition-schedule-meal-head strong{
+  line-height:1.35;
+  overflow-wrap:anywhere;
+}
+#dieta .nutrition-schedule-card-footer{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:10px;
+  padding-top:11px;
+  border-top:1px solid var(--line);
+}
+#dieta .nutrition-schedule-card-footer .food-note{
+  font-size:11px;
+  line-height:1.5;
+}
+#dieta .nutrition-schedule-card-footer button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-width:0;
+  min-height:42px;
+  padding:10px 14px;
+  white-space:normal;
+  text-align:center;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+.food-add-action{
+  display:flex;
+  align-items:stretch;
+  gap:10px!important;
+  flex-wrap:wrap;
+}
+.food-add-action>.btn{
+  flex:1 1 180px;
+  min-width:0;
+  min-height:42px;
+  white-space:normal;
+  text-align:center;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+#mealTestAdd,#mealTestClear{
+  margin:0;
+}
+@media(max-width:520px){
+  #nutritionOverviewNextMeal .today-food-summary,
+  #nextMealRecommendation .today-food-summary{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px!important;
+  }
+  #nutritionOverviewNextMeal .food-stat,
+  #nextMealRecommendation .food-stat{
+    padding:10px;
+  }
+  #dieta .nutrition-schedule-card-footer{
+    gap:9px;
+  }
+  .food-add-action>.btn{
+    flex:1 1 100%;
+    width:100%;
+  }
+}
+
 </style>
 
 <style>
