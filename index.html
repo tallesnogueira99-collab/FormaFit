@@ -3039,7 +3039,7 @@ function setupFoodAreaNavToDiary(){const diary=document.querySelector('[data-foo
 function setFoodLibraryView(view){foodLibraryView=view==='meals'?'meals':'foods';const foods=$('foodLibraryFoodsPanel'),meals=$('foodLibraryMealsPanel');if(foods)foods.hidden=foodLibraryView!=='foods';if(meals)meals.hidden=foodLibraryView!=='meals';document.querySelectorAll('[data-food-library-view]').forEach(b=>{const active=b.dataset.foodLibraryView===foodLibraryView;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});if(foodLibraryView==='meals')renderFoodLibraryMeals();}
 function setupFoodAreaNav(){
  const buttons=[...document.querySelectorAll('[data-food-area]')];
- const groups={diary:['.food-day-controls','.food-kcal-card','#foodDiaryMacros','.food-week-card','#foodEntryChoice','#foodAddCard','#foodDiaryCard','#foodPlanningDetails'],schedule:['#nutritionPlanningIntro','#nutritionSchedulePanel'],library:['#foodLibrary','#mealTester'],tester:['#mealTester']};
+ const groups={diary:['.food-day-controls','.food-kcal-card','#foodDiaryMacros','.food-week-card','#foodEntryChoice','#foodAddCard','#foodDiaryCard','#foodPlanningDetails'],schedule:['#nutritionSchedulePanel'],library:['#foodLibrary','#mealTester'],tester:['#mealTester']};
  const all=[...new Set(Object.values(groups).flat())];
  function show(area){
   const selected=groups[area]?area:'diary';
