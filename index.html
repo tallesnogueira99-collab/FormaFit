@@ -5978,7 +5978,6 @@ body.forma-files-mode .top-tabs{display:none!important}
    const choices=kind==='exportar'?[
     ['foods','Alimentos','Biblioteca de alimentos personalizados','◉'],
     ['meals','Refeições salvas','Preparações e ingredientes','♨'],
-    ['all','Alimentos + refeições','Arquivo completo da biblioteca','▦'],
     ['exercises','Exercícios','Biblioteca de exercícios personalizados','⌘'],
     ['workout','Plano de treino','Ficha de musculação ativa','↗'],
     ['nutrition','Plano nutricional','Plano importado no perfil','≋'],
@@ -6104,10 +6103,37 @@ body.forma-files-mode .top-tabs{display:none!important}
    return openStructuredPdf('Plano de treino',plan.objective||'Ficha ativa · PDF',summary,plan);
   }
   if(kind==='nutrition'){
-   const p=typeof state!=='undefined'?state.nutritionPlanImported:null;
-   if(!p){showStatus('Não há plano nutricional importado neste perfil.',true);return false;}
-   const summary='<section class="section"><h2>'+escapeHtml(p.name||'Plano nutricional')+'</h2><p class="muted">'+escapeHtml(p.objective||'')+'</p>'+((p.meals||[]).map((m,i)=>'<section class="section"><h3>'+(i+1)+'. '+escapeHtml(m.name)+'</h3>'+table(['Alimento','Porção','kcal','Proteína','Carboidratos','Gorduras'],(m.items||[]).map(x=>[x.name,x.amount,x.kcal,x.protein,x.carbs,x.fat]))+'</section>').join(''))+'</section>';
-   return openStructuredPdf(p.name||'Plano nutricional','Plano importado · PDF',summary,p);
+   const imported=typeof state!=='undefined'?state.nutritionPlanImported:null;
+   const schedule=typeof state!=='undefined'?state.nutritionSchedule:null;
+   const generated=typeof state!=='undefined'?state.autoFoodPlan:null;
+   const targets=typeof state!=='undefined'?(state.targets||{}):{};
+   const profileName=$('profileNameLabel')?.textContent||'Perfil atual';
+   const sourcePlan=(imported&&Array.isArray(imported.meals)&&imported.meals.length)?{kind:'imported',value:imported}:
+    (schedule&&Array.isArray(schedule.meals)&&schedule.meals.length)?{kind:'schedule',value:schedule}:
+    (generated&&Array.isArray(generated.meals)&&generated.meals.length)?{kind:'generated',value:generated}:null;
+   if(!sourcePlan){showStatus('Este perfil ainda não possui um plano nutricional ou cronograma com refeições salvas para exportar.',true);return false;}
+   const foodFor=key=>(typeof FOOD_DB!=='undefined'&&FOOD_DB?.[key])||state.customFoods?.[key]||null;
+   const fmt=v=>v===null||v===undefined||v===''?'—':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:1});
+   const source=sourcePlan.kind,p=sourcePlan.value;
+   const meals=(p.meals||[]).map((m,i)=>{
+    const items=(m.items||[]).map(item=>{
+     const snap=item.snapshot||item.foodSnapshot||foodFor(item.key||item.foodKey)||{};
+     const amount=Number(item.amount??item.g??item.grams??0);
+     const basis=Number(snap.basisAmount||snap.basis_amount||100)||100;
+     const macro=(a,b)=>{const v=item[a]??item[{k:'kcal',p:'protein',c:'carbs',f:'fat'}[b]]??snap[b]??snap[a];return v!==undefined&&v!==null&&v!==''?Number(v)*(source==='schedule'||source==='generated'?amount/basis:1):null;};
+     const name=item.name||item.foodName||snap.name||item.key||'Alimento';
+     const unit=item.unit||snap.unit||'g';
+     const portion=item.amount??(item.g!==undefined?item.g+' '+unit:item.grams!==undefined?item.grams+' '+unit:'');
+     return {name,amount:String(portion),kcal:macro('k','kcal'),protein:macro('p','protein'),carbs:macro('c','carbs'),fat:macro('f','fat'),unit};
+    });
+    const sum=key=>{const vals=items.map(x=>x[key]).filter(v=>Number.isFinite(v));return vals.length?vals.reduce((a,b)=>a+b,0):null;};
+    return {name:m.name||'Refeição '+(i+1),time:m.time||'',items,kcal:Number(m.kcal??sum('kcal')??0),protein:Number(m.protein??sum('protein')??0),carbs:Number(m.carbs??sum('carbs')??0),fat:Number(m.fat??sum('fat')??0),notes:m.notes||''};
+   });
+   const t=p.totals||p.target||p.goal||{};
+   const totals={kcal:Number(t.kcal??t.k??targets.kcal??meals.reduce((n,m)=>n+m.kcal,0)),protein:Number(t.protein??t.p??targets.protein??meals.reduce((n,m)=>n+m.protein,0)),carbs:Number(t.carbs??t.c??targets.carbs??meals.reduce((n,m)=>n+m.carbs,0)),fat:Number(t.fat??t.f??targets.fat??meals.reduce((n,m)=>n+m.fat,0))};
+   const payload={format:'FORMA_NUTRITION_PLAN',version:1,source:source==='imported'?'imported':'created_in_forma',plan:{name:p.name|| (source==='generated'?'Cardápio sugerido pelo FORMA':'Plano nutricional atual'),objective:p.objective||state.planObjective||'Planejamento nutricional do perfil',totals,meals}};
+   const summary='<div class="stats"><div class="stat"><span>Energia diária</span><strong>'+fmt(totals.kcal)+' kcal</strong></div><div class="stat"><span>Proteínas</span><strong>'+fmt(totals.protein)+' g</strong></div><div class="stat"><span>Carboidratos</span><strong>'+fmt(totals.carbs)+' g</strong></div><div class="stat"><span>Gorduras</span><strong>'+fmt(totals.fat)+' g</strong></div></div><section class="section"><h2>'+escapeHtml(payload.plan.name)+'</h2><p class="muted">Perfil: '+escapeHtml(profileName)+' · Origem: '+(source==='imported'?'Plano importado':'Planejamento criado no FORMA')+'</p><p class="muted">Objetivo: '+escapeHtml(payload.plan.objective)+'</p></section>'+meals.map((m,i)=>'<section class="section"><h2>'+(i+1)+'. '+escapeHtml(m.name)+(m.time?' · '+escapeHtml(m.time):'')+'</h2>'+table(['Alimento','Porção','kcal','Proteína','Carboidratos','Gorduras'],m.items.map(x=>[x.name,x.amount,fmt(x.kcal),fmt(x.protein),fmt(x.carbs),fmt(x.fat)]))+'<p class="muted">Total da refeição: '+fmt(m.kcal)+' kcal · P '+fmt(m.protein)+' g · C '+fmt(m.carbs)+' g · G '+fmt(m.fat)+' g</p>'+(m.notes?'<p>'+escapeHtml(m.notes)+'</p>':'')+'</section>').join('');
+   return openStructuredPdf(payload.plan.name,'Plano nutricional atual · '+meals.length+' refeições · PDF',summary,payload);
   }
   if(kind==='schedule'){
    const p=typeof state!=='undefined'?state.nutritionSchedule:null;
