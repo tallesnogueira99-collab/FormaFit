@@ -1764,7 +1764,7 @@ body.forma-area-picker-open{overflow:hidden}
  <div class="card bio-import-card bio-import-compact" id="overviewBioImport" style="margin-top:18px">
   <div class="bio-import-heading"><div class="bio-import-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.75h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.75a1 1 0 0 1 1-1Z"/><path d="M14 4v4h4M8.5 13h7M8.5 16.5h7"/></svg></div><div class="bio-import-title"><span class="eyebrow">SEUS DADOS CORPORAIS</span><h3>Importar bioimpedância</h3><p class="sub">Envie o laudo e confira os resultados antes de salvar.</p></div><span class="bio-file-types">SOMENTE PDF</span></div>
   <div class="bio-import-compact-form">
-   <label class="bio-dropzone" for="overviewBioFile"><span class="bio-dropzone-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-3"/></svg></span><span class="bio-dropzone-copy"><strong>Escolher arquivo do exame</strong><small id="overviewBioFileLabel">Toque para selecionar um PDF (até 15 MB)</small></span><span class="bio-dropzone-cta">Selecionar</span><input id="overviewBioFile" type="file" accept=".pdf,.txt,.csv,application/pdf,text/plain,text/csv"></label>
+   <label class="bio-dropzone" for="overviewBioFile"><span class="bio-dropzone-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-3"/></svg></span><span class="bio-dropzone-copy"><strong>Escolher arquivo do exame</strong><small id="overviewBioFileLabel">Toque para selecionar um PDF (até 15 MB)</small></span><span class="bio-dropzone-cta">Selecionar</span><input id="overviewBioFile" type="file" accept=".pdf,application/pdf"></label>
    <div class="bio-import-date-row"><label for="overviewBioDate">Data da medição</label><input id="overviewBioDate" type="date"></div>
   </div>
   <details class="bio-import-help"><summary><span aria-hidden="true">ⓘ</span> Quais dados podem ser reconhecidos?</summary><p>O FORMA procura peso, gordura corporal, massa muscular, água e cintura quando aparecem como texto no laudo. PDFs escaneados como imagem podem não ser reconhecidos automaticamente. Confira os valores antes de salvar.</p></details>
@@ -1949,7 +1949,7 @@ body.forma-area-picker-open{overflow:hidden}
  <section class="nutrition-builder-panel" id="nutritionSchedulePanel" hidden>
   <div class="nutrition-builder-intro"><div><div class="eyebrow">PLANEJAMENTO DO DIA</div><h3>Meu cronograma alimentar</h3><p class="sub">Edite horários, refeições e porções. Os totais são recalculados a partir dos alimentos da biblioteca; o cronograma não altera o diário até você registrar o consumo.</p></div><span class="nutrition-builder-mark" aria-hidden="true">◷</span></div>
   <div id="nutritionScheduleSummary" class="nutrition-schedule-summary"></div>
-  <div class="nutrition-schedule-toolbar"><div class="nutrition-schedule-primary-actions"><button class="btn secondary" id="nutritionScheduleRegenerate" type="button">↻ Atualizar sugestões</button><button class="btn ghost" id="nutritionScheduleAddMeal" type="button">＋ Refeição</button></div><details class="nutrition-file-tools"><summary><span aria-hidden="true">⇅</span> Arquivos</summary><div class="nutrition-file-tools-menu"><div><strong>Exportar cronograma</strong><button type="button" class="nutrition-file-action" id="nutritionScheduleExport">JSON completo</button><button type="button" class="nutrition-file-action" id="nutritionScheduleXlsx">Planilha Excel</button><button type="button" class="nutrition-file-action" id="nutritionScheduleCsv">CSV para planilhas</button></div><div><strong>Importar ou criar</strong><button type="button" class="nutrition-file-action" id="nutritionScheduleImportBtn">Importar cronograma</button><button type="button" class="nutrition-file-action" id="nutritionScheduleTemplate">Baixar modelo CSV</button></div></div></details><input id="nutritionScheduleFile" type="file" accept=".json,.csv,application/json,text/csv" hidden></div>
+  <div class="nutrition-schedule-toolbar"><div class="nutrition-schedule-primary-actions"><button class="btn secondary" id="nutritionScheduleRegenerate" type="button">↻ Atualizar sugestões</button><button class="btn ghost" id="nutritionScheduleAddMeal" type="button">＋ Refeição</button></div><details class="nutrition-file-tools"><summary><span aria-hidden="true">⇅</span> Arquivos</summary><div class="nutrition-file-tools-menu"><div><strong>Exportar cronograma</strong><button type="button" class="nutrition-file-action" id="nutritionScheduleExport">JSON completo</button><button type="button" class="nutrition-file-action" id="nutritionScheduleXlsx">Planilha Excel</button><button type="button" class="nutrition-file-action" id="nutritionScheduleCsv">CSV para planilhas</button></div><div><strong>Importar ou criar</strong><button type="button" class="nutrition-file-action" id="nutritionScheduleImportBtn">Importar cronograma</button><button type="button" class="nutrition-file-action" id="nutritionScheduleTemplate">Baixar modelo CSV</button></div></div></details><input id="nutritionScheduleFile" type="file" accept=".pdf,application/pdf" hidden></div>
   <div id="nutritionScheduleStatus" class="food-note" role="status" aria-live="polite"></div><div id="nutritionScheduleMeals" class="nutrition-schedule-meals"></div>
   <p class="food-note">A geração automática utiliza a seleção de alimentos de referência já existente no FORMA e deve ser revisada. Valores variam conforme marca, preparo e base de dados. Na revisão do cardápio, considere as recomendações do <a href="https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares" target="_blank" rel="noopener">Guia Alimentar para a População Brasileira</a>, priorizando alimentos in natura e minimamente processados. Arquivos CSV abrem em planilhas; o formato JSON preserva a estrutura completa e as referências dos alimentos.</p>
  </section>
@@ -3787,7 +3787,7 @@ function openUpdate(){closeTabMenu();$("uDate").value=dateKey();const last=state
 function closeUpdate(){$("updateModal").classList.remove("open")}
 $("updateDataBtn").addEventListener("click",openUpdate);$("closeUpdate").addEventListener("click",closeUpdate);$("cancelUpdate").addEventListener("click",closeUpdate);$("updateModal").addEventListener("click",e=>{if(e.target.id==="updateModal")closeUpdate()});
 async function loadPdfJs(){if(window.pdfjsLib)return window.pdfjsLib;await new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc)});if(window.pdfjsLib)window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";return window.pdfjsLib;}
-async function readFormaImportPdfText(file){if(!file||(!/\.pdf$/i.test(file.name)&&file.type!=="application/pdf"))throw new Error("O FORMA aceita somente arquivos PDF para importação.");if(file.size>15*1024*1024)throw new Error("O PDF ultrapassa o limite de 15 MB.");const lib=await loadPdfJs();if(!lib)throw new Error("O leitor de PDF não foi carregado. Verifique a conexão e tente novamente.");const pdf=await lib.getDocument({data:await file.arrayBuffer()}).promise;const pages=[];for(let n=1;n<=Math.min(pdf.numPages,100);n++){const page=await pdf.getPage(n),content=await page.getTextContent(),rows=new Map();for(const item of content.items){if(!item.str||!item.str.trim())continue;const y=Math.round((item.transform?.[5]||0)/2)*2;const line=rows.get(y)||[];line.push({x:item.transform?.[4]||0,text:item.str});rows.set(y,line);}const ordered=[...rows.entries()].sort((a,b)=>b[0]-a[0]).map(([,items])=>items.sort((a,b)=>a.x-b.x).map(x=>x.text).join(" "));pages.push(ordered.join("\n"));}const text=pages.join("\n\n").trim();if(!text)throw new Error("O PDF não contém texto selecionável. PDFs escaneados como imagem precisam de OCR antes da importação.");return text;}
+async function readFormaImportPdfText(file){if(!file||(!/\.pdf$/i.test(file.name)&&file.type!=="application/pdf"))throw new Error("O FORMA aceita somente arquivos PDF para importação.");if(file.size>15*1024*1024)throw new Error("O PDF ultrapassa o limite de 15 MB.");const lib=await loadPdfJs();if(!lib)throw new Error("O leitor de PDF não foi carregado. Verifique a conexão e tente novamente.");const pdf=await lib.getDocument({data:await file.arrayBuffer()}).promise;const pages=[];for(let n=1;n<=Math.min(pdf.numPages,1000);n++){const page=await pdf.getPage(n),content=await page.getTextContent(),rows=new Map();for(const item of content.items){if(!item.str||!item.str.trim())continue;const y=Math.round((item.transform?.[5]||0)/2)*2;const line=rows.get(y)||[];line.push({x:item.transform?.[4]||0,text:item.str});rows.set(y,line);}const ordered=[...rows.entries()].sort((a,b)=>b[0]-a[0]).map(([,items])=>items.sort((a,b)=>a.x-b.x).map(x=>x.text).join(" "));pages.push(ordered.join("\n"));}const extracted=pages.join("\n\n").trim();if(!extracted)throw new Error("O PDF não contém texto selecionável. PDFs escaneados como imagem precisam de OCR antes da importação.");const b0=extracted.indexOf("FORMA_BACKUP_BASE64_BEGIN"),b1=extracted.indexOf("FORMA_BACKUP_BASE64_END");if(b0>=0&&b1>b0){const encoded=extracted.slice(b0+"FORMA_BACKUP_BASE64_BEGIN".length,b1).replace(/\s+/g,"");try{const binary=atob(encoded),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));return new TextDecoder().decode(bytes);}catch(error){throw new Error("O bloco de backup do PDF está corrompido. Gere um novo backup completo.");}}const firstObject=extracted.indexOf("{"),lastObject=extracted.lastIndexOf("}");if(firstObject>=0&&lastObject>firstObject){const candidate=extracted.slice(firstObject,lastObject+1);try{JSON.parse(candidate);return candidate;}catch(error){}}return extracted;}
 
 function applyExtractedBioText(txt){const notes=$("uNotes");notes.value=(notes.value+"\n"+txt.slice(0,7000)).trim();const find=(patterns)=>{for(const pat of patterns){const m=txt.match(pat);if(m){const v=Number(m[1].replace(/\./g,"").replace(",","."));if(Number.isFinite(v))return v}}return null};const fat=find([/(?:gordura corporal|percentual de gordura|body fat)[^\d]{0,30}(\d{1,2}(?:[.,]\d+)?)/i,/(\d{1,2}(?:[.,]\d+)?)\s*%[^\n]{0,25}(?:gordura|body fat)/i]);const muscle=find([/(?:massa muscular|muscle mass)[^\d]{0,30}(\d{1,3}(?:[.,]\d+)?)/i]);const water=find([/(?:água corporal|agua corporal|body water)[^\d]{0,30}(\d{1,2}(?:[.,]\d+)?)/i]);if(fat&&fat>=2&&fat<=70&&!$("uFat").value)$("uFat").value=fat;if(muscle&&muscle>=1&&muscle<=150&&!$("uMuscle").value)$("uMuscle").value=muscle;if(water&&water>=10&&water<=90&&!$("uWater").value)$("uWater").value=water;}
 $("bioFile").addEventListener("change",async()=>{const f=$("bioFile").files[0];if(!f)return;const out=$("bioFileInfo");out.style.display="block";out.textContent="Arquivo selecionado: "+f.name+" ("+Math.round(f.size/1024)+" KB).";try{if(/\.(txt|csv)$/i.test(f.name)){const txt=await f.text();applyExtractedBioText(txt);out.textContent+="\n\nTexto lido. Confira os valores preenchidos antes de salvar.";}else if(/\.pdf$/i.test(f.name)){out.textContent+="\nTentando extrair o texto do PDF…";const lib=await loadPdfJs(),buf=await f.arrayBuffer(),pdf=await lib.getDocument({data:buf}).promise;let txt="";for(let i=1;i<=Math.min(pdf.numPages,20);i++){const page=await pdf.getPage(i),content=await page.getTextContent();txt+=content.items.map(x=>x.str).join(" ")+"\n";}if(txt.trim()){applyExtractedBioText(txt);out.textContent="Texto extraído de "+pdf.numPages+" página(s). Confira os campos sugeridos e as observações antes de salvar. PDFs escaneados sem camada de texto precisam de OCR.";}else out.textContent="Não encontrei texto selecionável no PDF. Se for um escaneamento, preencha os campos manualmente.";}else{out.textContent+="\nEste formato não permite extração automática de texto neste app.";}}catch(err){out.textContent+="\nNão consegui extrair o PDF agora (a leitura requer internet para carregar o leitor de PDF). Copie os resultados para as observações ou preencha os campos manualmente.";}});
@@ -3832,7 +3832,7 @@ document.querySelectorAll("[data-density]").forEach(b=>b.addEventListener("click
 $("saveCustom").addEventListener("click",()=>{save();applyAppearanceSettings();closeCustom()});
 $("resetCustom").addEventListener("click",()=>{if(!confirm("Restaurar as cores e o visual padrão? Seus treinos, refeições, metas e registros serão mantidos."))return;state.accent="#ff555d";state.accent2="#d93440";state.palette="red";state.cardRadius="soft";state.density="comfortable";save();applyAppearanceSettings();syncAppearanceChoices()});
 function applyCustomAppearance(){renderProfiles();applyAppearanceSettings();$("goalWeight").textContent=state.goalWeight==null?"—":state.goalWeight;$("kcalTargetStat").textContent=state.targets.kcal==null?"—":Number(state.targets.kcal).toLocaleString("pt-BR");$("proteinTargetStat").textContent=state.targets.protein==null?"—":state.targets.protein+" g";if($("dietProteinTarget"))$("dietProteinTarget").textContent=state.targets.protein==null?"—":state.targets.protein+" g";if($("dietCarbsTarget"))$("dietCarbsTarget").textContent=state.targets.carbs==null?"—":state.targets.carbs+" g";if($("dietFatTarget"))$("dietFatTarget").textContent=state.targets.fat==null?"—":state.targets.fat+" g";if(state.planTitle){$("dietHeading").textContent=state.planTitle;document.querySelector(".hero-main .eyebrow").textContent=state.planTitle}else{$("dietHeading").textContent="Alimentação prática";document.querySelector(".hero-main .eyebrow").textContent="Projeto físico atlético"}}
-function exportFormaData(){try{if(!save())throw new Error("Não foi possível salvar os dados locais antes da exportação.");for(const [id,profile] of Object.entries(profiles)){if(profile?.data)profile.data=migrateFoodStateObject(profile.data);}if(profiles[activeProfileId])profiles[activeProfileId].data=JSON.parse(JSON.stringify(state));localStorage.setItem(PROFILE_STORE,JSON.stringify(profiles));const backup={format:"FORMA-backup",version:3,exportedAt:new Date().toISOString(),activeProfileId,profiles};const json=JSON.stringify(backup,null,2);const content='<section class="section"><h2>Dados estruturados do backup</h2><p class="muted">Não edite este conteúdo. Para restaurar, importe este PDF no FORMA. Mantenha todas as páginas do documento.</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font:6.5px/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;color:#e8edf6;background:#0b1220;padding:12px;border:1px solid #2a3c58;border-radius:8px">'+esc(json)+'</pre></section>';if(!openFormaPrintDocument("Backup completo do FORMA","Cópia de segurança em PDF · "+new Date().toLocaleString("pt-BR"),content,$("settingsExportStatus")))throw new Error("Não foi possível abrir a impressão. Permita pop-ups e tente novamente.");}catch(err){console.error("FORMA export",err);alert("Não foi possível preparar o backup em PDF: "+(err.message||"erro inesperado"));}}
+function exportFormaData(){try{if(!save())throw new Error("Não foi possível salvar os dados locais antes da exportação.");for(const [id,profile] of Object.entries(profiles)){if(profile?.data)profile.data=migrateFoodStateObject(profile.data);}if(profiles[activeProfileId])profiles[activeProfileId].data=JSON.parse(JSON.stringify(state));localStorage.setItem(PROFILE_STORE,JSON.stringify(profiles));const backup={format:"FORMA-backup",version:3,exportedAt:new Date().toISOString(),activeProfileId,profiles};const json=JSON.stringify(backup,null,2),bytes=new TextEncoder().encode(json);let binary="";for(let i=0;i<bytes.length;i++)binary+=String.fromCharCode(bytes[i]);const encoded=btoa(binary),chunks=encoded.match(/.{1,100}/g)||[];const content='<section class="section"><h2>Backup completo do FORMA</h2><p class="muted">Este documento contém todos os perfis e dados incluídos na cópia de segurança. Para restaurar, importe este PDF pela Central de arquivos. Não remova nem edite o bloco técnico.</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-all;font:5px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;color:#e8edf6;background:#0b1220;padding:12px;border:1px solid #2a3c58;border-radius:8px">FORMA_BACKUP_BASE64_BEGIN\n'+esc(chunks.join("\n"))+'\nFORMA_BACKUP_BASE64_END</pre></section>';if(!openFormaPrintDocument("Backup completo do FORMA","Cópia de segurança em PDF · "+new Date().toLocaleString("pt-BR"),content,$("settingsExportStatus")))throw new Error("Não foi possível abrir a impressão. Permita pop-ups e tente novamente.");}catch(err){console.error("FORMA export",err);alert("Não foi possível preparar o backup em PDF: "+(err.message||"erro inesperado"));}}
 $("todayLabel").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"});
 let installPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;$("installAppBtn").textContent="＋ Instalar aplicativo";});
@@ -3857,12 +3857,9 @@ if(toolsMenuElement){
    closeTabMenu();
    showTab("configuracoes");
   }else if(action==="exportMenuBtn"){
-   closeTabMenu();await exportFormaData();
-  }else if(action==="importMenuBtn"){
-   closeTabMenu();$("importBackupFile").click();
-  }else if(action==="importFoodsMenuBtn"){closeTabMenu();$("importFoodsFile").click();
-  }else if(action==="importMealsMenuBtn"){closeTabMenu();$("importMealsFile").click();
-  }else if(action==="importExercisesMenuBtn"){closeTabMenu();$("importExercisesFile").click();
+   closeTabMenu();showTab("configuracoes");window.formaOpenFilesModal?.("exportar");
+  }else if(action==="importMenuBtn"||action==="importFoodsMenuBtn"||action==="importMealsMenuBtn"||action==="importExercisesMenuBtn"){
+   closeTabMenu();showTab("configuracoes");window.formaOpenUniversalImport?.();
   }else if(action==="installAppBtn"){
    closeTabMenu();
    if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;}
@@ -4251,7 +4248,7 @@ function initNutritionImport(){
  renderNutritionImportedPlan();
 }
 
-function initWorkoutImport(){$("chooseWorkoutImport").addEventListener("click",()=>{if(state.sessionActive){alert("Finalize a sessão em andamento antes de importar outro plano.");return;}$("workoutImportFile").click();});$("workoutImportFile").addEventListener("change",async()=>{const file=$("workoutImportFile").files?.[0];if(!file)return;$("workoutImportPreview").hidden=true;pendingWorkoutImport=null;if(file.size>1024*1024){workoutImportError("O PDF ultrapassa o limite de 15 MB. Tente um arquivo menor.");$("workoutImportFile").value="";return;}try{const content=await readFormaImportPdfText(file);let parsed;if(/^\s*[\[{]/.test(content)){parsed=normalizeWorkoutImport(JSON.parse(content));}else{parsed=parseReadableWorkoutPlan(content);}showWorkoutImportPreview(parsed,file.name);}catch(error){workoutImportError(error?.message||"Não foi possível ler este plano. Confira o modelo e os campos obrigatórios.");}finally{$("workoutImportFile").value="";}});$("applyWorkoutImport").addEventListener("click",importWorkoutPlan);$("cancelWorkoutImport").addEventListener("click",()=>{closeWorkoutImportPreview();workoutImportInfo("Importação cancelada. O plano atual não foi alterado.");});$("downloadWorkoutTemplate").addEventListener("click",()=>{
+function initWorkoutImport(){$("chooseWorkoutImport").addEventListener("click",()=>{if(state.sessionActive){alert("Finalize a sessão em andamento antes de importar outro plano.");return;}$("workoutImportFile").click();});$("workoutImportFile").addEventListener("change",async()=>{const file=$("workoutImportFile").files?.[0];if(!file)return;$("workoutImportPreview").hidden=true;pendingWorkoutImport=null;if(file.size>15*1024*1024){workoutImportError("O PDF ultrapassa o limite de 15 MB. Tente um arquivo menor.");$("workoutImportFile").value="";return;}try{const content=await readFormaImportPdfText(file);let parsed;if(/^\s*[\[{]/.test(content)){parsed=normalizeWorkoutImport(JSON.parse(content));}else{parsed=parseReadableWorkoutPlan(content);}showWorkoutImportPreview(parsed,file.name);}catch(error){workoutImportError(error?.message||"Não foi possível ler este plano. Confira o modelo e os campos obrigatórios.");}finally{$("workoutImportFile").value="";}});$("applyWorkoutImport").addEventListener("click",importWorkoutPlan);$("cancelWorkoutImport").addEventListener("click",()=>{closeWorkoutImportPreview();workoutImportInfo("Importação cancelada. O plano atual não foi alterado.");});$("downloadWorkoutTemplate").addEventListener("click",()=>{
   const readable=`# Plano: Exemplo — plano personalizado
 Objetivo: Hipertrofia e condicionamento
 
@@ -4608,11 +4605,11 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
   const waist=findVal(txt,[/(?:circunfer[eê]ncia\s+da\s+cintura|cintura|waist)\s*[:=\-]?\s*(\d{2,3}(?:[.,]\d{1,2})?)\s*(?:cm)?/i]);
   return {weight:(weight>=30&&weight<=300)?weight:null,fat:(fat>=2&&fat<=70)?fat:null,muscle:(muscle>=1&&muscle<=150)?muscle:null,water:(water>=10&&water<=90)?water:null,waist:(waist>=30&&waist<=250)?waist:null,raw:txt.slice(0,7000)};
  }
- async async function extract(file){return readFormaImportPdfText(file);}
+ async function extract(file){return readFormaImportPdfText(file);}
  fileInput.addEventListener('change',async()=>{pending=null;applyBtn.disabled=true;const file=fileInput.files&&fileInput.files[0];const fileLabel=document.getElementById('overviewBioFileLabel');if(fileLabel)fileLabel.textContent=file?file.name+' · '+(file.size/1024/1024).toLocaleString('pt-BR',{maximumFractionDigits:1})+' MB':'Toque para selecionar um PDF (até 15 MB)';if(!file){preview.style.display='none';return;}preview.style.display='block';preview.textContent='Lendo '+file.name+'…';try{if(file.size>15*1024*1024)throw new Error('O arquivo ultrapassa 15 MB.');const txt=await extract(file);if(!txt.trim())throw new Error('Não foi encontrado texto selecionável. Se o PDF for escaneado, será necessário usar um arquivo com texto ou preencher os dados manualmente em “Atualizar dados”.');const data=parseBio(txt);pending={...data,fileName:file.name};const fields=[['Peso',data.weight,'kg'],['Gordura corporal',data.fat,'%'],['Massa muscular',data.muscle,'kg'],['Água corporal',data.water,'%'],['Cintura',data.waist,'cm']].filter(x=>x[1]!==null);if(!fields.length){preview.textContent='Consegui ler o arquivo, mas não reconheci com segurança peso ou indicadores de composição corporal. Confira se o laudo contém rótulos como “Peso”, “Gordura corporal”, “Massa muscular” ou “Água corporal”.';return;}preview.textContent='Arquivo: '+file.name+'\nDados reconhecidos: '+fields.map(x=>x[0]+': '+Number(x[1]).toLocaleString('pt-BR')+' '+x[2]).join(' · ')+'\n\nData selecionada: '+dateInput.value+'\nConfira a leitura. Ao importar, os valores encontrados serão adicionados ao histórico do perfil ativo; não serão alterados automaticamente suas metas de calorias ou seu plano.';applyBtn.disabled=false;}catch(err){preview.textContent='Não foi possível ler o arquivo. '+(err&&err.message?err.message:'Verifique o formato ou a conexão para leitura de PDF.');}});
  dateInput.addEventListener('change',()=>{if(pending&&preview.style.display!=='none')preview.textContent=preview.textContent.replace(/Data selecionada: .*?(\n|$)/,'Data selecionada: '+dateInput.value+'\n');});
  applyBtn.addEventListener('click',()=>{if(!pending)return;const date=dateInput.value||today();if(date>today()){alert('A data da medição não pode estar no futuro.');return;}const d=pending;if(d.weight!==null){state.progress=state.progress||[];state.progress=state.progress.filter(x=>x.date!==date);state.progress.push({id:'bio_'+Date.now(),weight:d.weight,waist:d.waist,date});state.progress.sort((a,b)=>a.date.localeCompare(b.date));state.startWeight=state.startWeight||d.weight;}if(d.fat!==null||d.muscle!==null||d.water!==null||d.raw){state.bioimpedance=state.bioimpedance||[];const record={date,fileName:d.fileName,fat:d.fat,muscle:d.muscle,water:d.water,notes:'Importado do arquivo '+d.fileName+'\n'+d.raw};const idx=state.bioimpedance.findIndex(x=>x.date===date);if(idx>=0)state.bioimpedance[idx]={...state.bioimpedance[idx],...Object.fromEntries(Object.entries(record).filter(([k,v])=>v!==null&&v!=='')),date};else state.bioimpedance.push(record);}save();if(typeof renderProgress==='function')renderProgress();if(typeof updateDashboard==='function')updateDashboard();if(typeof refreshProfileLayout==='function')refreshProfileLayout();preview.textContent='Importação concluída. Os dados reconhecidos foram salvos no perfil ativo e já podem aparecer na aba Progresso. Confira o histórico para confirmar os valores.';pending=null;applyBtn.disabled=true;fileInput.value='';});
- clearBtn.addEventListener('click',()=>{pending=null;fileInput.value='';const fileLabel=document.getElementById('overviewBioFileLabel');if(fileLabel)fileLabel.textContent='Toque para selecionar um PDF, TXT ou CSV (até 15 MB)';dateInput.value=today();preview.textContent='';preview.style.display='none';applyBtn.disabled=true;});
+ clearBtn.addEventListener('click',()=>{pending=null;fileInput.value='';const fileLabel=document.getElementById('overviewBioFileLabel');if(fileLabel)fileLabel.textContent='Toque para selecionar um PDF (até 15 MB)';dateInput.value=today();preview.textContent='';preview.style.display='none';applyBtn.disabled=true;});
 })();
 </script>
 
@@ -4987,7 +4984,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
  document.querySelectorAll('[data-export-kind]').forEach(b=>b.addEventListener('click',()=>{try{if(exportFormat==='csv')downloadCsv(b.dataset.exportKind);else downloadXlsx(b.dataset.exportKind);}catch(err){console.error(err);setStatus('settingsExportStatus','Não foi possível gerar o arquivo: '+err.message,'error');}}));
  document.querySelectorAll('[data-template-kind]').forEach(b=>b.addEventListener('click',()=>{try{downloadTemplate(b.dataset.templateKind);}catch(err){console.error(err);setStatus('settingsExportStatus','Não foi possível gerar o modelo: '+err.message,'error');}}));
  // Expose for the settings route while preserving the existing tab navigation behavior.
- window.formaSettingsImportExport={downloadCsv,downloadXlsx,downloadTemplate};
+ window.formaSettingsImportExport={downloadCsv,downloadXlsx,downloadTemplate,getPdfData(kind){return {foods:currentFoods(),mealRows:mealRows(),savedMeals:JSON.parse(JSON.stringify(state.savedMeals||[])),exercises:JSON.parse(JSON.stringify(state.customExercises||[]))};}};
 })();
 </script>
 
@@ -5841,5 +5838,291 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
   else if(currentTab==="progresso")syncProgressTabs();
 })();
 </script>
+<style id="formaCentralFilesV2Styles">
+body.forma-files-mode .top-tabs{display:none!important}
+#configuracoes.forma-central-v2{max-width:1040px;margin:0 auto}
+#configuracoes.forma-central-v2 .settings-hero{align-items:center;margin-bottom:18px}
+#configuracoes.forma-central-v2 .settings-hero p{max-width:620px}
+#configuracoes.forma-central-v2 .central-files-home{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#configuracoes.forma-central-v2 .central-home-card{min-height:122px;padding:clamp(15px,3vw,22px);border-radius:20px}
+#configuracoes.forma-central-v2 .central-home-icon{width:52px;height:52px;flex-basis:52px;font-size:24px}
+#configuracoes.forma-central-v2 .central-home-copy strong{font-size:16px}
+#configuracoes.forma-central-v2 .central-home-copy small{font-size:12px}
+#configuracoes.forma-central-v2 .central-files-routes{display:none!important}
+#configuracoes.forma-central-v2 .settings-back{margin-bottom:14px}
+#configuracoes.forma-central-v2 .settings-privacy-note{margin-top:16px}
+.nutrition-file-tools{display:none!important}\n#exportNutritionReportCsv,#exportNutritionReportJson{display:none!important}
+.forma-files-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,8,16,.76);backdrop-filter:blur(9px)}
+.forma-files-modal.open{display:flex}
+.forma-files-panel{width:min(100%,650px);max-height:min(88dvh,850px);overflow:auto;border:1px solid var(--line);border-radius:24px;background:var(--surface,#111c2b);color:var(--text);box-shadow:0 24px 80px #0009;animation:formaFilesModalIn .18s ease-out}
+@keyframes formaFilesModalIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.forma-files-modal-head{display:flex;align-items:flex-start;gap:14px;padding:22px 22px 16px;border-bottom:1px solid var(--line)}
+.forma-files-modal-mark{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));border-radius:15px;background:color-mix(in srgb,var(--accent) 13%,var(--surface));color:var(--accent);font-size:22px;font-weight:850}
+.forma-files-modal-copy{flex:1;min-width:0}
+.forma-files-modal-copy h3{margin:1px 0 5px;font-size:20px;letter-spacing:-.4px}
+.forma-files-modal-copy p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.forma-files-close{width:36px;height:36px;border:1px solid var(--line);border-radius:11px;background:transparent;color:var(--muted);font-size:19px;cursor:pointer}
+.forma-files-modal-body{padding:20px 22px 22px}
+.forma-files-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.forma-files-choice{display:flex;align-items:center;gap:12px;min-width:0;min-height:76px;padding:13px;border:1px solid var(--line);border-radius:15px;background:color-mix(in srgb,var(--surface) 88%,#18283e);color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s,transform .15s,background .15s}
+.forma-files-choice:hover{border-color:var(--accent);transform:translateY(-1px);background:color-mix(in srgb,var(--accent) 5%,var(--surface))}
+.forma-files-choice:focus-visible,.forma-files-close:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.forma-files-choice-icon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--accent) 13%,#111c2b);color:var(--accent);font-size:18px;font-weight:800}
+.forma-files-choice-copy{flex:1;min-width:0}
+.forma-files-choice-copy strong{display:block;font-size:13px;line-height:1.35}
+.forma-files-choice-copy small{display:block;margin-top:3px;color:var(--muted);font-size:10px;line-height:1.45}
+.forma-files-format{flex:0 0 auto;padding:4px 6px;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));border-radius:7px;color:var(--accent);font-size:9px;font-weight:850;letter-spacing:.4px}
+.forma-files-drop{display:grid;justify-items:center;gap:10px;padding:27px 18px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:18px;background:color-mix(in srgb,var(--accent) 4%,var(--surface));text-align:center}
+.forma-files-drop-icon{display:grid;place-items:center;width:54px;height:54px;border-radius:17px;background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:var(--accent);font-size:25px}
+.forma-files-drop strong{font-size:15px}
+.forma-files-drop p{max-width:390px;margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.forma-files-drop .btn{min-width:190px}
+.forma-files-status{display:none;margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface) 85%,#18283e);font-size:12px;line-height:1.55;white-space:pre-line}
+.forma-files-status.visible{display:block}
+.forma-files-status.error{border-color:color-mix(in srgb,var(--danger) 45%,var(--line));color:var(--danger)}
+.forma-files-modal-foot{padding:0 22px 18px;color:var(--muted);font-size:10px;line-height:1.5}
+@media(max-width:560px){#configuracoes.forma-central-v2 .central-files-home{grid-template-columns:1fr;gap:10px}#configuracoes.forma-central-v2 .central-home-card{min-height:88px}.forma-files-modal{padding:9px;align-items:flex-end}.forma-files-panel{max-height:91dvh;border-radius:22px 22px 15px 15px}.forma-files-modal-head{padding:18px 17px 14px}.forma-files-modal-body{padding:16px 17px 18px}.forma-files-modal-foot{padding:0 17px 15px}.forma-files-choice-grid{grid-template-columns:1fr}.forma-files-choice{min-height:68px}}
+@media(prefers-reduced-motion:reduce){.forma-files-panel{animation:none}.forma-files-choice{transition:none}}
+</style>
+<script>
+(function(){
+ 'use strict';
+ const $=id=>document.getElementById(id);
+ const page=$('configuracoes'),home=page?.querySelector('.central-files-home'),routes=page?.querySelector('.central-files-routes');
+ if(!page||!home||page.dataset.centralV2==='true')return;
+ page.dataset.centralV2='true';page.classList.add('forma-central-v2');
+ if(routes)routes.style.display='none';
+ const title=page.querySelector('.settings-hero h2');if(title)title.textContent='Central de arquivos';
+ const desc=page.querySelector('.settings-hero p');if(desc)desc.textContent='Importe, exporte e organize seus arquivos em PDF. O FORMA identifica automaticamente o conteúdo do arquivo.';
+ const bodyClass=()=>document.body.classList.toggle('forma-files-mode',page.classList.contains('active'));
+ const originalShowTab=window.showTab;
+ if(typeof originalShowTab==='function'&&!window.__formaFilesV2TabHook){window.__formaFilesV2TabHook=true;window.showTab=function(tab){const out=originalShowTab.apply(this,arguments);document.body.classList.toggle('forma-files-mode',tab==='configuracoes');return out;};}
+ bodyClass();
+ const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const modal=document.createElement('div');modal.className='forma-files-modal';modal.id='formaFilesActionModal';modal.setAttribute('role','presentation');
+ modal.innerHTML='<section class="forma-files-panel" role="dialog" aria-modal="true" aria-labelledby="formaFilesModalTitle"><header class="forma-files-modal-head"><span class="forma-files-modal-mark" id="formaFilesModalIcon" aria-hidden="true">⇧</span><div class="forma-files-modal-copy"><h3 id="formaFilesModalTitle">Importar PDF</h3><p id="formaFilesModalDescription"></p></div><button class="forma-files-close" type="button" aria-label="Fechar janela">×</button></header><div class="forma-files-modal-body" id="formaFilesModalBody"></div><footer class="forma-files-modal-foot" id="formaFilesModalFoot"></footer></section>';
+ page.append(modal);
+ const modalBody=$('formaFilesModalBody'),modalTitle=$('formaFilesModalTitle'),modalDesc=$('formaFilesModalDescription'),modalIcon=$('formaFilesModalIcon'),modalFoot=$('formaFilesModalFoot'),status=document.createElement('div');status.className='forma-files-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');modalBody.append(status);
+ const pdfInput=document.createElement('input');pdfInput.type='file';pdfInput.accept='.pdf,application/pdf';pdfInput.hidden=true;pdfInput.id='formaUniversalPdfInput';page.append(pdfInput);
+ const close=()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true');};
+ modal.querySelector('.forma-files-close').addEventListener('click',close);
+ modal.addEventListener('click',e=>{if(e.target===modal)close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close();});
+ function showStatus(message,error){status.textContent=message;status.classList.add('visible');status.classList.toggle('error',!!error);}
+ function openModal(kind){
+  modalBody.replaceChildren(status);status.className='forma-files-status';status.textContent='';
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+  const configs={
+   importar:['Importar arquivo','Selecione um PDF. O FORMA vai analisar o conteúdo e identificar automaticamente a categoria, sem exigir que você escolha o tipo de dado.','↑','PDF · ATÉ 15 MB'],
+   exportar:['Exportar dados','Escolha o conteúdo que deseja exportar. Todas as opções geram um documento PDF pronto para salvar ou compartilhar.','↓','SOMENTE PDF'],
+   modelos:['Modelos em PDF','Escolha um modelo para preencher. Os modelos incluem estruturas reconhecidas pelo importador automático do FORMA.','▤','SOMENTE PDF']
+  };
+  const cfg=configs[kind]||configs.importar;modalTitle.textContent=cfg[0];modalDesc.textContent=cfg[1];modalIcon.textContent=cfg[2];modalFoot.textContent=kind==='importar'?'PDFs com texto selecionável são lidos automaticamente. PDFs escaneados como imagem precisam de OCR.':'O documento será aberto na janela de impressão do dispositivo. Escolha “Salvar como PDF” para guardar o arquivo.';
+  if(kind==='importar'){
+   const drop=document.createElement('div');drop.className='forma-files-drop';drop.innerHTML='<span class="forma-files-drop-icon" aria-hidden="true">⇧</span><strong>Escolha um arquivo PDF</strong><p>Não importa se é alimento, refeição, exercício, treino, plano nutricional, cronograma, bioimpedância ou backup. O FORMA analisa o conteúdo.</p><button class="btn" type="button">Selecionar PDF</button>';
+   drop.querySelector('button').addEventListener('click',()=>pdfInput.click());
+   modalBody.insertBefore(drop,status);showStatus('Aguardando a seleção do arquivo.',false);
+  }else{
+   const grid=document.createElement('div');grid.className='forma-files-choice-grid';
+   const choices=kind==='exportar'?[
+    ['foods','Alimentos','Biblioteca de alimentos personalizados','◉'],
+    ['meals','Refeições salvas','Preparações e ingredientes','♨'],
+    ['all','Alimentos + refeições','Arquivo completo da biblioteca','▦'],
+    ['exercises','Exercícios','Biblioteca de exercícios personalizados','⌘'],
+    ['workout','Plano de treino','Ficha de musculação ativa','↗'],
+    ['nutrition','Plano nutricional','Plano importado no perfil','≋'],
+    ['schedule','Cronograma alimentar','Refeições, horários e quantidades','▤'],
+    ['report','Relatório nutricional','Resumo do período e indicadores','▥'],
+    ['body','Composição corporal','Histórico de peso e bioimpedância','◉']
+   ]:[
+    ['foods','Alimentos','Nome, unidade e valores nutricionais','◉'],
+    ['meals','Refeições','Refeições e ingredientes','♨'],
+    ['all','Alimentos + refeições','Modelo combinado da biblioteca','▦'],
+    ['exercises','Exercícios','Ficha completa de exercícios','⌘'],
+    ['workout','Plano de treino','Dias, exercícios, séries e descanso','↗'],
+    ['nutrition','Plano nutricional','Refeições, porções e macronutrientes','≋'],
+    ['schedule','Cronograma alimentar','Horários, alimentos e quantidades','▤'],
+    ['bio','Bioimpedância','Modelo de laudo para reconhecimento','◉']
+   ];
+   choices.forEach(choice=>{
+    const b=document.createElement('button');b.type='button';b.className='forma-files-choice';
+    b.innerHTML='<span class="forma-files-choice-icon" aria-hidden="true">'+choice[3]+'</span><span class="forma-files-choice-copy"><strong>'+choice[1]+'</strong><small>'+choice[2]+'</small></span><span class="forma-files-format">PDF</span>';
+    b.addEventListener('click',()=>{try{const ok=kind==='exportar'?exportPdf(choice[0]):downloadPdfTemplate(choice[0]);if(ok!==false)close();}catch(err){console.error('FORMA central de arquivos',err);showStatus(err.message||'Não foi possível gerar o PDF.',true);}});
+    grid.append(b);
+   });
+   modalBody.insertBefore(grid,status);
+  }
+  const first=modalBody.querySelector('button');first?.focus({preventScroll:true});
+ }
+ function setHome(){
+  home.replaceChildren();
+  const actions=[
+   ['importar','Importar','Escolha um PDF e deixe o FORMA identificar o conteúdo.','⇧'],
+   ['exportar','Exportar','Selecione os dados que deseja salvar em PDF.','⇩'],
+   ['modelos','Modelos','Baixe modelos em PDF para preencher e importar.','▤'],
+   ['backup','Backup completo','Gere uma cópia de segurança de todos os dados.','◇']
+  ];
+  actions.forEach(a=>{
+   const b=document.createElement('button');b.type='button';b.className='central-home-card';
+   b.innerHTML='<span class="central-home-icon" aria-hidden="true">'+a[3]+'</span><span class="central-home-copy"><strong>'+a[1]+'</strong><small>'+a[2]+'</small></span><span class="central-home-arrow" aria-hidden="true">›</span>';
+   b.addEventListener('click',()=>{if(a[0]==='backup'){if(typeof window.exportFormaData==='function')window.exportFormaData();else if(typeof exportFormaData==='function')exportFormaData();else alert('O gerador de backup não está disponível. Atualize o FORMA e tente novamente.');}else openModal(a[0]);});
+   home.append(b);
+  });
+ }
+ function openStructuredPdf(titleText,subtitle,summaryHtml,obj){
+  const json=JSON.stringify(obj,null,2);
+  const payload='<section class="section"><h2>Dados estruturados para importação</h2><p class="muted">Este bloco contém os dados do documento. Mantenha-o no PDF para permitir que o FORMA reconheça o conteúdo em uma importação futura.</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font:4px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;overflow-wrap:normal;word-break:normal;color:#e8edf6;background:#0b1220;padding:12px;border:1px solid #2a3c58;border-radius:8px">'+escapeHtml(json)+'</pre></section>';
+  return openFormaPrintDocument(titleText,subtitle,(summaryHtml||'')+payload,status);
+ }
+ function table(headers,rows){return '<table class="table"><thead><tr>'+headers.map(h=>'<th>'+escapeHtml(h)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(v=>'<td>'+escapeHtml(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';}
+ function exportPdf(kind){
+  const api=window.formaSettingsImportExport,lib=api?.getPdfData?.()||{foods:[],savedMeals:[],exercises:[]};
+  const foods=lib.foods||[],savedMeals=lib.savedMeals||[],exercises=lib.exercises||[];
+  if(kind==='foods'||kind==='meals'||kind==='all'){
+   const includeFoods=kind!=='meals',includeMeals=kind!=='foods';
+   const payload={format:'FORMA_LIBRARY_IMPORT',version:1};
+   if(includeFoods)payload.foods=foods.map(f=>({name:f.name,k:f.k,p:f.p,c:f.c,f:f.f,unit:f.unit||'g',basisAmount:f.basisAmount||100,sourceType:f.sourceType||'other',source:f.source||'Exportado pelo FORMA',sourceRef:f.sourceRef||'',preparation:f.preparation||'',micronutrients:f.micronutrients||{}}));
+   if(includeMeals)payload.meals=savedMeals.map(m=>({name:m.name,items:(m.items||[]).map(x=>({name:x.name||x.foodName||'',amount:x.amount??x.g??'',unit:x.unit||'g',food_key:x.foodKey||x.key||'',snapshot:x.snapshot||x.foodSnapshot||null}))}));
+   const summary='<div class="stats"><div class="stat"><span>Alimentos</span><strong>'+((payload.foods||[]).length)+'</strong></div><div class="stat"><span>Refeições</span><strong>'+((payload.meals||[]).length)+'</strong></div><div class="stat"><span>Perfil</span><strong>'+escapeHtml($('profileNameLabel')?.textContent||'Atual')+'</strong></div><div class="stat"><span>Formato</span><strong>PDF</strong></div></div><section class="section"><h2>Conteúdo exportado</h2>'+table(['Tipo','Nome','Registros'],[['Alimentos', 'Biblioteca personalizada',(payload.foods||[]).length],['Refeições','Preparações salvas',(payload.meals||[]).length]])+'</section>';
+   return openStructuredPdf('Biblioteca do FORMA','Exportação de '+(kind==='foods'?'alimentos':kind==='meals'?'refeições':'alimentos e refeições')+' · PDF',summary,payload);
+  }
+  if(kind==='exercises'){
+   if(!exercises.length){showStatus('Não há exercícios personalizados para exportar neste perfil.',true);return false;}
+   const payload={format:'FORMA_EXERCISE_LIBRARY',version:1,exercises:exercises};
+   const summary='<section class="section"><h2>Biblioteca de exercícios</h2>'+table(['Exercício','Grupo muscular','Equipamento'],exercises.map(x=>[x.name,x.muscle||x.focus||'—',x.equipment||'—']))+'</section>';
+   return openStructuredPdf('Biblioteca de exercícios','Exercícios personalizados · PDF',summary,payload);
+  }
+  if(kind==='workout'){
+   if(typeof workoutPlanFileObject!=='function'){showStatus('O plano de treino não está disponível para exportação.',true);return false;}
+   const plan=workoutPlanFileObject(),summary='<section class="section"><h2>'+escapeHtml(plan.name)+'</h2><p class="muted">Objetivo: '+escapeHtml(plan.objective||'Não informado')+'</p>'+plan.days.map((d,i)=>'<section class="section"><h3>'+escapeHtml(d.day)+' · '+escapeHtml(d.title)+'</h3>'+table(['Exercício','Séries','Repetições','Descanso'],d.exercises.map(x=>[x.name,x.sets,x.reps,x.rest]))+'</section>').join('')+'</section>';
+   return openStructuredPdf('Plano de treino',plan.objective||'Ficha ativa · PDF',summary,plan);
+  }
+  if(kind==='nutrition'){
+   const p=typeof state!=='undefined'?state.nutritionPlanImported:null;
+   if(!p){showStatus('Não há plano nutricional importado neste perfil.',true);return false;}
+   const summary='<section class="section"><h2>'+escapeHtml(p.name||'Plano nutricional')+'</h2><p class="muted">'+escapeHtml(p.objective||'')+'</p>'+((p.meals||[]).map((m,i)=>'<section class="section"><h3>'+(i+1)+'. '+escapeHtml(m.name)+'</h3>'+table(['Alimento','Porção','kcal','Proteína','Carboidratos','Gorduras'],(m.items||[]).map(x=>[x.name,x.amount,x.kcal,x.protein,x.carbs,x.fat]))+'</section>').join(''))+'</section>';
+   return openStructuredPdf(p.name||'Plano nutricional','Plano importado · PDF',summary,p);
+  }
+  if(kind==='schedule'){
+   const p=typeof state!=='undefined'?state.nutritionSchedule:null;
+   if(!p||!Array.isArray(p.meals)||!p.meals.length){showStatus('Não há cronograma alimentar salvo neste perfil.',true);return false;}
+   const portable=JSON.parse(JSON.stringify(p));const addSnapshots=items=>(items||[]).forEach(x=>{const food=(typeof FOOD_DB!=='undefined'&&FOOD_DB[x.key])||state.customFoods?.[x.key];if(food&&!x.snapshot)x.snapshot={name:food.name||x.key,unit:food.unit||'g',basisAmount:Number(food.basisAmount)||100,basisUnit:food.unit||'g',k:Number(food.k??food.kcal)||0,p:Number(food.p??food.protein)||0,c:Number(food.c??food.carbs)||0,f:Number(food.f??food.fat)||0,sourceType:food.sourceType||'custom',source:food.source||'Exportado pelo FORMA'};});portable.meals.forEach(m=>{addSnapshots(m.items);(m.options||[]).forEach(o=>addSnapshots(o.items));});const payload={format:'FORMA_NUTRITION_SCHEDULE',version:1,schedule:portable};
+   const summary='<section class="section"><h2>'+escapeHtml(p.name||'Cronograma alimentar')+'</h2>'+p.meals.map((m,i)=>'<section class="section"><h3>'+(i+1)+'. '+escapeHtml(m.name)+' · '+escapeHtml(m.time||'')+'</h3>'+table(['Alimento','Quantidade'],(m.items||[]).map(x=>[x.snapshot?.name||x.name||x.key,x.g||x.amount]))+'</section>').join('')+'</section>';
+   return openStructuredPdf('Cronograma alimentar','Refeições planejadas · PDF',summary,payload);
+  }
+  if(kind==='report'){
+   if(typeof nutritionReportData!=='function'){showStatus('O relatório nutricional não está disponível.',true);return false;}
+   const report=nutritionReportData(),fmt=v=>v===null||v===undefined?'—':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:1});
+   const summary='<div class="stats"><div class="stat"><span>Dias registrados</span><strong>'+report.recordedDays+'</strong></div><div class="stat"><span>Média de energia</span><strong>'+fmt(report.averages.kcal)+' kcal</strong></div><div class="stat"><span>Média de proteína</span><strong>'+fmt(report.averages.protein_g)+' g</strong></div><div class="stat"><span>Período</span><strong style="font-size:10px">'+escapeHtml(report.period.start)+' a '+escapeHtml(report.period.end)+'</strong></div></div><section class="section"><h2>Médias e metas</h2>'+table(['Indicador','Média diária','Meta'],[['Energia',fmt(report.averages.kcal)+' kcal',fmt(report.targets?.kcal)+' kcal'],['Proteínas',fmt(report.averages.protein_g)+' g',fmt(report.targets?.protein)+' g'],['Carboidratos',fmt(report.averages.carbohydrates_g)+' g',fmt(report.targets?.carbs)+' g'],['Gorduras',fmt(report.averages.fat_g)+' g',fmt(report.targets?.fat)+' g']])+'</section><section class="section"><h2>Registros diários</h2>'+table(['Data','kcal','Proteína','Carboidratos','Gorduras','Itens'],(report.daily||[]).map(d=>[d.date,fmt(d.k),fmt(d.p),fmt(d.c),fmt(d.f),d.items]))+'</section>';
+   return openStructuredPdf('Relatório nutricional','Resumo do período selecionado · PDF',summary,{format:'FORMA_NUTRITION_REPORT',version:1,report:report});
+  }
+  if(kind==='body'){
+   const progress=typeof state!=='undefined'?(state.progress||[]):[],bio=typeof state!=='undefined'?(state.bioimpedance||[]):[];
+   if(!progress.length&&!bio.length){showStatus('Não há registros de peso ou bioimpedância neste perfil.',true);return false;}
+   const summary='<section class="section"><h2>Histórico de peso e medidas</h2>'+table(['Data','Peso','Cintura'],progress.map(x=>[x.date,x.weight+' kg',x.waist?x.waist+' cm':'—']))+'</section><section class="section"><h2>Bioimpedância</h2>'+table(['Data','Gordura','Massa muscular','Água'],bio.map(x=>[x.date,x.fat==null?'—':x.fat+'%',x.muscle==null?'—':x.muscle+' kg',x.water==null?'—':x.water+'%']))+'</section>';
+   return openStructuredPdf('Composição corporal','Histórico do perfil · PDF',summary,{format:'FORMA_BODY_COMPOSITION_REPORT',version:1,progress:progress,bioimpedance:bio});
+  }
+  showStatus('Opção de exportação não reconhecida.',true);return false;
+ }
+ function templateObject(kind){
+  if(kind==='foods')return {format:'FORMA_LIBRARY_IMPORT',version:1,foods:[{name:'Exemplo: Iogurte natural',k:61,p:3.5,c:4.7,f:3.3,unit:'g',basisAmount:100,sourceType:'label',source:'Exemplo didático'}]};
+  if(kind==='meals')return {format:'FORMA_LIBRARY_IMPORT',version:1,meals:[{name:'Exemplo: Café da manhã',items:[{name:'Iogurte natural',amount:170,unit:'g',k:61,p:3.5,c:4.7,f:3.3,basisAmount:100}]}]};
+  if(kind==='all')return {format:'FORMA_LIBRARY_IMPORT',version:1,foods:[{name:'Exemplo: Iogurte natural',k:61,p:3.5,c:4.7,f:3.3,unit:'g',basisAmount:100,sourceType:'label',source:'Exemplo didático'}],meals:[{name:'Exemplo: Café da manhã',items:[{name:'Iogurte natural',amount:170,unit:'g',k:61,p:3.5,c:4.7,f:3.3,basisAmount:100}]}]};
+  if(kind==='exercises')return {format:'FORMA_EXERCISE_LIBRARY',version:1,exercises:[{name:'Supino na máquina',muscle:'Peito',focus:'Peitoral',secondary:['Tríceps','Deltoide anterior'],equipment:'Máquina',type:'Composto',level:'Iniciante',pattern:'Empurrar horizontal',tips:['Ajuste o banco para manter a amplitude confortável.'],errors:['Elevar os ombros durante a execução.'],alternatives:['Supino com halteres'],sets:'3',reps:'8–12',rest:'90 s'}]};
+  if(kind==='workout')return {format:'FORMA_WORKOUT_PLAN',version:1,name:'Exemplo — plano personalizado',objective:'Ex.: hipertrofia',days:[{day:'Segunda-feira',short:'SEG',title:'Peito e tríceps',subtitle:'Ênfase em movimentos estáveis',exercises:[{name:'Supino inclinado na máquina',sets:3,reps:'8–12 reps',rest:'90–120 s'},{name:'Tríceps na polia',sets:3,reps:'10–12 reps',rest:'60–90 s'}]},{day:'Quarta-feira',short:'QUA',title:'Costas e bíceps',exercises:[{name:'Puxada frontal',sets:3,reps:'8–12 reps',rest:'120 s'}]}]};
+  if(kind==='nutrition')return typeof nutritionPlanTemplate==='function'?nutritionPlanTemplate():{format:'FORMA_NUTRITION_PLAN',version:1,plan:{name:'Exemplo — plano nutricional',objective:'Organização alimentar',meals:[{name:'Café da manhã',time:'07:00',items:[{name:'Iogurte natural',amount:'170 g',kcal:104,protein:6,carbs:8,fat:5}]}]}};
+  if(kind==='schedule')return {format:'FORMA_NUTRITION_SCHEDULE',version:1,schedule:{name:'Exemplo — cronograma alimentar',objective:'Organização das refeições',target:{kcal:2000,protein:120,carbs:230,fat:65},meals:[{name:'Café da manhã',time:'07:00',items:[{key:'iogurte_natural',g:170,snapshot:{name:'Iogurte natural',unit:'g',basisAmount:100,basisUnit:'g',k:61,p:3.5,c:4.7,f:3.3,sourceType:'template',source:'Valores ilustrativos — substitua por referência verificada'}}]}]}};
+  return null;
+ }
+ function downloadPdfTemplate(kind){
+  if(kind==='bio'){const html='<section class="section"><h2>Laudo de bioimpedância — modelo</h2><p>Preencha os campos abaixo com os valores do exame. Não estime valores ausentes.</p><p><strong>Data do exame:</strong> ____ / ____ / ______</p><p><strong>Peso:</strong> ______ kg</p><p><strong>Percentual de gordura corporal:</strong> ______ %</p><p><strong>Massa muscular:</strong> ______ kg</p><p><strong>Água corporal:</strong> ______ %</p><p><strong>Circunferência da cintura:</strong> ______ cm</p><p class="muted">O modelo serve como referência. O leitor automático reconhece PDFs com texto selecionável e rótulos correspondentes; documentos preenchidos à mão ou escaneados exigem OCR ou entrada manual.</p></section>';return openFormaPrintDocument('Modelo de bioimpedância','Modelo para preenchimento · PDF',html,status);}
+  const obj=templateObject(kind);if(!obj){showStatus('Modelo não encontrado.',true);return false;}
+  const names={foods:'Modelo de alimentos',meals:'Modelo de refeições',all:'Modelo combinado de alimentos e refeições',exercises:'Modelo de exercícios',workout:'Modelo de plano de treino',nutrition:'Modelo de plano nutricional',schedule:'Modelo de cronograma alimentar'};
+  const summary='<section class="section"><h2>'+escapeHtml(names[kind])+'</h2><p>Este PDF contém um exemplo estruturado para edição. Substitua os dados ilustrativos pelos seus dados reais, preserve os nomes dos campos e mantenha o bloco estruturado completo para que o FORMA possa identificar a importação.</p></section>';
+  return openStructuredPdf(names[kind],'Modelo editável e compatível com importação · PDF',summary,obj);
+ }
+ function dispatchFile(targetId,file){
+  const input=$(targetId);if(!input)throw new Error('O importador desta categoria não está disponível nesta versão.');
+  input.accept='.pdf,application/pdf';
+  if(typeof DataTransfer==='undefined')throw new Error('Este navegador não permite encaminhar o PDF automaticamente. Atualize o navegador e tente novamente.');
+  const transfer=new DataTransfer();transfer.items.add(file);input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));
+ }
+ function classify(text){
+  const t=String(text||'').trim(),low=t.toLocaleLowerCase('pt-BR');
+  let obj=null;if(/^[\[{]/.test(t)){try{obj=JSON.parse(t);}catch(_){}}
+  const format=String(obj?.format||'');
+  if(format==='FORMA-backup'||/FORMA-backup/.test(t))return 'backup';
+  if(format==='FORMA_WORKOUT_PLAN'||format==='FORMA_WORKOUT_PLAN_V1')return 'workout';
+  if(format==='FORMA_NUTRITION_PLAN'||format==='FORMA_NUTRITION_PLAN_V1')return 'nutrition';
+  if(format==='FORMA_NUTRITION_SCHEDULE')return 'schedule';
+  if(format==='FORMA_EXERCISE_LIBRARY'||Array.isArray(obj?.exercises)||Array.isArray(obj?.exercicios))return 'exercises';
+  if(format==='FORMA_LIBRARY_IMPORT'||Array.isArray(obj?.foods)||Array.isArray(obj?.alimentos)||Array.isArray(obj?.meals)||Array.isArray(obj?.refeicoes))return 'library';
+  if(obj&&Array.isArray(obj.days)&&(Array.isArray(obj.exercises)||obj.days.some(d=>Array.isArray(d.exercises))))return 'workout';
+  if(obj&&(Array.isArray(obj.meals)||Array.isArray(obj.refeicoes))&&(obj.plan||obj.objective||obj.totals))return 'nutrition';
+  if(/(?:chave_alimento|quantidade_g_ou_ml|kcal_100g|proteina_100g)/i.test(t))return 'schedule';
+  if(/(?:massa muscular|percentual de gordura|gordura corporal|bioimped[aâ]ncia|body fat|body water)/i.test(low)&&/(?:peso|weight|kg|%)/i.test(low))return 'bio';
+  if(/(?:s[eé]ries\s*:|repeti[cç][oõ]es\s*:|descanso\s*:)/i.test(low)&&/(?:##\s|plano de treino|treino)/i.test(low))return 'workout';
+  if(/(?:quantidade\s*:|por[cç][aã]o\s*:)/i.test(low)&&/(?:kcal\s*:|prote[ií]na\s*:|carboidratos\s*:)/i.test(low)&&/(?:café da manhã|almoço|jantar|refeição)/i.test(low))return 'nutrition';
+  if(/(?:focus|foco muscular|grupo muscular|equipment|equipamento)/i.test(low)&&/(?:exerc[ií]cio|exercise|nome)/i.test(low))return 'exercises';
+  if(/(?:alimento|food|refei[cç][aã]o|meal)/i.test(low)&&/(?:prote[ií]na|protein|kcal|calorias)/i.test(low))return 'library';
+  return 'unknown';
+ }
+ async function handleUniversalImport(file){
+  if(!file)return;
+  if(file.type!=='application/pdf'&&!/\.pdf$/i.test(file.name)){showStatus('Formato não aceito. Selecione somente um arquivo PDF.',true);return;}
+  if(file.size>15*1024*1024){showStatus('O PDF ultrapassa o limite de 15 MB.',true);return;}
+  showStatus('Analisando o PDF e identificando o tipo de conteúdo…',false);
+  try{
+   const text=await readFormaImportPdfText(file),kind=classify(text);
+   const labels={backup:'backup completo',workout:'plano de treino',nutrition:'plano nutricional',schedule:'cronograma alimentar',exercises:'biblioteca de exercícios',library:'alimentos e/ou refeições',bio:'laudo de bioimpedância'};
+   if(kind==='unknown')throw new Error('Consegui ler o PDF, mas não identifiquei com segurança o tipo de conteúdo. Baixe o modelo correspondente na opção “Modelos” e mantenha o bloco de dados estruturados no documento.');
+   if(kind==='bio'){
+    close();if(typeof window.showTab==='function')window.showTab('inicio');
+    const input=$('overviewBioFile');if(!input)throw new Error('A leitura de bioimpedância não está disponível nesta tela.');
+    requestAnimationFrame(()=>{try{dispatchFile('overviewBioFile',file);}catch(err){alert(err.message);}});return;
+   }
+   if(kind==='workout'||kind==='nutrition'){
+    const card=$(kind==='workout'?'workoutImportCard':'nutritionImportCard');
+    if(!card)throw new Error('O painel de prévia desta importação não está disponível.');
+    modalBody.replaceChildren(status,card);modalTitle.textContent=kind==='workout'?'Prévia do plano de treino':'Prévia do plano nutricional';modalDesc.textContent='Confira os dados reconhecidos pelo FORMA. Nada será substituído até você confirmar a importação.';modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+    dispatchFile(kind==='workout'?'workoutImportFile':'nutritionImportFile',file);showStatus('PDF identificado como '+labels[kind]+'. Aguarde a leitura e revise a prévia.',false);return;
+   }
+   if(kind==='library'){
+    const importStatus=$('settingsImportStatus'),preview=$('settingsImportPreview');
+    modalBody.replaceChildren(status,importStatus,preview);modalTitle.textContent='Prévia da importação';modalDesc.textContent='Confira os alimentos e as refeições encontrados. Nenhum registro será salvo até sua confirmação.';modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+    dispatchFile('unifiedImportFile',file);showStatus('PDF identificado como alimentos e/ou refeições. Aguarde a leitura e revise a prévia.',false);return;
+   }
+   if(kind==='schedule'){
+    const scheduleStatus=$('nutritionScheduleStatus');if(scheduleStatus)modalBody.replaceChildren(status,scheduleStatus);
+    modalTitle.textContent='Importar cronograma alimentar';modalDesc.textContent='O FORMA validará as refeições, quantidades e referências nutricionais antes de substituir o cronograma atual.';modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+    if(typeof window.formaImportNutritionScheduleFile!=='function')throw new Error('O importador de cronograma não está disponível.');
+    await window.formaImportNutritionScheduleFile(file);showStatus('PDF identificado como cronograma alimentar. Confira o resultado da validação.',false);return;
+   }
+   const targets={backup:'importBackupFile',exercises:'importExercisesFile'};
+   dispatchFile(targets[kind],file);close();
+   if(kind==='backup')showStatus('PDF identificado como backup completo. Confira a confirmação de restauração antes de substituir os dados atuais.',false);
+   else showStatus('PDF identificado como biblioteca de exercícios. O FORMA validará os registros e informará o resultado.',false);
+  }catch(err){console.error('FORMA importação universal',err);showStatus(err.message||'Não foi possível analisar o PDF.',true);}
+ }
+ pdfInput.addEventListener('change',()=>{const file=pdfInput.files?.[0];if(file)handleUniversalImport(file);pdfInput.value='';});
+ function exportChoices(){openModal('exportar');}
+ window.formaOpenUniversalImport=()=>openModal('importar');
+ window.formaOpenFilesModal=exportChoices;
+ // O acesso antigo à importação de cardápio e aos laudos passa pela central única.
+ document.addEventListener('click',e=>{
+  const button=e.target.closest('#nutritionImportAction,#nutritionScheduleImportBtn');
+  const template=e.target.closest('#downloadNutritionMenuPdf');
+  if(button||template){e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal(template?'modelos':'importar');}
+ },true);
+ const bioLabel=$('overviewBioFile')?.closest('.bio-dropzone');
+ if(bioLabel){bioLabel.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');},true);const small=$('overviewBioFileLabel');if(small)small.textContent='Importação centralizada · selecione o PDF na Central de arquivos';}
+ $('overviewBioFile')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');},true);
+ // Não deixar os antigos botões de importação por categoria contornarem o fluxo único.
+ ['importBackupFile','importFoodsFile','importMealsFile','importExercisesFile','nutritionImportFile','workoutImportFile','nutritionScheduleFile','bioFile','overviewBioFile'].forEach(id=>{const input=$(id);if(input)input.accept='.pdf,application/pdf';});
+ const bioFile=$('bioFile');if(bioFile){bioFile.closest('.field')?.classList.add('forma-bio-import-legacy');bioFile.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');},true);}
+ setHome();
+})();
+</script>
+
 </body>
 </html>
