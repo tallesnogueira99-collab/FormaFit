@@ -4518,20 +4518,26 @@ function importEmbeddedExerciseRecords(records){
  if(pending.length&&typeof window.applyImportedExercises==="function")window.applyImportedExercises(state.customExercises);
  return result;
 }
-async function importLibraryFile(input, kind){const file=input.files&&input.files[0];if(!file)return;try{const rows=parseLibraryFileText(await readFormaImportPdfText(file),file.name);if(!rows.length)throw new Error('Não encontrei uma lista de registros. Use um PDF com tabela ou dados estruturados.');let added=0,updated=0,skipped=0,unclassified=[];
- if(kind==='food'){
-  state.customFoods=state.customFoods&&typeof state.customFoods==='object'?state.customFoods:{};
-state.foodOverrides=state.foodOverrides&&typeof state.foodOverrides==='object'?state.foodOverrides:{};
-  for(const r of rows){const name=String(r.name??r.nome??r.alimento??'').trim();const k=importNumeric(r.k??r.kcal??r.calorias??r.energia_kcal),p=importNumeric(r.p??r.protein??r.proteina??r.proteinas),c=importNumeric(r.c??r.carbs??r.carboidrato??r.carboidratos),f=importNumeric(r.f??r.fat??r.gordura??r.gorduras);if(!name||[k,p,c,f].some(x=>x===null||x<0)){skipped++;continue;}const key='custom_'+name.toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');const old=state.customFoods[key];const micronutrients=r.micronutrients??r.micronutrientes??r.micros??{};state.customFoods[key]={...(old||{}),name,k,p,c,f,unit:String(r.unit??r.unidade??r.basis_unit??'g').toLowerCase()==='ml'?'ml':'g',basisAmount:importNumeric(r.basisAmount??r.base_g??r.base_ml)??100,sourceType:String(r.sourceType??r.fonte_tipo??'other'),source:String(r.source??r.fonte??'Importado por arquivo'),sourceRef:String(r.sourceRef??r.referencia??''),preparation:String(r.preparation??r.preparo??''),micronutrients:typeof micronutrients==='string'?(()=>{try{return JSON.parse(micronutrients)}catch{return {observacao:micronutrients}}})():micronutrients,updatedAt:new Date().toISOString()};old?updated++:added++;}
-  loadCustomFoodsIntoDB();populateFoodPicker();renderFoodLibrary();renderMeals();renderAutoFoodPlan();save();
- }else{
-  state.customExercises=Array.isArray(state.customExercises)?state.customExercises:[];
-  for(const r of rows){const name=String(r.name??r.nome??r.exercicio??r.exercício??'').trim();if(!name){skipped++;continue;}const id='import_'+name.toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');const muscle=String(r.muscle??r.musculo??r.grupo_muscular??'Não especificado'),suppliedFocus=String(r.focus??r.foco??r.muscleFocus??r.foco_muscular??'').trim(),focus=suppliedFocus||inferMuscleFocus(name,{muscle});if(/pendente de confirmacao/i.test(normalizeMuscleText(focus))){unclassified.push(name);skipped++;continue;}const item={id,name,muscle,focus,secondary:Array.isArray(r.secondary)?r.secondary:String(r.secondary??r.musculos_secundarios??'').split(/[;,|]/).map(x=>x.trim()).filter(Boolean),equipment:String(r.equipment??r.equipamento??'Não especificado'),type:String(r.type??r.tipo??'Isolado'),level:String(r.level??r.nivel??'Não especificado'),pattern:String(r.pattern??r.padrao_movimento??'Não especificado'),tips:Array.isArray(r.tips)?r.tips:String(r.tips??r.instrucoes??r.execucao??'').split(/[\n;|]/).map(x=>x.trim()).filter(Boolean),errors:Array.isArray(r.errors)?r.errors:String(r.errors??r.erros_comuns??'').split(/[\n;|]/).map(x=>x.trim()).filter(Boolean),alternatives:Array.isArray(r.alternatives)?r.alternatives:String(r.alternatives??r.alternativas??'').split(/[;,|]/).map(x=>x.trim()).filter(Boolean),sets:String(r.sets??r.series??'3'),reps:String(r.reps??r.repeticoes??'10–12'),rest:String(r.rest??r.descanso??'90 s'),notes:String(r.notes??r.observacoes??'')};const ix=state.customExercises.findIndex(x=>x.id===id);ix>=0?(state.customExercises[ix]=item,updated++):(state.customExercises.push(item),added++);}
-  // A biblioteca visual passa a incluir os exercícios importados, com ficha detalhada.
-  const customs=state.customExercises.map(x=>({...x,focus:String(x.focus||'').trim()||inferMuscleFocus(x.name,x),secondary:Array.isArray(x.secondary)?x.secondary:[],tips:Array.isArray(x.tips)?x.tips:[],errors:Array.isArray(x.errors)?x.errors:[],alternatives:Array.isArray(x.alternatives)?x.alternatives:[]}));if(typeof window.applyImportedExercises==='function')window.applyImportedExercises(customs);save();
- }
- alert(`Importação concluída.\n\nNovos registros: ${added}\nAtualizados: ${updated}\nIgnorados por dados inválidos ou sem foco: ${skipped}${unclassified.length?`\n\nNão importados por falta de foco específico: ${unclassified.join(', ')}. Inclua o campo focus/foco no arquivo e importe novamente.`:''}\n\nOs dados classificados foram adicionados à biblioteca sem apagar os demais registros.`);
- }catch(err){console.error(err);alert('Não foi possível importar o arquivo. Confira se o PDF contém os campos obrigatórios e texto selecionável.\n\nDetalhe: '+err.message);}finally{input.value='';}}
+async function importLibraryFile(input,kind){
+ const file=input.files&&input.files[0];if(!file)return;
+ const beforeFoods=JSON.parse(JSON.stringify(state.customFoods||{})),beforeExercises=JSON.parse(JSON.stringify(state.customExercises||[]));
+ try{
+  const rows=parseLibraryFileText(await readFormaImportPdfText(file),file.name);
+  if(!rows.length)throw new Error("Não encontrei registros no PDF. Confira se o arquivo contém os dados estruturados do modelo.");
+  let result;
+  if(kind==="food"){
+   result=importEmbeddedFoodRecords(rows);loadCustomFoodsIntoDB();
+   if(!save()){state.customFoods=beforeFoods;loadCustomFoodsIntoDB();throw new Error("Não foi possível salvar os alimentos. A biblioteca anterior foi restaurada.");}
+   populateFoodPicker();renderFoodLibrary();renderMeals();renderAutoFoodPlan();
+   alert("Importação de alimentos concluída.\n\nNovos alimentos: "+result.added+"\nJá existentes preservados: "+result.duplicates+"\nIgnorados por dados incompletos: "+result.invalid+"\n\nNenhum alimento já cadastrado foi sobrescrito.");
+  }else{
+   result=importEmbeddedExerciseRecords(rows);
+   if(!save()){state.customExercises=beforeExercises;if(typeof window.applyImportedExercises==="function")window.applyImportedExercises(state.customExercises);throw new Error("Não foi possível salvar os exercícios. A biblioteca anterior foi restaurada.");}
+   alert("Importação de exercícios concluída.\n\nNovas fichas: "+result.added+"\nJá existentes preservadas: "+result.duplicates+"\nIgnoradas por dados insuficientes: "+result.invalid+"\n\nAs fichas existentes foram mantidas.");
+  }
+ }catch(err){console.error(err);alert("Não foi possível importar o arquivo. Confira o PDF e os campos obrigatórios.\n\nDetalhe: "+err.message);}
+ finally{input.value="";}
+}
 async function importSavedMealsFile(input){
  const file=input.files&&input.files[0];if(!file)return;
  const beforeMeals=JSON.parse(JSON.stringify(state.savedMeals||[])),beforeFoods=JSON.parse(JSON.stringify(state.customFoods||{}));
