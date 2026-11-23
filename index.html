@@ -6714,7 +6714,7 @@ body.forma-files-mode .top-tabs{display:none!important}
     savedMeals.forEach(meal=>(meal.items||[]).forEach(item=>{
      const key=String(item.foodKey||item.food_key||item.key||''),food=catalog[key]||null,snap=item.snapshot||item.foodSnapshot||food||null;
      if(!snap||!snap.name)return;
-     const record={...(food?foodSnapshot(food):snap),...snap,key:key||('meal_food_'+formaImportSlug(snap.name)),name:snap.name||food?.name||item.name||'Alimento'};
+     const base=food?foodSnapshot(food):snap,record={...base,key:key||('meal_food_'+formaImportSlug(base.name||snap.name)),name:food?.name||base.name||item.name||'Alimento'};
      embedded.set(record.key,record);
     }));
     payload.foods=[...embedded.values()];
