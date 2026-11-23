@@ -6027,12 +6027,13 @@ body.forma-files-mode .top-tabs{display:none!important}
   const L=await loadFormaPdfLib(),{PDFDocument,StandardFonts,rgb}=L,d=await PDFDocument.create();
   const font=await d.embedFont(StandardFonts.Helvetica),bold=await d.embedFont(StandardFonts.HelveticaBold);
   const navy=rgb(.035,.07,.13),panel=rgb(.07,.11,.18),red=rgb(1,.32,.36),white=rgb(.91,.94,.98),muted=rgb(.66,.72,.81),line=rgb(.18,.25,.35);
+  const wrap=(txt,max,size,f)=>{const words=String(txt??"").split(/\s+/),out=[];let row="";for(const word of words){const test=row?row+" "+word:word;if(f.widthOfTextAtSize(test,size)>max&&row){out.push(row);row=word;}else row=test;}if(row)out.push(row);return out;};
   if(obj?.format==="FORMA-backup"&&obj.profile){
    const p=obj.profile,data=p.data||{},W=595.28,H=841.89;
    const date=new Date(obj.exportedAt||Date.now()).toLocaleString("pt-BR",{dateStyle:"long",timeStyle:"short"});
    const safeCount=v=>Array.isArray(v)?v.length:(v&&typeof v==="object"?Object.keys(v).length:0);
    const stats=[["TREINAMENTO",safeCount(data.logs)+safeCount(data.sessionHistory),"Registros e sessões"],["ALIMENTAÇÃO",safeCount(data.foodEntries),"Registros alimentares"],["BIBLIOTECA",safeCount(data.customFoods)+safeCount(data.savedMeals)+safeCount(data.customWorkouts)+safeCount(data.customMeals),"Itens personalizados"],["EVOLUÇÃO",safeCount(data.progress)+safeCount(data.bioimpedance),"Avaliações e medidas"]];
-   const wrap=(txt,max,size,f)=>{const words=String(txt??"").split(/\s+/),out=[];let row="";for(const word of words){const test=row?row+" "+word:word;if(f.widthOfTextAtSize(test,size)>max&&row){out.push(row);row=word;}else row=test;}if(row)out.push(row);return out;};
+
    const drawWrapped=(pg,txt,x,yy,max,size,f,color,leading=size*1.45,limit=4)=>{wrap(txt,max,size,f).slice(0,limit).forEach((v,i)=>pg.drawText(v,{x,y:yy-i*leading,size,font:f,color}));};
    const bg=()=>{const pg=d.addPage([W,H]);pg.drawRectangle({x:0,y:0,width:W,height:H,color:navy});pg.drawRectangle({x:0,y:H-9,width:W,height:9,color:red});pg.drawText("FORMA  ·  SEU PLANO PESSOAL",{x:38,y:H-48,size:10,font:bold,color:white});pg.drawText("BACKUP DO APLICATIVO",{x:38,y:H-70,size:8,font:bold,color:red});return pg;};
    let pg=bg();pg.drawRectangle({x:30,y:490,width:535,height:300,color:panel});
