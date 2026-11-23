@@ -6422,6 +6422,7 @@ body.forma-files-mode .top-tabs{display:none!important}
    (p.meals||[]).forEach((meal,i)=>{
     add("REFEIÇÃO "+(i+1)+" · HORÁRIO E ORGANIZAÇÃO",[F("schedule_meal_"+i+"_name","Nome da refeição"),F("schedule_meal_"+i+"_time","Horário"),F("schedule_meal_"+i+"_notes","Observações",true)]);
     (meal.items||[]).forEach((item,j)=>add("REFEIÇÃO "+(i+1)+" · ALIMENTO "+(j+1),[F("schedule_item_"+i+"_"+j+"_name","Alimento"),F("schedule_item_"+i+"_"+j+"_key","Chave na biblioteca"),F("schedule_item_"+i+"_"+j+"_g","Quantidade (g/ml)"),F("schedule_item_"+i+"_"+j+"_unit","Unidade")]));
+    (meal.options||[]).forEach((option,j)=>{add("REFEIÇÃO "+(i+1)+" · OPÇÃO "+(j+1),[F("schedule_meal_"+i+"_option_"+j+"_name","Nome da opção"),F("schedule_meal_"+i+"_option_"+j+"_selected","Opção principal")]);(option.items||[]).forEach((item,k)=>add("OPÇÃO "+(j+1)+" · ALIMENTO "+(k+1),[F("schedule_meal_"+i+"_option_"+j+"_item_"+k+"_name","Alimento"),F("schedule_meal_"+i+"_option_"+j+"_item_"+k+"_key","Chave na biblioteca"),F("schedule_meal_"+i+"_option_"+j+"_item_"+k+"_g","Quantidade (g/ml)"),F("schedule_meal_"+i+"_option_"+j+"_item_"+k+"_unit","Unidade")]));});
    });
   }else if(f==="FORMA_BIOIMPEDANCE"){
    const d=o.bioimpedance||{};
@@ -6467,7 +6468,7 @@ body.forma-files-mode .top-tabs{display:none!important}
    const p=o.schedule||{};put("schedule_name",p.name);put("schedule_objective",p.objective);put("schedule_notes",p.notes);
    const t=p.target||{};["kcal","protein","carbs","fat"].forEach(k=>put("schedule_target_"+k,t[k]));
    (o.foods||[]).forEach((food,i)=>putFood("schedule_food_"+i+"_",food));
-   (p.meals||[]).forEach((meal,i)=>{put("schedule_meal_"+i+"_name",meal.name);put("schedule_meal_"+i+"_time",meal.time);put("schedule_meal_"+i+"_notes",meal.notes);(meal.items||[]).forEach((item,j)=>{const q="schedule_item_"+i+"_"+j+"_";put(q+"name",item.name||item.snapshot?.name);put(q+"key",item.key||item.foodKey);put(q+"g",item.g??item.grams??item.amount);put(q+"unit",item.unit||item.snapshot?.unit);});});
+   (p.meals||[]).forEach((meal,i)=>{put("schedule_meal_"+i+"_name",meal.name);put("schedule_meal_"+i+"_time",meal.time);put("schedule_meal_"+i+"_notes",meal.notes);(meal.items||[]).forEach((item,j)=>{const q="schedule_item_"+i+"_"+j+"_";put(q+"name",item.name||item.snapshot?.name);put(q+"key",item.key||item.foodKey);put(q+"g",item.g??item.grams??item.amount);put(q+"unit",item.unit||item.snapshot?.unit);});(meal.options||[]).forEach((option,j)=>{const op="schedule_meal_"+i+"_option_"+j+"_";put(op+"name",option.name);put(op+"selected",Number(meal.selectedOption??0)===j?"Sim":"Não");(option.items||[]).forEach((item,k)=>{const q=op+"item_"+k+"_";put(q+"name",item.name||item.snapshot?.name);put(q+"key",item.key||item.foodKey);put(q+"g",item.g??item.grams??item.amount);put(q+"unit",item.unit||item.snapshot?.unit);});});});
   }else if(o.format==="FORMA_BIOIMPEDANCE"){Object.entries(o.bioimpedance||{}).forEach(([k,val])=>{if(val&&typeof val==="object")return;put("bio_"+k,val);});}
   return v;
  }
