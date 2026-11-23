@@ -6019,8 +6019,123 @@ body.forma-files-mode .top-tabs{display:none!important}
  }
 
  async function loadFormaPdfLib(){if(window.PDFLib)return window.PDFLib;if(window.__formaPdfLibPromise)return window.__formaPdfLibPromise;window.__formaPdfLibPromise=new Promise((resolve,reject)=>{const x=document.createElement('script');x.src='https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';x.onload=()=>resolve(window.PDFLib);x.onerror=()=>reject(new Error('Não foi possível carregar o gerador de PDF.'));document.head.appendChild(x);});return window.__formaPdfLibPromise;}
- function formaPdfSchema(o){const f=o?.format||'',out=[];const add=(section,items)=>out.push({section,items});if(f==='FORMA_LIBRARY_IMPORT'){if(o.foods?.length)add('IDENTIFICAÇÃO E COMPOSIÇÃO NUTRICIONAL',[['food_name','Nome do alimento'],['food_category','Categoria / subcategoria'],['food_description','Descrição'],['food_brand','Marca'],['food_barcode','Código de barras'],['food_preparation','Estado / preparo'],['food_portion','Porção de referência'],['food_unit','Unidade da porção'],['food_kcal','Calorias (kcal)'],['food_protein','Proteínas (g)'],['food_carbs','Carboidratos (g)'],['food_fat','Gorduras totais (g)'],['food_fiber','Fibras (g)'],['food_sodium','Sódio (mg)'],['food_source','Fonte dos valores'],['food_notes','Observações']]);if(o.meals?.length)add('IDENTIFICAÇÃO DA REFEIÇÃO',[['meal_name','Nome da refeição'],['meal_items','Ingredientes e quantidades'],['meal_notes','Observações']]);}else if(f==='FORMA_EXERCISE_LIBRARY')add('IDENTIFICAÇÃO E EXECUÇÃO',[['exercise_name','Nome do exercício'],['exercise_muscle','Grupo muscular principal'],['exercise_secondary','Grupos musculares secundários'],['exercise_equipment','Equipamento'],['exercise_type','Tipo de exercício'],['exercise_level','Nível'],['exercise_tips','Orientações de execução'],['exercise_errors','Erros comuns'],['exercise_alternatives','Alternativas'],['exercise_sets','Séries'],['exercise_reps','Repetições'],['exercise_rest','Descanso']]);else if(f==='FORMA_WORKOUT_PLAN')add('PLANO DE TREINO',[['workout_name','Nome do plano'],['workout_objective','Objetivo'],['workout_days','Dias e divisão do treino'],['workout_exercises','Exercícios, séries, repetições e descanso']]);else if(f==='FORMA_NUTRITION_PLAN')add('PLANEJAMENTO NUTRICIONAL',[['nutrition_name','Nome do plano'],['nutrition_objective','Objetivo'],['nutrition_kcal','Meta de energia (kcal)'],['nutrition_protein','Meta de proteínas (g)'],['nutrition_carbs','Meta de carboidratos (g)'],['nutrition_fat','Meta de gorduras (g)'],['nutrition_meals','Refeições e composição']]);else if(f==='FORMA_NUTRITION_SCHEDULE')add('CRONOGRAMA ALIMENTAR',[['schedule_name','Nome do cronograma'],['schedule_objective','Objetivo'],['schedule_kcal','Meta de energia (kcal)'],['schedule_protein','Meta de proteínas (g)'],['schedule_carbs','Meta de carboidratos (g)'],['schedule_fat','Meta de gorduras (g)'],['schedule_meals','Refeições, horários, alimentos e quantidades']]);else if(f==='FORMA_BIOIMPEDANCE')add('AVALIAÇÃO CORPORAL',[['bio_date','Data da avaliação'],['bio_weight','Peso (kg)'],['bio_waist','Cintura (cm)'],['bio_fat','Gordura corporal (%)'],['bio_muscle','Massa muscular (kg)'],['bio_water','Água corporal (%)'],['bio_notes','Observações']]);return out;}
- function formaPdfValues(o){const food=o.foods?.[0]||{},meal=o.meals?.[0]||{},ex=o.exercises?.[0]||{},p=o.plan||o.schedule||o,v={food_name:food.name||'',food_category:food.category||'',food_description:food.description||'',food_brand:food.brand||'',food_barcode:food.barcode||'',food_preparation:food.preparation||'',food_portion:food.basisAmount||100,food_unit:food.unit||'g',food_kcal:food.k??'',food_protein:food.p??'',food_carbs:food.c??'',food_fat:food.f??'',food_fiber:food.fiber??'',food_sodium:food.sodium??'',food_source:food.source||'',meal_name:meal.name||'',meal_items:(meal.items||[]).map(x=>(x.name||x.key||'')+': '+(x.amount??x.g??'')+' '+(x.unit||'g')).join('\n'),exercise_name:ex.name||'',exercise_muscle:ex.muscle||'',exercise_secondary:Array.isArray(ex.secondary)?ex.secondary.join(', '):(ex.secondary||''),exercise_equipment:ex.equipment||'',exercise_type:ex.type||'',exercise_level:ex.level||'',exercise_tips:(ex.tips||[]).join('\\n'),exercise_errors:(ex.errors||[]).join('\\n'),exercise_alternatives:(ex.alternatives||[]).join('\\n'),exercise_sets:ex.sets||'',exercise_reps:ex.reps||'',exercise_rest:ex.rest||'',workout_name:o.name||'',workout_objective:o.objective||'',workout_days:(o.days||[]).map(d=>d.day+' — '+d.title).join('\n'),workout_exercises:(o.days||[]).flatMap(d=>(d.exercises||[]).map(x=>x.name+': '+x.sets+' séries · '+x.reps+' · '+x.rest)).join('\n'),nutrition_name:p.name||'',nutrition_objective:p.objective||'',schedule_name:p.name||'',schedule_objective:p.objective||'',schedule_kcal:p.target?.kcal||'',schedule_protein:p.target?.protein||'',schedule_carbs:p.target?.carbs||'',schedule_fat:p.target?.fat||'',schedule_meals:(p.meals||[]).map(m=>m.name+' '+(m.time||'')).join('\n')};if(o.format==='FORMA_BIOIMPEDANCE')Object.assign(v,{bio_date:o.bioimpedance?.date||'',bio_weight:o.bioimpedance?.weight??'',bio_waist:o.bioimpedance?.waist??'',bio_fat:o.bioimpedance?.fat??'',bio_muscle:o.bioimpedance?.muscle??'',bio_water:o.bioimpedance?.water??'',bio_notes:o.bioimpedance?.notes||''});if(o.format==='FORMA_NUTRITION_PLAN'){const n=o.plan||o;Object.assign(v,{nutrition_kcal:n.target?.kcal??'',nutrition_protein:n.target?.protein??'',nutrition_carbs:n.target?.carbs??'',nutrition_fat:n.target?.fat??'',nutrition_meals:(n.meals||[]).map(m=>m.name).join('\n')});}return v;}
+ const FORMA_MICRO_FIELDS=[
+  ["calcium","Cálcio","mg"],["iron","Ferro","mg"],["magnesium","Magnésio","mg"],["phosphorus","Fósforo","mg"],["potassium","Potássio","mg"],["zinc","Zinco","mg"],["copper","Cobre","mg"],["manganese","Manganês","mg"],["selenium","Selênio","mcg"],["vitamin_a","Vitamina A (RAE)","mcg"],["vitamin_c","Vitamina C","mg"],["vitamin_d","Vitamina D","mcg"],["vitamin_e","Vitamina E","mg"],["vitamin_b1","Tiamina (B1)","mg"],["vitamin_b2","Riboflavina (B2)","mg"],["vitamin_b3","Niacina (B3)","mg"],["vitamin_b6","Piridoxina (B6)","mg"],["vitamin_b12","Cobalamina (B12)","mcg"],["folate","Folato","mcg"],["choline","Colina","mg"],["iodine","Iodo","mcg"]
+ ];
+ function formaSlug(value){return String(value||"").toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");}
+ function formaMicroInfo(key,raw){const match=String(key).match(/_(g|mg|mcg|µg)$/i),unit=String(raw&&typeof raw==="object"?(raw.unit||raw.unidade||match?.[1]||""):(match?.[1]||""));const value=raw&&typeof raw==="object"?(raw.value??raw.amount??raw.valor??""):raw;return {slug:formaSlug(String(key).replace(/_(g|mg|mcg|µg)$/i,"")),unit:unit||"mg",value:value??""};}
+ function formaPdfSchema(o){
+  const f=o?.format||"",out=[],add=(section,items)=>out.push({section,items});
+  const F=(key,label,wide)=>[key,label,!!wide];
+  const addFood=(prefix,food,heading)=>{
+   const items=[
+    F(prefix+"name","Nome do alimento"),F(prefix+"category","Categoria / grupo"),F(prefix+"brand","Marca"),F(prefix+"barcode","Código de barras"),
+    F(prefix+"preparation","Estado e preparo"),F(prefix+"unit","Unidade-base (g ou ml)"),F(prefix+"basisAmount","Base de referência"),F(prefix+"sourceType","Tipo de fonte"),
+    F(prefix+"k","Energia (kcal / base)"),F(prefix+"p","Proteínas (g / base)"),F(prefix+"c","Carboidratos disponíveis (g / base)"),F(prefix+"f","Gorduras totais (g / base)"),
+    F(prefix+"fiber","Fibra alimentar (g / base)"),F(prefix+"sodium","Sódio (mg / base)"),F(prefix+"description","Descrição / ingredientes",true),
+    F(prefix+"source","Fonte dos dados"),F(prefix+"sourceRef","Referência / código da fonte"),F(prefix+"notes","Observações",true)
+   ];
+   const existing=food?.micronutrients&&typeof food.micronutrients==="object"?Object.entries(food.micronutrients).map(([key,raw])=>formaMicroInfo(key,raw)):[];
+   const micros=[...FORMA_MICRO_FIELDS.map(x=>({slug:x[0],label:x[1],unit:x[2]}))];
+   existing.forEach(x=>{if(!micros.some(m=>m.slug===x.slug))micros.push({slug:x.slug,label:x.slug.replace(/_/g," "),unit:x.unit});});
+   micros.forEach(m=>items.push(F(prefix+"micro_"+m.slug+"_"+m.unit,m.label+" ("+m.unit+")")));
+   add(heading,items);
+  };
+  const addExercise=(prefix,x,heading)=>{
+   add(heading,[
+    F(prefix+"name","Nome do exercício"),F(prefix+"focus","Foco muscular principal"),F(prefix+"muscle","Grupo muscular principal"),F(prefix+"secondary","Grupos secundários",true),
+    F(prefix+"equipment","Equipamento"),F(prefix+"type","Classificação"),F(prefix+"level","Nível"),F(prefix+"pattern","Padrão de movimento"),
+    F(prefix+"movementPlane","Plano / direção do movimento"),F(prefix+"laterality","Lateralidade"),F(prefix+"setup","Posicionamento inicial",true),
+    F(prefix+"execution","Execução passo a passo",true),F(prefix+"breathing","Respiração"),F(prefix+"rom","Amplitude de movimento"),F(prefix+"tempo","Cadência / tempo"),
+    F(prefix+"tips","Orientações técnicas",true),F(prefix+"cues","Comandos / pontos de atenção",true),F(prefix+"errors","Erros comuns",true),
+    F(prefix+"contraindications","Cuidados e adaptações",true),F(prefix+"regressions","Regressões",true),F(prefix+"progressions","Progressões",true),
+    F(prefix+"alternatives","Exercícios alternativos",true),F(prefix+"sets","Séries sugeridas"),F(prefix+"reps","Repetições sugeridas"),F(prefix+"rest","Intervalo sugerido"),
+    F(prefix+"notes","Observações",true)
+   ]);
+  };
+  if(f==="FORMA_LIBRARY_IMPORT"){
+   if(o.foods?.length&&!o.meals?.length)o.foods.forEach((food,i)=>addFood(i?"food_"+i+"_":"food_",food,"IDENTIFICAÇÃO E COMPOSIÇÃO NUTRICIONAL"));
+   if(o.meals?.length){
+    const meal=o.meals[0]||{};
+    add("IDENTIFICAÇÃO DA REFEIÇÃO",[F("meal_name","Nome da refeição"),F("meal_category","Categoria / ocasião"),F("meal_notes","Observações e modo de preparo",true)]);
+    (o.foods||[]).forEach((food,i)=>addFood("meal_food_"+i+"_",food,"ALIMENTO "+(i+1)+" · FICHA NUTRICIONAL COMPLETA"));
+    (meal.items||[]).forEach((item,i)=>add("INGREDIENTE "+(i+1),[F("meal_item_"+i+"_name","Alimento"),F("meal_item_"+i+"_amount","Quantidade"),F("meal_item_"+i+"_unit","Unidade"),F("meal_item_"+i+"_foodKey","Chave de referência"),F("meal_item_"+i+"_notes","Observações",true)]));
+   }
+  }else if(f==="FORMA_EXERCISE_LIBRARY"){
+   (o.exercises||[]).forEach((x,i)=>addExercise(i?"exercise_"+i+"_":"exercise_",x,"FICHA TÉCNICA DO EXERCÍCIO"));
+  }else if(f==="FORMA_WORKOUT_PLAN"){
+   add("IDENTIFICAÇÃO E OBJETIVO",[F("workout_name","Nome do plano"),F("workout_objective","Objetivo"),F("workout_frequency","Frequência semanal"),F("workout_duration","Duração estimada da sessão"),F("workout_notes","Orientações gerais",true),F("workout_warmup","Aquecimento",true),F("workout_cooldown","Volta à calma",true),F("workout_progression","Critérios de progressão",true)]);
+   (o.days||[]).forEach((day,i)=>{
+    add("DIA "+(i+1)+" · DIVISÃO E ORGANIZAÇÃO",[F("workout_day_"+i+"_day","Dia / sessão"),F("workout_day_"+i+"_title","Grupos / ênfase"),F("workout_day_"+i+"_subtitle","Observações",true)]);
+    (day.exercises||[]).forEach((ex,j)=>add("DIA "+(i+1)+" · EXERCÍCIO "+(j+1),[F("workout_day_"+i+"_exercise_"+j+"_name","Exercício"),F("workout_day_"+i+"_exercise_"+j+"_sets","Séries"),F("workout_day_"+i+"_exercise_"+j+"_reps","Repetições / duração"),F("workout_day_"+i+"_exercise_"+j+"_rest","Descanso"),F("workout_day_"+i+"_exercise_"+j+"_load","Carga / resistência"),F("workout_day_"+i+"_exercise_"+j+"_tempo","Cadência"),F("workout_day_"+i+"_exercise_"+j+"_rpe","RPE"),F("workout_day_"+i+"_exercise_"+j+"_rir","RIR"),F("workout_day_"+i+"_exercise_"+j+"_notes","Notas técnicas",true)]));
+   });
+   (o.exerciseCatalog||[]).forEach((x,i)=>addExercise("workout_catalog_"+i+"_",x,"BIBLIOTECA EMBUTIDA · EXERCÍCIO "+(i+1)));
+  }else if(f==="FORMA_NUTRITION_PLAN"){
+   const p=o.plan||o,person=p.person||{},energy=p.energy||{},targets=p.targets||p.target||{};
+   add("IDENTIFICAÇÃO E OBJETIVO",[F("nutrition_name","Nome do planejamento"),F("nutrition_objective","Objetivo nutricional",true),F("nutrition_person_age","Idade"),F("nutrition_person_sex","Sexo utilizado no cálculo"),F("nutrition_person_height","Estatura (cm)"),F("nutrition_person_weight","Peso de referência (kg)"),F("nutrition_person_activity","Nível de atividade física"),F("nutrition_person_notes","Contexto / observações",true)]);
+   add("ESTIMATIVA ENERGÉTICA",[F("nutrition_energy_method","Método / equação utilizada"),F("nutrition_energy_maintenance","Gasto energético estimado (kcal/dia)"),F("nutrition_energy_adjustment","Ajuste energético (kcal/dia)"),F("nutrition_energy_notes","Premissas e justificativa",true)]);
+   add("METAS DIÁRIAS E DISTRIBUIÇÃO",[F("nutrition_target_kcal","Energia (kcal/dia)"),F("nutrition_target_protein","Proteínas (g/dia)"),F("nutrition_target_carbs","Carboidratos (g/dia)"),F("nutrition_target_fat","Gorduras (g/dia)"),F("nutrition_target_fiber","Fibras (g/dia)"),F("nutrition_target_water","Água / líquidos (ml ou L/dia)"),F("nutrition_target_sodium","Sódio (mg/dia)"),F("nutrition_macro_protein","Proteínas (% da energia)"),F("nutrition_macro_carbs","Carboidratos (% da energia)"),F("nutrition_macro_fat","Gorduras (% da energia)")]);
+   const micros=p.micronutrients&&typeof p.micronutrients==="object"?Object.entries(p.micronutrients):[];
+   const microList=[...FORMA_MICRO_FIELDS.map(x=>({slug:x[0],label:x[1],unit:x[2]}))];
+   micros.forEach(([key,raw])=>{const m=formaMicroInfo(key,raw);if(!microList.some(x=>x.slug===m.slug))microList.push({slug:m.slug,label:m.slug.replace(/_/g," "),unit:m.unit});});
+   add("MICRONUTRIENTES · METAS / REFERÊNCIAS",microList.map(m=>F("nutrition_micro_"+m.slug+"_"+m.unit,m.label+" ("+m.unit+")")));
+   add("ESTRATÉGIA E OBSERVAÇÕES",[F("nutrition_strategy","Estratégia nutricional",true),F("nutrition_supplements","Suplementação (se aplicável)",true),F("nutrition_notes","Observações, critérios e acompanhamento",true)]);
+  }else if(f==="FORMA_NUTRITION_SCHEDULE"){
+   const p=o.schedule||{};
+   add("IDENTIFICAÇÃO E METAS",[F("schedule_name","Nome do cronograma"),F("schedule_objective","Objetivo",true),F("schedule_target_kcal","Energia (kcal/dia)"),F("schedule_target_protein","Proteínas (g/dia)"),F("schedule_target_carbs","Carboidratos (g/dia)"),F("schedule_target_fat","Gorduras (g/dia)"),F("schedule_notes","Orientações gerais",true)]);
+   (o.foods||[]).forEach((food,i)=>addFood("schedule_food_"+i+"_",food,"ALIMENTO EMBUTIDO "+(i+1)+" · FICHA NUTRICIONAL"));
+   (p.meals||[]).forEach((meal,i)=>{
+    add("REFEIÇÃO "+(i+1)+" · HORÁRIO E ORGANIZAÇÃO",[F("schedule_meal_"+i+"_name","Nome da refeição"),F("schedule_meal_"+i+"_time","Horário"),F("schedule_meal_"+i+"_notes","Observações",true)]);
+    (meal.items||[]).forEach((item,j)=>add("REFEIÇÃO "+(i+1)+" · ALIMENTO "+(j+1),[F("schedule_item_"+i+"_"+j+"_name","Alimento"),F("schedule_item_"+i+"_"+j+"_key","Chave na biblioteca"),F("schedule_item_"+i+"_"+j+"_g","Quantidade (g/ml)"),F("schedule_item_"+i+"_"+j+"_unit","Unidade")]));
+   });
+  }else if(f==="FORMA_BIOIMPEDANCE"){
+   const d=o.bioimpedance||{};
+   add("IDENTIFICAÇÃO DO EXAME",[F("bio_date","Data da avaliação"),F("bio_time","Horário"),F("bio_name","Nome / identificação"),F("bio_age","Idade"),F("bio_sex","Sexo utilizado pelo equipamento"),F("bio_height","Estatura (cm)"),F("bio_device","Equipamento / modelo"),F("bio_manufacturer","Fabricante"),F("bio_software","Software / versão"),F("bio_frequency","Frequência(s) utilizada(s)"),F("bio_method","Método / protocolo"),F("bio_position","Posição durante a medição"),F("bio_electrodes","Eletrodos: tipo, quantidade e posicionamento",true)]);
+   add("ANTROPOMETRIA",[F("bio_weight","Peso corporal (kg)"),F("bio_bmi","IMC (kg/m²)"),F("bio_waist","Circunferência da cintura (cm)"),F("bio_hip","Circunferência do quadril (cm)"),F("bio_waist_hip_ratio","Relação cintura / quadril"),F("bio_neck","Circunferência do pescoço (cm)"),F("bio_arm","Circunferência do braço (cm)"),F("bio_thigh","Circunferência da coxa (cm)"),F("bio_calf","Circunferência da panturrilha (cm)")]);
+   add("COMPOSIÇÃO CORPORAL",[F("bio_fat_percent","Gordura corporal (%)"),F("bio_fat_mass","Massa de gordura (kg)"),F("bio_lean_mass","Massa livre de gordura (kg)"),F("bio_muscle","Massa muscular (kg)"),F("bio_skeletal_muscle","Massa muscular esquelética (kg)"),F("bio_bone_mass","Massa óssea / mineral (kg)"),F("bio_protein_mass","Massa proteica (kg)"),F("bio_water","Água corporal (%)"),F("bio_total_body_water","Água corporal total (L)"),F("bio_intracellular_water","Água intracelular (L)"),F("bio_extracellular_water","Água extracelular (L)"),F("bio_ecw_tbw","Relação AEC / ACT"),F("bio_visceral_fat","Gordura visceral / nível"),F("bio_visceral_fat_area","Área de gordura visceral (cm²)"),F("bio_subcutaneous_fat","Gordura subcutânea (%)"),F("bio_bmr","Metabolismo basal (kcal/dia)"),F("bio_metabolic_age","Idade metabólica")]);
+   add("ANÁLISE SEGMENTAR",[F("bio_segmental_right_arm_lean","Massa magra · braço direito (kg)"),F("bio_segmental_left_arm_lean","Massa magra · braço esquerdo (kg)"),F("bio_segmental_trunk_lean","Massa magra · tronco (kg)"),F("bio_segmental_right_leg_lean","Massa magra · perna direita (kg)"),F("bio_segmental_left_leg_lean","Massa magra · perna esquerda (kg)"),F("bio_segmental_right_arm_fat","Gordura · braço direito (%)"),F("bio_segmental_left_arm_fat","Gordura · braço esquerdo (%)"),F("bio_segmental_trunk_fat","Gordura · tronco (%)"),F("bio_segmental_right_leg_fat","Gordura · perna direita (%)"),F("bio_segmental_left_leg_fat","Gordura · perna esquerda (%)")]);
+   add("DADOS ELÉTRICOS / BIOIMPEDÂNCIA",[F("bio_resistance","Resistência (Ω)"),F("bio_reactance","Reatância (Ω)"),F("bio_impedance","Impedância (Ω)"),F("bio_phase_angle","Ângulo de fase (°)"),F("bio_raw_frequency","Frequência de leitura (kHz)"),F("bio_raw_data","Valores brutos / segmentares",true)]);
+   add("AVALIAÇÃO FÍSICA COMPLEMENTAR",[F("bio_skinfold_triceps","Dobra tricipital (mm)"),F("bio_skinfold_biceps","Dobra bicipital (mm)"),F("bio_skinfold_subscapular","Dobra subescapular (mm)"),F("bio_skinfold_suprailiac","Dobra suprailíaca (mm)"),F("bio_skinfold_abdominal","Dobra abdominal (mm)"),F("bio_skinfold_thigh","Dobra da coxa (mm)"),F("bio_skinfold_calf","Dobra da panturrilha (mm)"),F("bio_skinfold_sum","Somatório das dobras (mm)"),F("bio_fat_method","Método / equação para estimar gordura")]);
+   add("PADRONIZAÇÃO E OBSERVAÇÕES",[F("bio_protocol_fasting","Jejum / intervalo desde a última refeição"),F("bio_protocol_hydration","Condição de hidratação"),F("bio_protocol_activity","Atividade física recente"),F("bio_protocol_stimulants","Cafeína / estimulantes / medicamentos relevantes"),F("bio_protocol_rest","Tempo de repouso antes da medição"),F("bio_temperature","Temperatura ambiente (°C)"),F("bio_quality_control","Controle de qualidade / calibração"),F("bio_notes","Observações e interpretação do profissional",true)]);
+  }
+  return out;
+ }
+ function formaPdfValues(o){
+  const v={},put=(key,value)=>{if(value===undefined||value===null)v[key]="";else if(Array.isArray(value))v[key]=value.join("\n");else if(typeof value==="object")v[key]=JSON.stringify(value);else v[key]=String(value);};
+  const putFood=(prefix,food)=>{
+   if(!food)return;
+   ["name","category","brand","barcode","preparation","unit","basisAmount","sourceType","k","p","c","f","fiber","sodium","description","source","sourceRef","notes"].forEach(k=>put(prefix+k,food[k]));
+   Object.entries(food.micronutrients||{}).forEach(([key,raw])=>{const m=formaMicroInfo(key,raw);put(prefix+"micro_"+m.slug+"_"+m.unit,m.value);});
+  };
+  const putExercise=(prefix,x)=>{
+   if(!x)return;
+   ["name","focus","muscle","equipment","type","level","pattern","movementPlane","laterality","setup","execution","breathing","rom","tempo","tips","cues","errors","contraindications","regressions","progressions","alternatives","sets","reps","rest","notes"].forEach(k=>put(prefix+k,x[k]));
+  };
+  if(o.format==="FORMA_LIBRARY_IMPORT"){
+   if(o.foods?.length&&!o.meals?.length)o.foods.forEach((food,i)=>putFood(i?"food_"+i+"_":"food_",food));
+   if(o.meals?.length){const meal=o.meals[0]||{};put("meal_name",meal.name);put("meal_category",meal.category);put("meal_notes",meal.notes);(o.foods||[]).forEach((food,i)=>putFood("meal_food_"+i+"_",food));(meal.items||[]).forEach((item,i)=>{put("meal_item_"+i+"_name",item.name||item.foodName);put("meal_item_"+i+"_amount",item.amount??item.g);put("meal_item_"+i+"_unit",item.unit);put("meal_item_"+i+"_foodKey",item.foodKey||item.food_key||item.key);put("meal_item_"+i+"_notes",item.notes);});}
+  }else if(o.format==="FORMA_EXERCISE_LIBRARY"){(o.exercises||[]).forEach((x,i)=>putExercise(i?"exercise_"+i+"_":"exercise_",x));}
+  else if(o.format==="FORMA_WORKOUT_PLAN"){
+   put("workout_name",o.name);put("workout_objective",o.objective);put("workout_frequency",o.frequency);put("workout_duration",o.duration);put("workout_notes",o.notes);put("workout_warmup",o.warmup);put("workout_cooldown",o.cooldown);put("workout_progression",o.progression);
+   (o.days||[]).forEach((day,i)=>{put("workout_day_"+i+"_day",day.day);put("workout_day_"+i+"_title",day.title);put("workout_day_"+i+"_subtitle",day.subtitle);(day.exercises||[]).forEach((ex,j)=>{const p="workout_day_"+i+"_exercise_"+j+"_";["name","sets","reps","rest","load","tempo","rpe","rir","notes"].forEach(k=>put(p+k,ex[k]));});});
+   (o.exerciseCatalog||[]).forEach((x,i)=>putExercise("workout_catalog_"+i+"_",x));
+  }else if(o.format==="FORMA_NUTRITION_PLAN"){
+   const p=o.plan||o,person=p.person||{},energy=p.energy||{},t=p.targets||p.target||{};
+   put("nutrition_name",p.name);put("nutrition_objective",p.objective);
+   Object.entries(person).forEach(([k,val])=>put("nutrition_person_"+k,val));
+   Object.entries(energy).forEach(([k,val])=>put("nutrition_energy_"+k,val));
+   ["kcal","protein","carbs","fat","fiber","water","sodium"].forEach(k=>put("nutrition_target_"+k,t[k]));
+   Object.entries(p.macroDistribution||{}).forEach(([k,val])=>put("nutrition_macro_"+k,val));
+   Object.entries(p.micronutrients||{}).forEach(([key,raw])=>{const m=formaMicroInfo(key,raw);put("nutrition_micro_"+m.slug+"_"+m.unit,m.value);});
+   put("nutrition_strategy",p.strategy);put("nutrition_supplements",p.supplements);put("nutrition_notes",p.notes);
+  }else if(o.format==="FORMA_NUTRITION_SCHEDULE"){
+   const p=o.schedule||{};put("schedule_name",p.name);put("schedule_objective",p.objective);put("schedule_notes",p.notes);
+   const t=p.target||{};["kcal","protein","carbs","fat"].forEach(k=>put("schedule_target_"+k,t[k]));
+   (o.foods||[]).forEach((food,i)=>putFood("schedule_food_"+i+"_",food));
+   (p.meals||[]).forEach((meal,i)=>{put("schedule_meal_"+i+"_name",meal.name);put("schedule_meal_"+i+"_time",meal.time);put("schedule_meal_"+i+"_notes",meal.notes);(meal.items||[]).forEach((item,j)=>{const q="schedule_item_"+i+"_"+j+"_";put(q+"name",item.name||item.snapshot?.name);put(q+"key",item.key||item.foodKey);put(q+"g",item.g??item.grams??item.amount);put(q+"unit",item.unit||item.snapshot?.unit);});});
+  }else if(o.format==="FORMA_BIOIMPEDANCE"){Object.entries(o.bioimpedance||{}).forEach(([k,val])=>{if(val&&typeof val==="object")return;put("bio_"+k,val);});}
+  return v;
+ }
  async function openStructuredPdf(titleText,subtitle,summaryHtml,obj){
  try{
   const L=await loadFormaPdfLib(),{PDFDocument,StandardFonts,rgb}=L,d=await PDFDocument.create();
