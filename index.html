@@ -6750,17 +6750,18 @@ body.forma-files-mode .top-tabs{display:none!important}
    const p=typeof state!=='undefined'?state.nutritionSchedule:null;
    if(!p||!Array.isArray(p.meals)||!p.meals.length){showStatus('Não há cronograma alimentar salvo neste perfil.',true);return false;}
    const portable=JSON.parse(JSON.stringify(p));
+   const embeddedFoods=new Map();
    const catalog={...(typeof FOOD_DB!=='undefined'?FOOD_DB:{}),...(state.customFoods||{})};
    const resolveFood=x=>{
     const keys=[x.key,x.foodKey,x.food_key,x.id].filter(Boolean).map(String);
     const match=Object.entries(catalog).find(([key,value])=>keys.includes(key)||keys.includes(String(value?.key||''))||keys.includes(String(value?.id||''))||keys.some(q=>normalizeFoodText(key)===normalizeFoodText(q)||normalizeFoodText(value?.name)===normalizeFoodText(q)));
     const food=(typeof scheduleFood==='function'?scheduleFood(x):null)||match?.[1]||null;
     const snap=x.snapshot||x.foodSnapshot||{};
-    if(food)x.snapshot={...snap,name:food.name||snap.name||x.name||'Alimento',unit:food.unit||snap.unit||'g',basisAmount:Number(food.basisAmount||snap.basisAmount)||100,basisUnit:food.unit||snap.basisUnit||'g',k:Number(food.k??food.kcal??snap.k)||0,p:Number(food.p??food.protein??snap.p)||0,c:Number(food.c??food.carbs??snap.c)||0,f:Number(food.f??food.fat??snap.f)||0,sourceType:food.sourceType||snap.sourceType||'custom',source:food.source||snap.source||'Exportado pelo FORMA'};
+    if(food){const foodKey=food.key||match?.[0]||keys[0]||('custom_'+normalizeFoodText(food.name).replace(/\s+/g,'_'));x.snapshot={...foodSnapshot(food),...snap,name:food.name||snap.name||x.name||'Alimento',unit:food.unit||snap.unit||'g',basisAmount:Number(food.basisAmount||snap.basisAmount)||100,basisUnit:food.unit||snap.basisUnit||'g',k:Number(food.k??food.kcal??snap.k)||0,p:Number(food.p??food.protein??snap.p)||0,c:Number(food.c??food.carbs??snap.c)||0,f:Number(food.f??food.fat??snap.f)||0,sourceType:food.sourceType||snap.sourceType||'custom',source:food.source||snap.source||'Exportado pelo FORMA'};embeddedFoods.set(foodKey,{...foodSnapshot(food),key:foodKey});}
     else x.snapshot={...snap,name:snap.name||x.name||x.foodName||String(x.key||'Alimento').replace(/^custom_/,'').replace(/_/g,' ')};
    };
    portable.meals.forEach(m=>{(m.items||[]).forEach(resolveFood);(m.options||[]).forEach(o=>(o.items||[]).forEach(resolveFood));});
-   const payload={format:'FORMA_NUTRITION_SCHEDULE',version:1,schedule:portable};
+   const payload={format:'FORMA_NUTRITION_SCHEDULE',version:2,foods:[...embeddedFoods.values()],schedule:portable};
    const fmt=v=>v===null||v===undefined||v===''?'—':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:1});
    const optionHtml=(option,index,selected)=>{const items=option.items||[],rows=items.map(x=>{
     const snap=x.snapshot||{},amount=Number(x.g??x.grams??x.amount??0)||0,base=Number(snap.basisAmount||snap.basis_amount||100)||100,factor=amount>0?amount/base:1;
