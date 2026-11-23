@@ -4281,7 +4281,7 @@ function importWorkoutPlan(){
  if(!pendingWorkoutImport)return;
  if(state.sessionActive){alert("Finalize ou saia da sessão de treino em andamento antes de importar outro plano. Seus registros atuais não serão alterados.");return;}
  const plan=pendingWorkoutImport,previousState=JSON.parse(JSON.stringify(state));
- if(!confirm("Importar “"+plan.name+"” e substituir o plano ativo deste perfil?\n\n"+plan.days.length+" dias · "+plan.totalExercises+" exercícios.\nExercícios novos na biblioteca: "+(plan.exerciseCatalog||[]).length+".\n\nO histórico de sessões, cargas e progresso será preservado. As marcações de conclusão da semana serão reiniciadas."))return;
+ if(!confirm("Importar “"+plan.name+"” e substituir o plano ativo deste perfil?\n\n"+plan.days.length+" dias · "+plan.totalExercises+" exercícios.\nFichas técnicas embutidas: "+(plan.exerciseCatalog||[]).length+".\n\nO histórico de sessões, cargas e progresso será preservado. As marcações de conclusão da semana serão reiniciadas."))return;
  const exerciseResult=importEmbeddedExerciseRecords(plan.exerciseCatalog||[]);
  state.generatedWorkoutPlan=plan.days.map(day=>({day:day.day,short:day.short,title:day.title,sub:day.sub,ex:day.ex.map(ex=>ex.slice())}));
  state.generatedWorkoutPlanDetails=plan.details||null;
