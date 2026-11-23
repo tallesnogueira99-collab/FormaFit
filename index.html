@@ -4514,7 +4514,7 @@ function importEmbeddedExerciseRecords(records){
   const inferred=typeof window.inferExercise==="function"?window.inferExercise(name):null;
   if(existingNames.has(normalized)||(inferred?.name&&normalizeFoodText(inferred.name)===normalized)){result.duplicates++;return;}
   const muscle=String(raw.muscle||raw.primaryMuscle||raw.grupo_muscular||"").trim();
-  const focus=String(raw.focus||raw.muscleFocus||raw.foco||inferred?.focus||"").trim();
+  const focus=String(raw.focus||raw.muscleFocus||raw.foco||raw.muscle||raw.grupo_muscular||inferred?.focus||"").trim();
   if(!focus){result.invalid++;return;}
   const id="import_"+formaImportSlug(name),arrays=(v)=>Array.isArray(v)?v.map(String):String(v||"").split(/[\n;|]/).map(x=>x.trim()).filter(Boolean);
   const item={...raw,id,name,muscle:muscle||focus,focus,secondary:arrays(raw.secondary||raw.secondaryMuscles),equipment:String(raw.equipment||""),type:String(raw.type||"Composto"),level:String(raw.level||"Intermediário"),pattern:String(raw.pattern||""),movementPlane:String(raw.movementPlane||""),laterality:String(raw.laterality||"Bilateral"),setup:String(raw.setup||""),execution:String(raw.execution||""),breathing:String(raw.breathing||""),rom:String(raw.rom||""),tempo:String(raw.tempo||""),tips:arrays(raw.tips),cues:arrays(raw.cues),errors:arrays(raw.errors),contraindications:arrays(raw.contraindications),regressions:arrays(raw.regressions),progressions:arrays(raw.progressions),alternatives:arrays(raw.alternatives),sets:String(raw.sets||"3"),reps:String(raw.reps||"8–12"),rest:String(raw.rest||"90 s"),notes:String(raw.notes||"")};
