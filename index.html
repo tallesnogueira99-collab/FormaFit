@@ -6127,12 +6127,12 @@ body.forma-files-mode .top-tabs{display:none!important}
    const meals=(p.meals||[]).map((m,i)=>{
     const items=(m.items||[]).map(item=>{
      const snap=item.snapshot||item.foodSnapshot||foodFor(item.key||item.foodKey)||{};
-     const amount=Number(item.amount??item.g??item.grams??0);
+     const amount=Number(item.g??item.grams??item.amount??0)||0;
      const basis=Number(snap.basisAmount||snap.basis_amount||100)||100;
-     const macro=(a,b)=>{const v=item[a]??item[{k:'kcal',p:'protein',c:'carbs',f:'fat'}[b]]??snap[b]??snap[a];return v!==undefined&&v!==null&&v!==''?Number(v)*(source==='schedule'||source==='generated'?amount/basis:1):null;};
+     const macro=(a,b)=>{const direct=item[a]??item[{k:'kcal',p:'protein',c:'carbs',f:'fat'}[b]],v=direct??snap[b]??snap[a];if(v===undefined||v===null||v==='')return null;return Number(v)*(source==='schedule'&&direct===undefined?amount/basis:1);};
      const name=item.name||item.foodName||snap.name||item.key||'Alimento';
      const unit=item.unit||snap.unit||'g';
-     const portion=item.amount??(item.g!==undefined?item.g+' '+unit:item.grams!==undefined?item.grams+' '+unit:'');
+     const portion=item.g!==undefined?item.g+' '+unit:item.grams!==undefined?item.grams+' '+unit:item.amount??'';
      return {name,amount:String(portion),kcal:macro('k','kcal'),protein:macro('p','protein'),carbs:macro('c','carbs'),fat:macro('f','fat'),unit};
     });
     const sum=key=>{const vals=items.map(x=>x[key]).filter(v=>Number.isFinite(v));return vals.length?vals.reduce((a,b)=>a+b,0):null;};
