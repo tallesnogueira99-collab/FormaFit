@@ -4553,9 +4553,11 @@ async function importSavedMealsFile(input){
   if(/^\s*\{/.test(content)){try{structured=JSON.parse(content);}catch(_){}}
   const isForma=structured?.format==="FORMA_LIBRARY_IMPORT";
   const embeddedFoods=isForma?(structured.foods||[]):[];
+  if(isForma){(structured.meals||[]).forEach(meal=>(meal.items||[]).forEach(item=>{const linked=embeddedFoods.find(food=>String(food.key||"")===String(item.foodKey||item.food_key||item.key||""));if(linked&&!String(linked.name||"").trim()&&String(item.name||"").trim())linked.name=String(item.name).trim();}));}
   const rows=isForma?(Array.isArray(structured.meals)?structured.meals:[]):parseLibraryFileText(content,file.name);
   if(!rows.length)throw new Error("Não encontrei refeições. Use um PDF com refeições, ingredientes, quantidades e fichas nutricionais dos alimentos.");
-  const foodResult=importEmbeddedFoodRecords(embeddedFoods);loadCustomFoodsIntoDB();
+  (incoming.meals||[]).forEach(meal=>(meal.items||[]).forEach(item=>{const linked=embeddedFoods.find(food=>String(food.key||"")===String(item.key||item.foodKey||""));if(linked&&!String(linked.name||"").trim()&&String(item.name||"").trim())linked.name=String(item.name).trim();}));
+ const foodResult=importEmbeddedFoodRecords(embeddedFoods);loadCustomFoodsIntoDB();
   const grouped=new Map();
   for(const row of rows){
    const mealName=String(row.meal_name??row.mealName??row.refeicao??row.nome_refeicao??row.name??row.nome??"").trim();if(!mealName)continue;
