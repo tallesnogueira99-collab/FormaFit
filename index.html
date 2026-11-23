@@ -6475,6 +6475,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   const font=await d.embedFont(StandardFonts.Helvetica),bold=await d.embedFont(StandardFonts.HelveticaBold),form=d.getForm();
   const W=595.28,H=841.89,margin=42,contentW=W-margin*2;
   const ink=rgb(.12,.17,.24),muted=rgb(.40,.47,.56),accent=rgb(.86,.20,.25),pale=rgb(.96,.97,.985),line=rgb(.82,.85,.89),white=rgb(1,1,1),soft=rgb(.99,.985,.98);
+  const wrap=(txt,max,size,f)=>{const words=String(txt??"").split(/\s+/),out=[];let row="";for(const word of words){const test=row?row+" "+word:word;if(f.widthOfTextAtSize(test,size)>max&&row){out.push(row);row=word;}else row=test;}if(row)out.push(row);return out;};
   const schema=formaPdfSchema(obj),values=formaPdfValues(obj);
   let page=null,y=0,pageNo=0;
   const clean=v=>String(v??"").replace(/\s+/g," ").trim();
