@@ -4405,7 +4405,7 @@ function importEmbeddedFoodRecords(records){
   const base=Number(raw.basisAmount??raw.basis_amount)||100;
   if(!Number.isFinite(base)||base<=0||base>10000){result.invalid++;return;}
   const factor=100/base,unit=String(raw.unit||raw.basisUnit||"g").toLowerCase()==="ml"?"ml":"g";
-  const macros={k:Number(raw.k)*factor,p:Number(raw.p)*factor,c:Number(raw.c)*factor,f:Number(raw.f)*factor};
+  const macros={k:Number(String(raw.k).replace(",","."))*factor,p:Number(String(raw.p).replace(",","."))*factor,c:Number(String(raw.c).replace(",","."))*factor,f:Number(String(raw.f).replace(",","."))*factor};
   if(Object.values(macros).some(v=>!Number.isFinite(v)||v<0)||macros.k>1000||[macros.p,macros.c,macros.f].some(v=>v>100)||macros.p+macros.c+macros.f>100.01){result.invalid++;return;}
   let micros=raw.micronutrients||raw.micros||{};
   if(typeof micros==="string"){try{micros=JSON.parse(micros);}catch{micros={};}}
@@ -4492,7 +4492,7 @@ async function importSavedMealsFile(input){
     const rawFoodKey=String(raw.foodKey??raw.food_key??raw.key??"");
     const mappedKey=foodResult.keyMap[rawFoodKey]||rawFoodKey;
     const keyedFood=FOOD_DB[mappedKey]||state.customFoods?.[mappedKey];
-    const foodName=String(raw.name??raw.food??raw.alimento??raw.ingredient??raw.ingrediente??keyedFood?.name??"").trim();
+    const foodName=String(raw.name||raw.food||raw.alimento||raw.ingredient||raw.ingrediente||keyedFood?.name||"").trim();
     const amount=importNumeric(raw.amount??raw.quantidade??raw.grams??raw.gramas);
     if(!foodName||!amount||amount<=0||amount>10000)continue;
     const match=Object.entries({...FOOD_DB,...(state.customFoods||{})}).find(([key,food])=>normalizeFoodText(food?.name)===normalizeFoodText(foodName)||key===mappedKey);
