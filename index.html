@@ -3867,7 +3867,7 @@ async function readFormaImportPdfText(file){
     const container=JSON.parse(new TextDecoder().decode(item.content));
     if(container.format!=="FORMA_PDF_CONTAINER"||!container.payload)continue;
     const fields=await pdf.getFieldObjects?.(),values={};
-    if(fields)for(const [name,group] of Object.entries(fields)){const value=group?.[0]?.fieldValue;if(value!==undefined&&value!==null&&String(value).trim())values[name]=String(value);}
+    if(fields)for(const [name,group] of Object.entries(fields)){const value=group?.[0]?.fieldValue;if(value!==undefined&&value!==null)values[name]=String(value);}
     const payload=container.payload;
     for(const [key,value] of Object.entries(values)){applyFormaPdfField(payload,key,value);}
     return JSON.stringify(payload);
