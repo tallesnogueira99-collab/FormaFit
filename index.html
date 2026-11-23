@@ -4495,7 +4495,8 @@ function importEmbeddedFoodRecords(records){
   let key=String(raw.key||"").startsWith("custom_")?String(raw.key):"custom_"+formaImportSlug(name);
   if(!key||key==="custom_")key="custom_imported_food_"+(index+1);
   let suffix=2,baseKey=key;while(catalog()[key])key=baseKey+"_"+suffix++;
-  const item={...raw,...macros,id:key,key,name,unit,basisAmount:100,basisUnit:unit,micronutrients:normalizedMicros,sourceType:String(raw.sourceType||"imported"),source:String(raw.source||"Importado com refeição/cronograma"),sourceRef:String(raw.sourceRef||""),preparation:String(raw.preparation||""),updatedAt:new Date().toISOString()};
+  const scaledOptional=k=>raw[k]===undefined||raw[k]===null||raw[k]===""?null:Number(String(raw[k]).replace(",","."))*factor;
+  const item={...raw,...macros,id:key,key,name,unit,basisAmount:100,basisUnit:unit,fiber:scaledOptional("fiber"),sodium:scaledOptional("sodium"),micronutrients:normalizedMicros,sourceType:String(raw.sourceType||"imported"),source:String(raw.source||"Importado com refeição/cronograma"),sourceRef:String(raw.sourceRef||""),preparation:String(raw.preparation||""),updatedAt:new Date().toISOString()};
   state.customFoods[key]=item;if(raw.key)result.keyMap[String(raw.key)]=key;result.added++;
  });
  if(result.added)loadCustomFoodsIntoDB();
