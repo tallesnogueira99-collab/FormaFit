@@ -5905,7 +5905,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
    const foodName=String(item.name||embedded?.name||"").trim();
    const existing=foodName?Object.entries(catalog).find(([key,food])=>normalizeFoodText(food?.name)===normalizeFoodText(foodName)):null;
    if(existing){item.key=existing[0];item.snapshot=foodSnapshot(existing[1]);item.name=existing[1].name;}
-   else if(embedded){item.snapshot=item.snapshot||embedded;item.name=item.name||embedded.name||"";}
+   else if(embedded){if(!sanitizeScheduleSnapshot(item.snapshot))item.snapshot=embedded;item.name=item.name||embedded.name||"";}
   };
   incoming.meals.forEach(meal=>{(meal.items||[]).forEach(resolveEmbedded);(meal.options||[]).forEach(option=>(option.items||[]).forEach(resolveEmbedded));});
  }
