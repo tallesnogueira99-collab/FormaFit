@@ -4532,6 +4532,7 @@ async function importLibraryFile(input,kind){
  const file=input.files&&input.files[0];if(!file)return;
  const beforeFoods=JSON.parse(JSON.stringify(state.customFoods||{})),beforeExercises=JSON.parse(JSON.stringify(state.customExercises||[]));
  try{
+  if(file.size>15*1024*1024)throw new Error("O arquivo ultrapassa o limite de 15 MB.");
   const rows=parseLibraryFileText(await readFormaImportPdfText(file),file.name);
   if(!rows.length)throw new Error("Não encontrei registros no PDF. Confira se o arquivo contém os dados estruturados do modelo.");
   let result;
