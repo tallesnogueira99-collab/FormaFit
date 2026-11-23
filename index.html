@@ -6006,7 +6006,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   if(kind==='schedule'){
    const p=typeof state!=='undefined'?state.nutritionSchedule:null;
    if(!p||!Array.isArray(p.meals)||!p.meals.length){showStatus('Não há cronograma alimentar salvo neste perfil.',true);return false;}
-   const payload={format:'FORMA_NUTRITION_SCHEDULE',version:1,schedule:JSON.parse(JSON.stringify(p))};
+   const portable=JSON.parse(JSON.stringify(p));const addSnapshots=items=>(items||[]).forEach(x=>{const food=(typeof FOOD_DB!=='undefined'&&FOOD_DB[x.key])||state.customFoods?.[x.key];if(food&&!x.snapshot)x.snapshot={name:food.name||x.key,unit:food.unit||'g',basisAmount:Number(food.basisAmount)||100,basisUnit:food.unit||'g',k:Number(food.k??food.kcal)||0,p:Number(food.p??food.protein)||0,c:Number(food.c??food.carbs)||0,f:Number(food.f??food.fat)||0,sourceType:food.sourceType||'custom',source:food.source||'Exportado pelo FORMA'};});portable.meals.forEach(m=>{addSnapshots(m.items);(m.options||[]).forEach(o=>addSnapshots(o.items));});const payload={format:'FORMA_NUTRITION_SCHEDULE',version:1,schedule:portable};
    const summary='<section class="section"><h2>'+escapeHtml(p.name||'Cronograma alimentar')+'</h2>'+p.meals.map((m,i)=>'<section class="section"><h3>'+(i+1)+'. '+escapeHtml(m.name)+' · '+escapeHtml(m.time||'')+'</h3>'+table(['Alimento','Quantidade'],(m.items||[]).map(x=>[x.snapshot?.name||x.name||x.key,x.g||x.amount]))+'</section>').join('')+'</section>';
    return openStructuredPdf('Cronograma alimentar','Refeições planejadas · PDF',summary,payload);
   }
@@ -6113,7 +6113,8 @@ body.forma-files-mode .top-tabs{display:none!important}
   if(button||template){e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal(template?'modelos':'importar');}
  },true);
  const bioLabel=$('overviewBioFile')?.closest('.bio-dropzone');
- if(bioLabel){bioLabel.addEventListener('click',e=>{if(e.target!==$('overviewBioFile')){e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');}},true);const small=$('overviewBioFileLabel');if(small)small.textContent='Importação centralizada · selecione o PDF na Central de arquivos';}
+ if(bioLabel){bioLabel.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');},true);const small=$('overviewBioFileLabel');if(small)small.textContent='Importação centralizada · selecione o PDF na Central de arquivos';}
+ $('overviewBioFile')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');},true);
  // Não deixar os antigos botões de importação por categoria contornarem o fluxo único.
  ['importBackupFile','importFoodsFile','importMealsFile','importExercisesFile','nutritionImportFile','workoutImportFile','nutritionScheduleFile','bioFile','overviewBioFile'].forEach(id=>{const input=$(id);if(input)input.accept='.pdf,application/pdf';});
  const bioFile=$('bioFile');if(bioFile){bioFile.closest('.field')?.classList.add('forma-bio-import-legacy');bioFile.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');},true);}
