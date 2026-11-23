@@ -4609,7 +4609,7 @@ async function importSavedMealsFile(input){
    state.savedMeals.push({id:"meal_import_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7),name:name.slice(0,90),items:valid,createdAt:now,updatedAt:now,source:"file-import"});
    existing.add(normalizeFoodText(name));added++;
   }
-  if(!added&&!foodResult.added)throw new Error("Nenhuma refeição ou alimento novo foi importado. Verifique se os alimentos têm nome, quantidade e composição nutricional completa.");
+  if(!added&&!skipped&&!foodResult.added&&!foodResult.duplicates)throw new Error("Nenhuma refeição ou alimento válido foi encontrado. Verifique nomes, quantidades e composição nutricional.");
   if(!save()){state.savedMeals=beforeMeals;state.customFoods=beforeFoods;loadCustomFoodsIntoDB();throw new Error("Não foi possível confirmar o salvamento. Os dados anteriores foram preservados; confira o armazenamento e tente novamente.");}
   loadCustomFoodsIntoDB();populateFoodPicker();renderSavedMealsList();renderFoodLibraryMeals();renderFoodLibrary();
   const extra=missingFoods.length?"\nAlimentos não cadastrados por falta de composição nutricional: "+[...new Set(missingFoods)].slice(0,12).join(", ")+(missingFoods.length>12?"…":""):"";
