@@ -4461,7 +4461,69 @@ state.foodOverrides=state.foodOverrides&&typeof state.foodOverrides==='object'?s
  }
  alert(`Importação concluída.\n\nNovos registros: ${added}\nAtualizados: ${updated}\nIgnorados por dados inválidos ou sem foco: ${skipped}${unclassified.length?`\n\nNão importados por falta de foco específico: ${unclassified.join(', ')}. Inclua o campo focus/foco no arquivo e importe novamente.`:''}\n\nOs dados classificados foram adicionados à biblioteca sem apagar os demais registros.`);
  }catch(err){console.error(err);alert('Não foi possível importar o arquivo. Confira se o PDF contém os campos obrigatórios e texto selecionável.\n\nDetalhe: '+err.message);}finally{input.value='';}}
-async function importSavedMealsFile(input){const file=input.files&&input.files[0];if(!file)return;try{if(file.size>15*1024*1024)throw new Error('O arquivo ultrapassa o limite de 15 MB.');const rows=parseLibraryFileText(await readFormaImportPdfText(file),file.name);if(!rows.length)throw new Error('Não encontrei refeições. Use um PDF com refeições, alimentos, quantidades e unidades.');loadCustomFoodsIntoDB();const grouped=new Map();for(const row of rows){const mealName=String(row.meal_name??row.mealName??row.refeicao??row.nome_refeicao??row.name??row.nome??'').trim();if(!mealName)continue;let items=row.items??row.ingredientes??row.foods??null;if(typeof items==='string'){try{items=JSON.parse(items)}catch{items=null}}if(Array.isArray(items)){const list=grouped.get(mealName)||[];list.push(...items);grouped.set(mealName,list)}else{const foodName=String(row.food??row.food_name??row.alimento??row.ingredient??row.ingrediente??'').trim();if(!foodName)continue;const list=grouped.get(mealName)||[];list.push({...row,name:foodName});grouped.set(mealName,list)}}if(!grouped.size)throw new Error('Não encontrei refeições com nome e ingredientes. Confira os campos do arquivo.');const beforeMeals=(state.savedMeals||[]).slice();state.savedMeals=beforeMeals.slice();let added=0,skipped=0,missingFoods=[];const existing=new Set((state.savedMeals||[]).map(m=>normalizeFoodText(m.name)));for(const [name,rawItems] of grouped){if(existing.has(normalizeFoodText(name))){skipped++;continue;}const items=[];for(const raw of rawItems){const rawFoodKey=String(raw.foodKey??raw.food_key??'');const keyedFood=FOOD_DB[rawFoodKey];const foodName=String(raw.name??raw.food??raw.alimento??raw.ingredient??raw.ingrediente??keyedFood?.name??'').trim();const amount=importNumeric(raw.amount??raw.quantidade??raw.grams??raw.gramas);if(!foodName||!amount||amount<=0||amount>10000){continue;}const match=Object.entries(FOOD_DB).find(([key,f])=>normalizeFoodText(f.name)===normalizeFoodText(foodName)||normalizeFoodText(key)===normalizeFoodText(String(raw.foodKey??raw.food_key??'')));let food=match?.[1]||null,key=match?.[0]||'';let snapshot=raw.snapshot??raw.foodSnapshot??raw.food_snapshot??null;if(typeof snapshot==='string'){try{snapshot=JSON.parse(snapshot)}catch{snapshot=null}}if(!food&&snapshot&&[snapshot.k,snapshot.p,snapshot.c,snapshot.f].every(v=>v!==null&&v!==''&&Number.isFinite(Number(v)))){food={name:foodName,unit:String(raw.unit??raw.unidade??snapshot.unit??'g'),basisAmount:Number(snapshot.basisAmount)||100,basisUnit:snapshot.basisUnit||snapshot.unit||'g',k:Number(snapshot.k),p:Number(snapshot.p),c:Number(snapshot.c),f:Number(snapshot.f),micronutrients:snapshot.micronutrients||{},source:snapshot.source||'Importado com a refeição',sourceType:snapshot.sourceType||'other'};}if(!food){const k=importNumeric(raw.k??raw.kcal??raw.calorias),p=importNumeric(raw.p??raw.protein??raw.proteina),c=importNumeric(raw.c??raw.carbs??raw.carboidratos),f=importNumeric(raw.f??raw.fat??raw.gorduras);if([k,p,c,f].every(v=>v!==null&&v>=0)){food={name:foodName,unit:String(raw.unit??raw.unidade??'g').toLowerCase()==='ml'?'ml':'g',basisAmount:importNumeric(raw.basisAmount??raw.base_amount??raw.base_g)??100,basisUnit:String(raw.unit??raw.unidade??'g'),k,p,c,f,source:'Importado com a refeição',sourceType:'other'};}else{missingFoods.push(foodName);continue;}}items.push({foodKey:key,name:foodName,amount,unit:String(raw.unit??raw.unidade??food.unit??'g'),snapshot:snapshot||foodSnapshot(food)});}const valid=snapshotSavedMealItems(items);if(!valid.length){skipped++;continue;}const now=new Date().toISOString();state.savedMeals.push({id:'meal_import_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7),name:name.slice(0,90),items:valid,createdAt:now,updatedAt:now,source:'file-import'});existing.add(normalizeFoodText(name));added++;}if(!added&&!skipped)throw new Error('Nenhuma refeição válida foi importada. Verifique se os ingredientes têm quantidade e dados nutricionais ou existem na biblioteca de alimentos.');if(!save()){state.savedMeals=beforeMeals;throw new Error('Não foi possível confirmar o salvamento. Os dados anteriores foram preservados; confira o armazenamento e tente novamente.');}renderSavedMealsList();renderFoodLibraryMeals();renderFoodLibrary();const extra=missingFoods.length?'\nIngredientes sem dados correspondentes/nutricionais: '+[...new Set(missingFoods)].slice(0,12).join(', ')+(missingFoods.length>12?'…':''):'';alert(`Importação de refeições concluída.\n\nRefeições adicionadas: ${added}\nIgnoradas (duplicadas ou inválidas): ${skipped}${extra}\n\nAs refeições e os alimentos já existentes foram preservados.`);}catch(err){console.error(err);alert('Não foi possível importar as refeições. Confira o formato JSON/CSV e os campos obrigatórios.\n\nDetalhe: '+err.message);}finally{input.value='';}}
+async function importSavedMealsFile(input){
+ const file=input.files&&input.files[0];if(!file)return;
+ const beforeMeals=JSON.parse(JSON.stringify(state.savedMeals||[])),beforeFoods=JSON.parse(JSON.stringify(state.customFoods||{}));
+ try{
+  if(file.size>15*1024*1024)throw new Error("O arquivo ultrapassa o limite de 15 MB.");
+  const content=await readFormaImportPdfText(file);let structured=null;
+  if(/^\s*\{/.test(content)){try{structured=JSON.parse(content);}catch(_){}}
+  const isForma=structured?.format==="FORMA_LIBRARY_IMPORT";
+  const embeddedFoods=isForma?(structured.foods||[]):[];
+  const rows=isForma?(Array.isArray(structured.meals)?structured.meals:[]):parseLibraryFileText(content,file.name);
+  if(!rows.length)throw new Error("Não encontrei refeições. Use um PDF com refeições, ingredientes, quantidades e fichas nutricionais dos alimentos.");
+  const foodResult=importEmbeddedFoodRecords(embeddedFoods);loadCustomFoodsIntoDB();
+  const grouped=new Map();
+  for(const row of rows){
+   const mealName=String(row.meal_name??row.mealName??row.refeicao??row.nome_refeicao??row.name??row.nome??"").trim();if(!mealName)continue;
+   let items=row.items??row.ingredientes??row.foods??null;
+   if(typeof items==="string"){try{items=JSON.parse(items);}catch{items=null;}}
+   if(Array.isArray(items)){const list=grouped.get(mealName)||[];list.push(...items);grouped.set(mealName,list);}
+   else{const foodName=String(row.food??row.food_name??row.alimento??row.ingredient??row.ingrediente??"").trim();if(!foodName)continue;const list=grouped.get(mealName)||[];list.push({...row,name:foodName});grouped.set(mealName,list);}
+  }
+  if(!grouped.size)throw new Error("Não encontrei refeições com nome e ingredientes. Confira os campos do arquivo.");
+  state.savedMeals=(state.savedMeals||[]).slice();
+  let added=0,skipped=0,missingFoods=[];
+  const existing=new Set(state.savedMeals.map(m=>normalizeFoodText(m.name)));
+  for(const [name,rawItems] of grouped){
+   if(existing.has(normalizeFoodText(name))){skipped++;continue;}
+   const items=[];
+   for(const raw of rawItems){
+    const rawFoodKey=String(raw.foodKey??raw.food_key??raw.key??"");
+    const mappedKey=foodResult.keyMap[rawFoodKey]||rawFoodKey;
+    const keyedFood=FOOD_DB[mappedKey]||state.customFoods?.[mappedKey];
+    const foodName=String(raw.name??raw.food??raw.alimento??raw.ingredient??raw.ingrediente??keyedFood?.name??"").trim();
+    const amount=importNumeric(raw.amount??raw.quantidade??raw.grams??raw.gramas);
+    if(!foodName||!amount||amount<=0||amount>10000)continue;
+    const match=Object.entries({...FOOD_DB,...(state.customFoods||{})}).find(([key,food])=>normalizeFoodText(food?.name)===normalizeFoodText(foodName)||key===mappedKey);
+    let food=match?.[1]||null,key=match?.[0]||"";
+    let snapshot=raw.snapshot??raw.foodSnapshot??raw.food_snapshot??null;
+    if(typeof snapshot==="string"){try{snapshot=JSON.parse(snapshot);}catch{snapshot=null;}}
+    if(!food&&snapshot&&formaHasCompleteMacros(snapshot)){
+     const imported=importEmbeddedFoodRecords([{...snapshot,key:rawFoodKey,name:foodName}]);loadCustomFoodsIntoDB();
+     const found=Object.entries({...FOOD_DB,...(state.customFoods||{})}).find(([k,x])=>normalizeFoodText(x?.name)===normalizeFoodText(foodName));
+     if(found){key=found[0];food=found[1];}
+    }
+    if(!food){missingFoods.push(foodName);continue;}
+    // Alimento já existente não é sobrescrito: a refeição passa a usar os dados da biblioteca local.
+    items.push({foodKey:key,name:food.name||foodName,amount,unit:String(raw.unit??raw.unidade??food.unit??"g"),snapshot:foodSnapshot(food)});
+   }
+   const valid=snapshotSavedMealItems(items);
+   if(!valid.length){skipped++;continue;}
+   const now=new Date().toISOString();
+   state.savedMeals.push({id:"meal_import_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7),name:name.slice(0,90),items:valid,createdAt:now,updatedAt:now,source:"file-import"});
+   existing.add(normalizeFoodText(name));added++;
+  }
+  if(!added&&!foodResult.added)throw new Error("Nenhuma refeição ou alimento novo foi importado. Verifique se os alimentos têm nome, quantidade e composição nutricional completa.");
+  if(!save()){state.savedMeals=beforeMeals;state.customFoods=beforeFoods;loadCustomFoodsIntoDB();throw new Error("Não foi possível confirmar o salvamento. Os dados anteriores foram preservados; confira o armazenamento e tente novamente.");}
+  loadCustomFoodsIntoDB();populateFoodPicker();renderSavedMealsList();renderFoodLibraryMeals();renderFoodLibrary();renderMeals();
+  const extra=missingFoods.length?"\nAlimentos não cadastrados por falta de composição nutricional: "+[...new Set(missingFoods)].slice(0,12).join(", ")+(missingFoods.length>12?"…":""):"";
+  alert("Importação de refeições concluída.\n\nRefeições adicionadas: "+added+"\nAlimentos novos na biblioteca: "+foodResult.added+"\nAlimentos já existentes preservados: "+foodResult.duplicates+"\nRefeições ignoradas (duplicadas ou inválidas): "+skipped+extra+"\n\nNenhum alimento existente foi sobrescrito.");
+ }catch(err){
+  console.error(err);state.savedMeals=beforeMeals;state.customFoods=beforeFoods;loadCustomFoodsIntoDB();
+  alert("Não foi possível importar as refeições. Confira o PDF e os campos obrigatórios.\n\nDetalhe: "+err.message);
+ }finally{input.value="";}
+}
 $('importFoodsFile')?.addEventListener('change',e=>importLibraryFile(e.target,'food'));
 $('importExercisesFile')?.addEventListener('change',e=>importLibraryFile(e.target,'exercise'));
 $('importMealsFile')?.addEventListener('change',e=>importSavedMealsFile(e.target));
