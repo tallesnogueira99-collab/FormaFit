@@ -6080,11 +6080,27 @@ body.forma-files-mode .top-tabs{display:none!important}
     const input=$('overviewBioFile');if(!input)throw new Error('A leitura de bioimpedância não está disponível nesta tela.');
     requestAnimationFrame(()=>{try{dispatchFile('overviewBioFile',file);}catch(err){alert(err.message);}});return;
    }
-   const targets={backup:'importBackupFile',workout:'workoutImportFile',nutrition:'nutritionImportFile',exercises:'importExercisesFile',library:'unifiedImportFile'};
-   const target=targets[kind];dispatchFile(target,file);
-   close();
+   if(kind==='workout'||kind==='nutrition'){
+    const card=$(kind==='workout'?'workoutImportCard':'nutritionImportCard');
+    if(!card)throw new Error('O painel de prévia desta importação não está disponível.');
+    modalBody.replaceChildren(status,card);modalTitle.textContent=kind==='workout'?'Prévia do plano de treino':'Prévia do plano nutricional';modalDesc.textContent='Confira os dados reconhecidos pelo FORMA. Nada será substituído até você confirmar a importação.';modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+    dispatchFile(kind==='workout'?'workoutImportFile':'nutritionImportFile',file);showStatus('PDF identificado como '+labels[kind]+'. Aguarde a leitura e revise a prévia.',false);return;
+   }
+   if(kind==='library'){
+    const importStatus=$('settingsImportStatus'),preview=$('settingsImportPreview');
+    modalBody.replaceChildren(status,importStatus,preview);modalTitle.textContent='Prévia da importação';modalDesc.textContent='Confira os alimentos e as refeições encontrados. Nenhum registro será salvo até sua confirmação.';modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+    dispatchFile('unifiedImportFile',file);showStatus('PDF identificado como alimentos e/ou refeições. Aguarde a leitura e revise a prévia.',false);return;
+   }
+   if(kind==='schedule'){
+    const scheduleStatus=$('nutritionScheduleStatus');if(scheduleStatus)modalBody.replaceChildren(status,scheduleStatus);
+    modalTitle.textContent='Importar cronograma alimentar';modalDesc.textContent='O FORMA validará as refeições, quantidades e referências nutricionais antes de substituir o cronograma atual.';modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+    if(typeof window.formaImportNutritionScheduleFile!=='function')throw new Error('O importador de cronograma não está disponível.');
+    await window.formaImportNutritionScheduleFile(file);showStatus('PDF identificado como cronograma alimentar. Confira o resultado da validação.',false);return;
+   }
+   const targets={backup:'importBackupFile',exercises:'importExercisesFile'};
+   dispatchFile(targets[kind],file);close();
    if(kind==='backup')showStatus('PDF identificado como backup completo. Confira a confirmação de restauração antes de substituir os dados atuais.',false);
-   else showStatus('PDF identificado como '+labels[kind]+'. O importador correspondente foi aberto para validar os dados antes de salvar.',false);
+   else showStatus('PDF identificado como biblioteca de exercícios. O FORMA validará os registros e informará o resultado.',false);
   }catch(err){console.error('FORMA importação universal',err);showStatus(err.message||'Não foi possível analisar o PDF.',true);}
  }
  pdfInput.addEventListener('change',()=>{const file=pdfInput.files?.[0];if(file)handleUniversalImport(file);pdfInput.value='';});
