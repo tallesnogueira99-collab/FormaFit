@@ -6126,7 +6126,7 @@ body.forma-files-mode .top-tabs{display:none!important}
        const preview=wrap(val,w-12,7,font).slice(0,longKeys.has(pair[0])?3:1);
        preview.forEach((lineText,n)=>page.drawText(lineText,{x:x+6,y:y-25-n*8,size:7,font,color:white}));
       }else page.drawText("Preencha este campo",{x:x+6,y:y-25,size:7,font,color:muted});
-      const field=form.createTextField(pair[0]);field.setFont(font);field.setFontSize(8);
+      const field=form.createTextField(pair[0]);field.setFontSize(8);
       if(val)field.setText(val);
       if(longKeys.has(pair[0]))field.enableMultiline();
       field.addToPage(page,{x,y:y-43,width:w,height:29,borderColor:red,borderWidth:.8,backgroundColor:panel,textColor:white});
