@@ -6075,7 +6075,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   if(summary.children.length){for(const child of summary.children)renderNode(child);}else{const raw=(summary.innerText||summary.textContent||"").trim();if(raw)drawWrapped(raw,margin,y,contentW,8,white,font,11);}
   // Modelos permanecem preenchíveis; PDFs de exportação usam apenas o conteúdo visual e o anexo estruturado.
   if(/^Modelo\\b/i.test(String(titleText||""))){
-   const schema=formaPdfSchema(obj),values=formaPdfValues(obj),form=d.getForm();let fy=690;
+   const schema=formaPdfSchema(obj),values=formaPdfValues(obj),form=d.getForm();let fy=y-12;
    for(const sec of schema){if(fy<130){nextPage();fy=y;}ensure(34);page.drawText(sec.section,{x:margin,y:fy,size:9,font:bold,color:red});fy-=18;
     for(let k=0;k<sec.items.length;k+=2){ensure(42);for(let col=0;col<2;col++){const pair=sec.items[k+col];if(!pair)continue;const x=col?310:40,field=form.createTextField(pair[0]);field.setFont(font);field.setText(String(values[pair[0]]??""));field.setFontSize(8);field.addToPage(page,{x,y:fy-25,width:245,height:21,borderColor:line,borderWidth:.7,backgroundColor:panel,textColor:white});}fy-=44;}
     fy-=8;
