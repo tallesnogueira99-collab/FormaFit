@@ -1,0 +1,43 @@
+name: Validate inline JavaScript
+
+on:
+  push:
+    branches: ["main", "feature/central-files-redesign"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check inline JavaScript syntax
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { spawnSync } = require('node:child_process');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/gi)];
+          let checked = 0;
+          for (let i = 0; i < scripts.length; i++) {
+            const source = scripts[i][1].trim();
+            if (!source) continue;
+            const file = `/tmp/forma-inline-${i}.js`;
+            fs.writeFileSync(file, source);
+            const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
+            if (result.status !== 0) {
+              process.stderr.write(`Syntax error in inline script #${i + 1}\\n${result.stderr}`);
+              process.exit(result.status || 1);
+            }
+            checked++;
+          }
+          console.log(`Validated ${checked} inline JavaScript blocks.`);
+          NODE
