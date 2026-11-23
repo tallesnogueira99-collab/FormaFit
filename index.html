@@ -4388,6 +4388,65 @@ function parseLibraryFileText(text, fileName){
  return lines.map(line=>Object.fromEntries(parseLine(line).map((v,i)=>[headers[i]||('campo_'+i),v])));
 }
 function importNumeric(v){if(v===undefined||v===null||v==='')return null;const n=Number(String(v).replace(',','.'));return Number.isFinite(n)?n:null;}
+function formaImportSlug(value){return String(value||"").toLocaleLowerCase("pt-BR").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");}
+function formaHasCompleteMacros(food){return !!food&&["k","p","c","f"].every(k=>food[k]!==undefined&&food[k]!==null&&String(food[k]).trim()!==""&&Number.isFinite(Number(String(food[k]).replace(",",".")))&&Number(food[k])>=0);}
+function importEmbeddedFoodRecords(records){
+ const result={added:0,duplicates:0,invalid:0,keyMap:{}};
+ if(!Array.isArray(records)||!records.length)return result;
+ state.customFoods=state.customFoods&&typeof state.customFoods==="object"?state.customFoods:{};
+ loadCustomFoodsIntoDB();
+ const catalog=()=>({...FOOD_DB,...(state.customFoods||{})});
+ records.forEach((raw,index)=>{
+  if(!raw||typeof raw!=="object") {result.invalid++;return;}
+  const name=String(raw.name||raw.foodName||raw.alimento||"").trim();
+  if(!name||!formaHasCompleteMacros(raw)){result.invalid++;return;}
+  const existing=Object.entries(catalog()).find(([key,food])=>normalizeFoodText(food?.name)===normalizeFoodText(name)||String(key)===String(raw.key||""));
+  if(existing){if(raw.key)result.keyMap[String(raw.key)]=existing[0];result.duplicates++;return;}
+  const base=Number(raw.basisAmount??raw.basis_amount)||100;
+  if(!Number.isFinite(base)||base<=0||base>10000){result.invalid++;return;}
+  const factor=100/base,unit=String(raw.unit||raw.basisUnit||"g").toLowerCase()==="ml"?"ml":"g";
+  const macros={k:Number(raw.k)*factor,p:Number(raw.p)*factor,c:Number(raw.c)*factor,f:Number(raw.f)*factor};
+  if(Object.values(macros).some(v=>!Number.isFinite(v)||v<0)||macros.k>1000||[macros.p,macros.c,macros.f].some(v=>v>100)||macros.p+macros.c+macros.f>100.01){result.invalid++;return;}
+  let micros=raw.micronutrients||raw.micros||{};
+  if(typeof micros==="string"){try{micros=JSON.parse(micros);}catch{micros={};}}
+  const normalizedMicros={};
+  if(micros&&typeof micros==="object")Object.entries(micros).forEach(([key,value])=>{
+   const v=value&&typeof value==="object"?(value.value??value.amount??value.valor):value;
+   const u=value&&typeof value==="object"?(value.unit||value.unidade):(String(key).match(/_(g|mg|mcg|µg)$/i)?.[1]||"");
+   if(v!==null&&v!==undefined&&String(v).trim()!==""&&Number.isFinite(Number(String(v).replace(",","."))))normalizedMicros[key.replace(/_(g|mg|mcg|µg)$/i,"")]={value:Number(String(v).replace(",","."))*factor,unit:u||"mg"};
+  });
+  let key=String(raw.key||"").startsWith("custom_")?String(raw.key):"custom_"+formaImportSlug(name);
+  if(!key||key==="custom_")key="custom_imported_food_"+(index+1);
+  let suffix=2,baseKey=key;while(catalog()[key])key=baseKey+"_"+suffix++;
+  const item={...raw,...macros,id:key,key,name,unit,basisAmount:100,basisUnit:unit,micronutrients:normalizedMicros,sourceType:String(raw.sourceType||"imported"),source:String(raw.source||"Importado com refeição/cronograma"),sourceRef:String(raw.sourceRef||""),preparation:String(raw.preparation||""),updatedAt:new Date().toISOString()};
+  state.customFoods[key]=item;if(raw.key)result.keyMap[String(raw.key)]=key;result.added++;
+ });
+ if(result.added)loadCustomFoodsIntoDB();
+ return result;
+}
+function importEmbeddedExerciseRecords(records){
+ const result={added:0,duplicates:0,invalid:0};
+ if(!Array.isArray(records)||!records.length)return result;
+ state.customExercises=Array.isArray(state.customExercises)?state.customExercises:[];
+ const existingNames=new Set(state.customExercises.map(x=>normalizeFoodText(x.name)));
+ const pending=[];
+ records.forEach((raw,index)=>{
+  if(!raw||typeof raw!=="object"){result.invalid++;return;}
+  const name=String(raw.name||raw.exercise||"").trim();if(!name){result.invalid++;return;}
+  const normalized=normalizeFoodText(name);
+  const inferred=typeof window.inferExercise==="function"?window.inferExercise(name):null;
+  if(existingNames.has(normalized)||(inferred?.name&&normalizeFoodText(inferred.name)===normalized)){result.duplicates++;return;}
+  const muscle=String(raw.muscle||raw.primaryMuscle||raw.grupo_muscular||"").trim();
+  const focus=String(raw.focus||raw.muscleFocus||raw.foco||inferred?.focus||"").trim();
+  if(!focus){result.invalid++;return;}
+  const id="import_"+formaImportSlug(name),arrays=(v)=>Array.isArray(v)?v.map(String):String(v||"").split(/[\n;|]/).map(x=>x.trim()).filter(Boolean);
+  const item={...raw,id,name,muscle:muscle||focus,focus,secondary:arrays(raw.secondary||raw.secondaryMuscles),equipment:String(raw.equipment||""),type:String(raw.type||"Composto"),level:String(raw.level||"Intermediário"),pattern:String(raw.pattern||""),movementPlane:String(raw.movementPlane||""),laterality:String(raw.laterality||"Bilateral"),setup:String(raw.setup||""),execution:String(raw.execution||""),breathing:String(raw.breathing||""),rom:String(raw.rom||""),tempo:String(raw.tempo||""),tips:arrays(raw.tips),cues:arrays(raw.cues),errors:arrays(raw.errors),contraindications:arrays(raw.contraindications),regressions:arrays(raw.regressions),progressions:arrays(raw.progressions),alternatives:arrays(raw.alternatives),sets:String(raw.sets||"3"),reps:String(raw.reps||"8–12"),rest:String(raw.rest||"90 s"),notes:String(raw.notes||"")};
+  if(state.customExercises.some(x=>x.id===id||normalizeFoodText(x.name)===normalized)){result.duplicates++;return;}
+  state.customExercises.push(item);existingNames.add(normalized);pending.push(item);result.added++;
+ });
+ if(pending.length&&typeof window.applyImportedExercises==="function")window.applyImportedExercises(state.customExercises);
+ return result;
+}
 async function importLibraryFile(input, kind){const file=input.files&&input.files[0];if(!file)return;try{const rows=parseLibraryFileText(await readFormaImportPdfText(file),file.name);if(!rows.length)throw new Error('Não encontrei uma lista de registros. Use um PDF com tabela ou dados estruturados.');let added=0,updated=0,skipped=0,unclassified=[];
  if(kind==='food'){
   state.customFoods=state.customFoods&&typeof state.customFoods==='object'?state.customFoods:{};
