@@ -2910,7 +2910,7 @@ function calculateFoodAmount(food, amount){
  const factor=qty/(Number(food.basisAmount)||100);
  return {amount:qty,unit:food.unit||'g',kcal:Number(food.k)*factor,protein:Number(food.p)*factor,carbs:Number(food.c)*factor,fat:Number(food.f)*factor,calculationVersion:FOOD_SCHEMA_VERSION};
 }
-function foodSnapshot(food){return {name:food.name,unit:food.unit||'g',basisAmount:Number(food.basisAmount)||100,basisUnit:food.basisUnit||food.unit||'g',k:Number(food.k),p:Number(food.p),c:Number(food.c),f:Number(food.f),micronutrients:food.micronutrients||food.micros||{},sourceType:food.sourceType||'reference',source:food.source||'Fonte não especificada',sourceRef:food.sourceRef||'',preparation:food.preparation||'',dataVersion:food.dataVersion||FOOD_SCHEMA_VERSION};}
+function foodSnapshot(food){return {name:food.name,unit:food.unit||'g',basisAmount:Number(food.basisAmount)||100,basisUnit:food.basisUnit||food.unit||'g',k:Number(food.k),p:Number(food.p),c:Number(food.c),f:Number(food.f),fiber:food.fiber??null,sodium:food.sodium??null,micronutrients:food.micronutrients||food.micros||{},category:food.category||'',description:food.description||'',brand:food.brand||'',barcode:food.barcode||'',group:food.group||'',notes:food.notes||'',sourceType:food.sourceType||'reference',source:food.source||'Fonte não especificada',sourceRef:food.sourceRef||'',preparation:food.preparation||'',dataVersion:food.dataVersion||FOOD_SCHEMA_VERSION};}
 // Custom foods are normalized into one shared source used by the diary and simulator.
 function loadCustomFoodsIntoDB(){
  const custom=state.customFoods&&typeof state.customFoods==='object'?state.customFoods:{};
