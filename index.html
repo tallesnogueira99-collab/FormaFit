@@ -4245,7 +4245,7 @@ function normalizeWorkoutImport(raw){
  if(raw.version!==undefined&&![1,2].includes(Number(raw.version)))throw new Error("Versão de plano de treino não compatível.");
  const source=raw.plan&&typeof raw.plan==="object"&&!Array.isArray(raw.plan)?raw.plan:raw,rawDays=source.days||source.workouts;
  if(!Array.isArray(rawDays)||rawDays.length<1||rawDays.length>7)throw new Error("O plano precisa conter de 1 a 7 dias de treino.");
- const name=String(source.name||source.title||raw.name||raw.title||"Plano personalizado").trim().slice(0,100),objective=String(source.objective||source.goal||raw.objective||raw.goal||"").trim().slice(0,180),seenDays=new Set(),days=[],focusOverrides={};let totalExercises=0;
+ const name=String(source.name||source.title||raw.name||raw.title||"Plano personalizado").trim().slice(0,100),objective=String(source.objective||source.goal||raw.objective||raw.goal||"").trim().slice(0,180),seenDays=new Set(),days=[],focusOverrides={};const exerciseCatalog=source.exerciseCatalog||raw.exerciseCatalog||raw.exerciseRecords||[];let totalExercises=0;
  rawDays.forEach((day,index)=>{
   if(!day||typeof day!=="object"||Array.isArray(day))throw new Error("O dia "+(index+1)+" precisa ser um objeto com nome e exercícios.");
   const dayName=String(day.day||day.dayName||day.label||day.name||("Dia "+(index+1))).trim().slice(0,50);if(!dayName)throw new Error("Informe o nome do dia "+(index+1)+".");
@@ -4262,7 +4262,7 @@ function normalizeWorkoutImport(raw){
    const rest=parseWorkoutRest(exercise.rest,exercise.restSeconds??exercise.rest_seconds);
    if(!Number.isInteger(rest.min)||!Number.isInteger(rest.max)||rest.min<0||rest.max>900||rest.min>rest.max)throw new Error(dayName+", "+exerciseName+": descanso deve estar entre 0 e 900 segundos e em ordem crescente.");
    totalExercises++;
-   const suppliedFocus=String(exercise.focus??exercise.foco??exercise.muscleFocus??exercise.foco_muscular??"").trim(),inferredFocus=suppliedFocus||(typeof window.getExerciseFocus==="function"?window.getExerciseFocus(exerciseName,typeof window.inferExercise==="function"?window.inferExercise(exerciseName):null):"");
+   const linkedRecord=Array.isArray(exerciseCatalog)?exerciseCatalog.find(x=>normalizeFoodText(x?.name)===normalizeFoodText(exerciseName)):null,suppliedFocus=String(exercise.focus??exercise.foco??exercise.muscleFocus??exercise.foco_muscular??linkedRecord?.focus??linkedRecord?.muscle??"").trim(),inferredFocus=suppliedFocus||(typeof window.getExerciseFocus==="function"?window.getExerciseFocus(exerciseName,typeof window.inferExercise==="function"?window.inferExercise(exerciseName):null):"");
    if(!suppliedFocus&&/pendente de confirmacao/i.test(normalizeMuscleText(inferredFocus)))throw new Error(dayName+", "+exerciseName+": o foco muscular não pôde ser inferido com segurança. Informe o campo focus/foco no objeto do exercício.");
    if(inferredFocus)focusOverrides[normalizeMuscleText(exerciseName)]=inferredFocus;
    return [exerciseName,sets+" "+(sets===1?"série":"séries"),formatImportedRange(reps.min,reps.max,"reps"),formatImportedRange(rest.min,rest.max,"s")];
@@ -4270,7 +4270,6 @@ function normalizeWorkoutImport(raw){
   const short=String(day.short||day.dayShort||dayName.replace(/-feira$/i,"").slice(0,3).toUpperCase()).trim().slice(0,8)||("D"+(index+1));
   days.push({day:dayName,short,title,sub:subtitle||("Plano personalizado · "+title),ex:exercises});
  });
- const exerciseCatalog=source.exerciseCatalog||raw.exerciseCatalog||raw.exerciseRecords||[];
  if(!Array.isArray(exerciseCatalog)||exerciseCatalog.length>100)throw new Error("A biblioteca interna do plano deve conter até 100 exercícios em formato de lista.");
  const details={frequency:source.frequency||raw.frequency||"",duration:source.duration||raw.duration||"",warmup:source.warmup||raw.warmup||"",cooldown:source.cooldown||raw.cooldown||"",progression:source.progression||raw.progression||"",notes:source.notes||raw.notes||"",days:rawDays};
  return {name,objective,days,totalExercises,focusOverrides,exerciseCatalog,details};
