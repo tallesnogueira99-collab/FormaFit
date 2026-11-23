@@ -6311,7 +6311,7 @@ body.forma-files-mode .top-tabs{display:none!important}
    exportar:['Exportar dados','Escolha o conteúdo que deseja exportar. Todas as opções geram um documento PDF pronto para salvar ou compartilhar.','↓','SOMENTE PDF'],
    modelos:['Modelos em PDF','Escolha um modelo para preencher. Os modelos incluem estruturas reconhecidas pelo importador automático do FORMA.','▤','SOMENTE PDF']
   };
-  const cfg=configs[kind]||configs.importar;modalTitle.textContent=cfg[0];modalDesc.textContent=cfg[1];modalIcon.textContent=cfg[2];modalFoot.textContent=kind==='importar'?'PDFs com texto selecionável são lidos automaticamente. PDFs escaneados como imagem precisam de OCR.':'O documento será aberto na janela de impressão do dispositivo. Escolha “Salvar como PDF” para guardar o arquivo.';
+  const cfg=configs[kind]||configs.importar;modalTitle.textContent=cfg[0];modalDesc.textContent=cfg[1];modalIcon.textContent=cfg[2];modalFoot.textContent=kind==='importar'?'PDFs com texto selecionável são lidos automaticamente. PDFs escaneados como imagem precisam de OCR.':'O PDF será gerado e baixado no dispositivo. Os modelos incluem campos preenchíveis e dados estruturados para importação.';
   if(kind==='importar'){
    const drop=document.createElement('div');drop.className='forma-files-drop';drop.innerHTML='<span class="forma-files-drop-icon" aria-hidden="true">⇧</span><strong>Escolha um arquivo PDF</strong><p>Não importa se é alimento, refeição, exercício, treino, plano nutricional, cronograma, bioimpedância ou backup. O FORMA analisa o conteúdo.</p><button class="btn" type="button">Selecionar PDF</button>';
    drop.querySelector('button').addEventListener('click',()=>pdfInput.click());
