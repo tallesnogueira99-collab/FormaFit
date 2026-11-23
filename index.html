@@ -5897,6 +5897,18 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
   });
   incoming={name:"Cronograma importado",meals:[...grouped.values()]};
  }
+ if(incoming&&Array.isArray(incoming.meals)&&embeddedFoods.length){
+  const catalog={...FOOD_DB,...(state.customFoods||{})};
+  const resolveEmbedded=item=>{
+   const embedded=embeddedFoods.find(food=>String(food.key||"")===String(item.key||item.foodKey||""));
+   if(embedded&&!String(embedded.name||"").trim()&&String(item.name||"").trim())embedded.name=String(item.name).trim();
+   const foodName=String(item.name||embedded?.name||"").trim();
+   const existing=foodName?Object.entries(catalog).find(([key,food])=>normalizeFoodText(food?.name)===normalizeFoodText(foodName)):null;
+   if(existing){item.key=existing[0];item.snapshot=foodSnapshot(existing[1]);item.name=existing[1].name;}
+   else if(embedded){item.snapshot=item.snapshot||embedded;item.name=item.name||embedded.name||"";}
+  };
+  incoming.meals.forEach(meal=>{(meal.items||[]).forEach(resolveEmbedded);(meal.options||[]).forEach(option=>(option.items||[]).forEach(resolveEmbedded));});
+ }
  if(!incoming||!Array.isArray(incoming.meals)||incoming.meals.length<1||incoming.meals.length>12)throw Error("O cronograma precisa ter de 1 a 12 refeições.");
  const clean=incoming.meals.map((m,i)=>{
   if(!m||typeof m.name!=="string"||!m.name.trim()||!Array.isArray(m.items)||m.items.length>30)throw Error("Refeição "+(i+1)+" inválida.");
