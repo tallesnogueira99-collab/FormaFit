@@ -6054,7 +6054,8 @@ body.forma-files-mode .top-tabs{display:none!important}
   let page=d.addPage([W,H]),y=666,pageNo=1;
   const drawHeader=()=>{page.drawRectangle({x:0,y:0,width:W,height:H,color:navy});page.drawRectangle({x:0,y:700,width:W,height:141.89,color:panel});page.drawRectangle({x:0,y:696,width:W,height:4,color:red});page.drawRectangle({x:38,y:786,width:29,height:29,color:red});page.drawText("F",{x:47,y:794,size:17,font:bold,color:white});page.drawText("FORMA  ·  SEU PLANO PESSOAL",{x:78,y:798,size:10,font:bold,color:white});page.drawText("DOCUMENTO DO FORMA",{x:38,y:760,size:8,font:bold,color:red});page.drawText(String(titleText||"Documento FORMA").slice(0,72),{x:38,y:730,size:22,font:bold,color:white});page.drawText(String(subtitle||"Documento compatível com importação").slice(0,100),{x:38,y:711,size:9,font,color:muted});};
   drawHeader();
-  const nextPage=()=>{pageNo++;page=d.addPage([W,H]);page.drawRectangle({x:0,y:0,width:W,height:H,color:navy});page.drawRectangle({x:0,y:H-7,width:W,height:7,color:red});page.drawText("FORMA  ·  "+String(titleText||"DOCUMENTO").toUpperCase().slice(0,52),{x:margin,y:H-34,size:8,font:bold,color:muted});y=H-58;};
+  const drawPageFooter=()=>{page.drawText("FORMA  ·  DOCUMENTO PARA CONSULTA E IMPORTAÇÃO",{x:margin,y:25,size:7,font,color:muted});page.drawText("PÁG. "+pageNo,{x:W-margin-42,y:25,size:7,font,color:muted});};
+  const nextPage=()=>{drawPageFooter();pageNo++;page=d.addPage([W,H]);page.drawRectangle({x:0,y:0,width:W,height:H,color:navy});page.drawRectangle({x:0,y:H-7,width:W,height:7,color:red});page.drawText("FORMA  ·  "+String(titleText||"DOCUMENTO").toUpperCase().slice(0,52),{x:margin,y:H-34,size:8,font:bold,color:muted});y=H-58;};
   const ensure=(h)=>{if(y-h<58)nextPage();};
   const drawWrapped=(txt,x,top,max,size=8,color=white,f=font,leading=size*1.45)=>{const words=String(txt??"").replace(/\s+/g," ").trim().split(" "),rows=[];let row="";for(const word of words){const test=row?row+" "+word:word;if(f.widthOfTextAtSize(test,size)>max&&row){rows.push(row);row=word;}else row=test;}if(row)rows.push(row);ensure(Math.max(leading,rows.length*leading)+4);rows.forEach((v,i)=>page.drawText(v,{x,y:top-i*leading,size,font:f,color}));y=top-rows.length*leading-5;};
   const drawSectionTitle=(txt,level=2)=>{ensure(30);const size=level===1?13:10;page.drawText(String(txt).slice(0,100),{x:margin,y,size,font:bold,color:red});y-=size+9;};
@@ -6077,7 +6078,27 @@ body.forma-files-mode .top-tabs{display:none!important}
    if(node.nodeType!==1)return;
    const tag=node.tagName.toLowerCase(),cls=String(node.className||"");
    if(tag==="table"){drawTable(node);return;}
-   if(cls.split(/\s+/).includes("stats")){const cards=[...node.querySelectorAll(":scope > .stat")];if(cards.length){const gap=12,cw=(contentW-gap)/2,ch=72;for(let i=0;i<cards.length;i+=2){ensure(ch+16);const top=y;for(let j=0;j<2&&i+j<cards.length;j++){const card=cards[i+j],x=margin+j*(cw+gap),label=String(card.querySelector("span")?.innerText||"").trim(),value=String(card.querySelector("strong")?.innerText||"").trim();page.drawRectangle({x,y:top-ch,width:cw,height:ch,color:panel,borderColor:line,borderWidth:.7});const labelLines=[];let labelLine="";for(const word of label.split(/\s+/)){const test=labelLine?labelLine+" "+word:word;if(bold.widthOfTextAtSize(test,7)>cw-20&&labelLine){labelLines.push(labelLine);labelLine=word;}else labelLine=test;}if(labelLine)labelLines.push(labelLine);labelLines.slice(0,2).forEach((lineText,k)=>page.drawText(lineText,{x:x+10,y:top-16-k*9,size:7,font:bold,color:red}));let size=13;while(size>8&&bold.widthOfTextAtSize(value,size)>cw-20)size--;const valueWidth=bold.widthOfTextAtSize(value,size);page.drawText(value.slice(0,64),{x:x+(cw-valueWidth)/2,y:top-56,size,font:bold,color:white});}y-=ch+12;}}return;}if(tag==="h1"||tag==="h2"||tag==="h3"||tag==="h4"){ensure(72);drawSectionTitle(node.innerText||node.textContent,tag==="h1"?1:2);return;}
+   if(cls.split(/\\s+/).includes("stats")){
+    const cards=[...node.querySelectorAll(":scope > .stat")];
+    if(cards.length){
+     const gap=12,cw=(contentW-gap)/2,ch=72;
+     for(let i=0;i<cards.length;i+=2){
+      ensure(ch+16);const top=y;
+      for(let j=0;j<2&&i+j<cards.length;j++){
+       const card=cards[i+j],x=margin+j*(cw+gap);
+       const label=String(card.querySelector("span")?.innerText||"").trim();
+       const value=String(card.querySelector("strong")?.innerText||"").trim();
+       page.drawRectangle({x,y:top-ch,width:cw,height:ch,color:panel,borderColor:line,borderWidth:.7});
+       const labelLines=wrap(label,cw-20,7,bold).slice(0,2);
+       labelLines.forEach((lineText,k)=>page.drawText(lineText,{x:x+10,y:top-16-k*9,size:7,font:bold,color:red}));
+       const valueLines=wrap(value,cw-20,11,bold).slice(0,2);
+       valueLines.forEach((lineText,k)=>page.drawText(lineText,{x:x+10,y:top-47-k*13,size:11,font:bold,color:white}));
+      }
+      y-=ch+12;
+     }
+    }
+    return;
+   }if(tag==="h1"||tag==="h2"||tag==="h3"||tag==="h4"){ensure(72);drawSectionTitle(node.innerText||node.textContent,tag==="h1"?1:2);return;}
    if(tag==="p"){const t=(node.innerText||node.textContent||"").trim();if(t)drawWrapped(t,margin,y,contentW,8,cls.includes("muted")?muted:white,font,11);return;}
    if(tag==="div"&&node.children.length===0){const t=(node.innerText||node.textContent||"").trim();if(t)drawWrapped(t,margin,y,contentW,8,white,font,11);return;}
    for(const child of node.children)renderNode(child);
@@ -6093,7 +6114,7 @@ body.forma-files-mode .top-tabs{display:none!important}
    }
    form.updateFieldAppearances(font);
   }
-  page.drawText("FORMA DOCUMENTS 2.2  ·  PDF com dados internos para importação",{x:38,y:25,size:7,font,color:muted});
+  drawPageFooter();
   await d.attach(new TextEncoder().encode(JSON.stringify({format:"FORMA_PDF_CONTAINER",version:1,payload:obj,fields:[]})),"forma-data.json",{mimeType:"application/json",description:"Dados internos para importação no FORMA."});
   const bytes=await d.save(),url=URL.createObjectURL(new Blob([bytes],{type:"application/pdf"})),a=document.createElement("a");a.href=url;a.download=(String(titleText||"documento").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toLowerCase()||"documento")+".pdf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
   const statusEl=$("settingsExportStatus");if(statusEl){statusEl.hidden=false;statusEl.classList.remove("error");statusEl.textContent="PDF gerado com conteúdo visual organizado e dados internos anexados para importação.";}return true;
