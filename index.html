@@ -5852,7 +5852,20 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
 
  function parseCsv(text){text=String(text).replace(/^\uFEFF/,'');const first=String(text).split(/\r?\n/,1)[0]||'';let semis=0,commas=0,quoted=false;for(let i=0;i<first.length;i++){const c=first[i];if(c==='"'&&first[i+1]==='"'){i++;continue;}if(c==='"')quoted=!quoted;else if(!quoted&&c===';')semis++;else if(!quoted&&c===',')commas++;}const delimiter=semis>=commas?';':',';const rows=[];let row=[],cell='',inQuotes=false;for(let i=0;i<text.length;i++){const c=text[i];if(inQuotes){if(c==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(c==='"')inQuotes=false;else cell+=c;}else if(c==='"')inQuotes=true;else if(c===delimiter){row.push(cell);cell='';}else if(c==='\n'){row.push(cell.replace(/\r$/,''));if(row.some(v=>v.trim()))rows.push(row);row=[];cell='';}else cell+=c;}row.push(cell.replace(/\r$/,''));if(row.some(v=>v.trim()))rows.push(row);return rows;}
 
- function sanitizeScheduleSnapshot(raw){if(!raw||typeof raw!=='object'||typeof raw.name!=='string')return null;if(['k','p','c','f'].some(k=>raw[k]===null||raw[k]===undefined||raw[k]===''))return null;const basis=Number(raw.basisAmount)||100;if(!Number.isFinite(basis)||basis<=0)return null;const values=['k','p','c','f'].map(k=>Number(raw[k])*100/basis);if(values.some(v=>!Number.isFinite(v)||v<0)||values[0]>1000||values.slice(1).some(v=>v>100))return null;const unit=raw.unit==='ml'?'ml':'g';return {name:raw.name.slice(0,100),unit,basisAmount:100,basisUnit:unit,k:values[0],p:values[1],c:values[2],f:values[3],sourceType:String(raw.sourceType||'imported'),source:String(raw.source||'Snapshot nutricional importado'),sourceRef:String(raw.sourceRef||''),preparation:String(raw.preparation||''),dataVersion:Number(raw.dataVersion)||1};}
+ function sanitizeScheduleSnapshot(raw){
+  if(!raw||typeof raw!=="object"||typeof raw.name!=="string")return null;
+  if(["k","p","c","f"].some(k=>raw[k]===null||raw[k]===undefined||raw[k]===""))return null;
+  const basis=Number(String(raw.basisAmount??raw.basis_amount??100).replace(",","."))||100;
+  if(!Number.isFinite(basis)||basis<=0||basis>10000)return null;
+  const read=k=>Number(String(raw[k]).replace(",","."));
+  const values=["k","p","c","f"].map(k=>read(k)*100/basis);
+  if(values.some(v=>!Number.isFinite(v)||v<0)||values[0]>1000||values.slice(1).some(v=>v>100))return null;
+  const unit=raw.unit==="ml"?"ml":"g",micros={};
+  const sourceMicros=raw.micronutrients||raw.micros||{};
+  if(typeof sourceMicros==="object")Object.entries(sourceMicros).forEach(([key,value])=>{const v=value&&typeof value==="object"?(value.value??value.amount??value.valor):value,u=value&&typeof value==="object"?(value.unit||value.unidade):(String(key).match(/_(g|mg|mcg|µg)$/i)?.[1]||"");const n=Number(String(v??"").replace(",","."));if(v!==null&&v!==undefined&&v!==""&&Number.isFinite(n))micros[key.replace(/_(g|mg|mcg|µg)$/i,"")]={value:n*100/basis,unit:u||"mg"};});
+  const optional=k=>raw[k]===null||raw[k]===undefined||raw[k]===""?"":Number.isFinite(Number(String(raw[k]).replace(",",".")))?Number(String(raw[k]).replace(",","."))*100/basis:raw[k];
+  return {name:raw.name.slice(0,100),unit,basisAmount:100,basisUnit:unit,k:values[0],p:values[1],c:values[2],f:values[3],fiber:optional("fiber"),sodium:optional("sodium"),micronutrients:micros,sourceType:String(raw.sourceType||"imported"),source:String(raw.source||"Snapshot nutricional importado"),sourceRef:String(raw.sourceRef||""),preparation:String(raw.preparation||""),category:String(raw.category||""),description:String(raw.description||""),brand:String(raw.brand||""),barcode:String(raw.barcode||""),dataVersion:Number(raw.dataVersion)||1};
+ }
  async function importSchedule(file){
  if(!file)return;if(file.size>15*1024*1024)throw Error("PDF maior que 15 MB.");
  const content=await readFormaImportPdfText(file);let incoming,embeddedFoods=[],sourceVersion=1;
