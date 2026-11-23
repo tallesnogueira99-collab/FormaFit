@@ -2910,7 +2910,11 @@ function calculateFoodAmount(food, amount){
  const factor=qty/(Number(food.basisAmount)||100);
  return {amount:qty,unit:food.unit||'g',kcal:Number(food.k)*factor,protein:Number(food.p)*factor,carbs:Number(food.c)*factor,fat:Number(food.f)*factor,calculationVersion:FOOD_SCHEMA_VERSION};
 }
-function foodSnapshot(food){return {name:food.name,unit:food.unit||'g',basisAmount:Number(food.basisAmount)||100,basisUnit:food.basisUnit||food.unit||'g',k:Number(food.k),p:Number(food.p),c:Number(food.c),f:Number(food.f),fiber:food.fiber??null,sodium:food.sodium??null,micronutrients:food.micronutrients||food.micros||{},category:food.category||'',description:food.description||'',brand:food.brand||'',barcode:food.barcode||'',group:food.group||'',notes:food.notes||'',sourceType:food.sourceType||'reference',source:food.source||'Fonte não especificada',sourceRef:food.sourceRef||'',preparation:food.preparation||'',dataVersion:food.dataVersion||FOOD_SCHEMA_VERSION};}
+function foodSnapshot(food){
+ let micronutrients=food.micronutrients||food.micros||{};
+ if(typeof micronutrients==="string"){try{micronutrients=JSON.parse(micronutrients);}catch{micronutrients={};}}
+ return {name:food.name,unit:food.unit||"g",basisAmount:Number(food.basisAmount)||100,basisUnit:food.basisUnit||food.unit||"g",k:Number(food.k),p:Number(food.p),c:Number(food.c),f:Number(food.f),fiber:food.fiber??null,sodium:food.sodium??null,micronutrients:micronutrients&&typeof micronutrients==="object"?micronutrients:{},category:food.category||"",description:food.description||"",brand:food.brand||"",barcode:food.barcode||"",group:food.group||"",notes:food.notes||"",sourceType:food.sourceType||"reference",source:food.source||"Fonte não especificada",sourceRef:food.sourceRef||"",preparation:food.preparation||"",dataVersion:food.dataVersion||FOOD_SCHEMA_VERSION};
+}
 // Custom foods are normalized into one shared source used by the diary and simulator.
 function loadCustomFoodsIntoDB(){
  const custom=state.customFoods&&typeof state.customFoods==='object'?state.customFoods:{};
@@ -6375,7 +6379,7 @@ body.forma-files-mode .top-tabs{display:none!important}
     F(prefix+"fiber","Fibra alimentar (g / base)"),F(prefix+"sodium","Sódio (mg / base)"),F(prefix+"description","Descrição / ingredientes",true),
     F(prefix+"source","Fonte dos dados"),F(prefix+"sourceRef","Referência / código da fonte"),F(prefix+"notes","Observações",true)
    ];
-   const existing=food?.micronutrients&&typeof food.micronutrients==="object"?Object.entries(food.micronutrients).map(([key,raw])=>formaMicroInfo(key,raw)):[];
+   let microSource=food?.micronutrients||{};if(typeof microSource==="string"){try{microSource=JSON.parse(microSource);}catch{microSource={};}}const existing=microSource&&typeof microSource==="object"?Object.entries(microSource).map(([key,raw])=>formaMicroInfo(key,raw)):[];
    const micros=[...FORMA_MICRO_FIELDS.map(x=>({slug:x[0],label:x[1],unit:x[2]}))];
    existing.forEach(x=>{if(!micros.some(m=>m.slug===x.slug))micros.push({slug:x.slug,label:x.slug.replace(/_/g," "),unit:x.unit});});
    micros.forEach(m=>items.push(F(prefix+"micro_"+m.slug+"_"+m.unit,m.label+" ("+m.unit+")")));
@@ -6446,7 +6450,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   const putFood=(prefix,food)=>{
    if(!food)return;
    ["name","category","brand","barcode","preparation","unit","basisAmount","sourceType","k","p","c","f","fiber","sodium","description","source","sourceRef","notes"].forEach(k=>put(prefix+k,food[k]));
-   Object.entries(food.micronutrients||{}).forEach(([key,raw])=>{const m=formaMicroInfo(key,raw);put(prefix+"micro_"+m.slug+"_"+m.unit,m.value);});
+   let micros=food.micronutrients||food.micros||{};if(typeof micros==="string"){try{micros=JSON.parse(micros);}catch{micros={};}}Object.entries(micros&&typeof micros==="object"?micros:{}).forEach(([key,raw])=>{const m=formaMicroInfo(key,raw);put(prefix+"micro_"+m.slug+"_"+m.unit,m.value);});
   };
   const putExercise=(prefix,x)=>{
    if(!x)return;
