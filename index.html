@@ -6074,7 +6074,6 @@ body.forma-files-mode .top-tabs{display:none!important}
    const text=await readFormaImportPdfText(file),kind=classify(text);
    const labels={backup:'backup completo',workout:'plano de treino',nutrition:'plano nutricional',schedule:'cronograma alimentar',exercises:'biblioteca de exercícios',library:'alimentos e/ou refeições',bio:'laudo de bioimpedância'};
    if(kind==='unknown')throw new Error('Consegui ler o PDF, mas não identifiquei com segurança o tipo de conteúdo. Baixe o modelo correspondente na opção “Modelos” e mantenha o bloco de dados estruturados no documento.');
-   if(kind==='schedule'){close();if(typeof window.formaImportNutritionScheduleFile!=='function')throw new Error('O importador de cronograma não está disponível.');window.formaImportNutritionScheduleFile(file);return;}
    if(kind==='bio'){
     close();if(typeof window.showTab==='function')window.showTab('inicio');
     const input=$('overviewBioFile');if(!input)throw new Error('A leitura de bioimpedância não está disponível nesta tela.');
