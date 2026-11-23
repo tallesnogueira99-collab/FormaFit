@@ -4312,35 +4312,41 @@ function parseReadableWorkoutPlan(source){
 let pendingNutritionImport=null;
 function nutritionImportStatus(message,isError=false){const el=$("nutritionImportStatus");if(!el)return;el.hidden=!message;el.textContent=message||"";el.classList.toggle("error",!!isError);}
 function normalizeNutritionImport(raw){
- if(!raw||typeof raw!=="object"||Array.isArray(raw))throw new Error("O arquivo precisa conter um objeto JSON de plano nutricional.");
+ if(!raw||typeof raw!=="object"||Array.isArray(raw))throw new Error("O arquivo precisa conter um objeto estruturado de plano nutricional.");
  if(raw.format!==undefined&&!["FORMA_NUTRITION_PLAN","FORMA_NUTRITION_PLAN_V1"].includes(String(raw.format)))throw new Error("O campo “format” não corresponde a um plano nutricional FORMA.");
- if(raw.version!==undefined&&Number(raw.version)!==1)throw new Error("Esta versão do FORMA importa planos nutricionais na versão 1.");
+ if(raw.version!==undefined&&![1,2].includes(Number(raw.version)))throw new Error("Versão de plano nutricional não compatível.");
  const src=raw.plan&&typeof raw.plan==="object"&&!Array.isArray(raw.plan)?raw.plan:raw;
  const name=String(src.name||src.title||raw.name||raw.title||"Plano nutricional personalizado").trim().slice(0,100);
  const objective=String(src.objective||src.goal||raw.objective||raw.goal||"").trim().slice(0,180);
+ const number=(v,label,max=100000)=>{if(v===undefined||v===null||v==="")return null;const n=Number(String(v).replace(",","."));if(!Number.isFinite(n)||n<0||n>max)throw new Error(label+": informe um número válido entre 0 e "+max+".");return Math.round(n*10)/10;};
+ if(Number(raw.version)===2||src.targets||src.micronutrients){
+  const person=src.person&&typeof src.person==="object"?src.person:{},energy=src.energy&&typeof src.energy==="object"?src.energy:{},targets=src.targets||src.target||{};
+  const cleanTargets={};
+  [["kcal",6000],["protein",400],["carbs",900],["fat",300],["fiber",150],["water",10000],["sodium",100000]].forEach(([k,max])=>{const n=number(targets[k],"Meta de "+k,max);if(n!==null)cleanTargets[k]=n;});
+  const macroDistribution={};Object.entries(src.macroDistribution||{}).forEach(([k,v])=>{const n=number(v,"Distribuição de "+k,100);if(n!==null)macroDistribution[k]=n;});
+  const micronutrients={};const rawMicros=src.micronutrients||{};
+  if(Array.isArray(rawMicros))rawMicros.forEach((m,i)=>{if(!m||typeof m!=="object")return;const key=formaImportSlug(m.key||m.name||("nutriente_"+i));const value=number(m.value??m.target,"Micronutriente "+(m.name||key),1000000);micronutrients[key]={value,unit:String(m.unit||m.unidade||"mg"),reference:String(m.reference||m.referencia||""),notes:String(m.notes||"")};});
+  else if(rawMicros&&typeof rawMicros==="object")Object.entries(rawMicros).forEach(([key,rawValue])=>{const raw=rawValue&&typeof rawValue==="object"?rawValue:{value:rawValue};const value=number(raw.value??raw.amount??raw.valor,"Micronutriente "+key,1000000);micronutrients[formaImportSlug(key)]={value,unit:String(raw.unit||raw.unidade||String(key).match(/_(g|mg|mcg|µg)$/i)?.[1]||"mg"),reference:String(raw.reference||raw.referencia||""),notes:String(raw.notes||"")};});
+  return {schemaVersion:2,name,objective,person:{age:String(person.age??""),sex:String(person.sex??""),height:number(person.height,"Estatura",300),weight:number(person.weight,"Peso",500),activity:String(person.activity||""),notes:String(person.notes||"")},energy:{method:String(energy.method||""),maintenance:number(energy.maintenance,"Gasto energético",15000),adjustment:number(energy.adjustment,"Ajuste energético",6000),notes:String(energy.notes||"")},targets:cleanTargets,macroDistribution,micronutrients,strategy:String(src.strategy||""),supplements:String(src.supplements||""),notes:String(src.notes||""),createdAt:new Date().toISOString()};
+ }
  const mealsRaw=src.meals||src.refeicoes||src.mealPlan;
- if(!Array.isArray(mealsRaw)||mealsRaw.length<1||mealsRaw.length>12)throw new Error("O plano precisa conter de 1 a 12 refeições.");
- const number=(v,label,max=100000)=>{if(v===undefined||v===null||v==="")return 0;const n=Number(String(v).replace(",","."));if(!Number.isFinite(n)||n<0||n>max)throw new Error(`${label}: informe um número válido entre 0 e ${max}.`);return Math.round(n*10)/10;};
+ if(!Array.isArray(mealsRaw)||mealsRaw.length<1||mealsRaw.length>12)throw new Error("O plano legado precisa conter de 1 a 12 refeições.");
  const meals=mealsRaw.map((m,i)=>{
-  if(!m||typeof m!=="object"||Array.isArray(m))throw new Error(`A refeição ${i+1} está em formato inválido.`);
-  const mealName=String(m.name||m.meal||m.refeicao||`Refeição ${i+1}`).trim().slice(0,80);
-  const itemsRaw=m.items||m.foods||m.alimentos;
-  if(!Array.isArray(itemsRaw)||itemsRaw.length<1||itemsRaw.length>30)throw new Error(`${mealName}: inclua de 1 a 30 alimentos.`);
+  if(!m||typeof m!=="object"||Array.isArray(m))throw new Error("A refeição "+(i+1)+" está em formato inválido.");
+  const mealName=String(m.name||m.meal||m.refeicao||("Refeição "+(i+1))).trim().slice(0,80),itemsRaw=m.items||m.foods||m.alimentos;
+  if(!Array.isArray(itemsRaw)||itemsRaw.length<1||itemsRaw.length>30)throw new Error(mealName+": inclua de 1 a 30 alimentos.");
   const items=itemsRaw.map((x,j)=>{
-   if(!x||typeof x!=="object"||Array.isArray(x))throw new Error(`${mealName}, alimento ${j+1}: formato inválido.`);
-   const itemName=String(x.name||x.food||x.alimento||"").trim().slice(0,100);
-   if(!itemName)throw new Error(`${mealName}, alimento ${j+1}: falta o nome.`);
-   const amount=String(x.amount||x.quantity||x.quantidade||"").trim().slice(0,80);
-   if(!amount)throw new Error(`${mealName}, ${itemName}: informe a porção/quantidade (ex.: 100 g).`);
-   return {name:itemName,amount,kcal:number(x.kcal??x.calories,`${itemName} — kcal`),protein:number(x.protein??x.proteina??x.p,`${itemName} — proteína`,1000),carbs:number(x.carbs??x.carboidratos??x.c,`${itemName} — carboidratos`,1000),fat:number(x.fat??x.gorduras??x.g,`${itemName} — gorduras`,1000)};
+   if(!x||typeof x!=="object"||Array.isArray(x))throw new Error(mealName+", alimento "+(j+1)+": formato inválido.");
+   const itemName=String(x.name||x.food||x.alimento||"").trim().slice(0,100);if(!itemName)throw new Error(mealName+", alimento "+(j+1)+": falta o nome.");
+   const amount=String(x.amount||x.quantity||x.quantidade||"").trim().slice(0,80);if(!amount)throw new Error(mealName+", "+itemName+": informe a porção/quantidade.");
+   return {name:itemName,amount,kcal:number(x.kcal??x.calories, itemName+" — kcal")??0,protein:number(x.protein??x.proteina??x.p,itemName+" — proteína",1000)??0,carbs:number(x.carbs??x.carboidratos??x.c,itemName+" — carboidratos",1000)??0,fat:number(x.fat??x.gorduras??x.g,itemName+" — gorduras",1000)??0};
   });
   const sum={kcal:0,protein:0,carbs:0,fat:0};items.forEach(x=>{sum.kcal+=x.kcal;sum.protein+=x.protein;sum.carbs+=x.carbs;sum.fat+=x.fat;});
-  return {name:mealName,time:String(m.time||m.horario||"").trim().slice(0,30),notes:String(m.notes||m.observacoes||"").trim().slice(0,250),items,kcal:number(m.kcal??sum.kcal,`${mealName} — kcal`),protein:number(m.protein??m.proteina??sum.protein,`${mealName} — proteína`,10000),carbs:number(m.carbs??m.carboidratos??sum.carbs,`${mealName} — carboidratos`,10000),fat:number(m.fat??m.gorduras??sum.fat,`${mealName} — gorduras`,10000)};
+  return {name:mealName,time:String(m.time||m.horario||"").trim().slice(0,30),notes:String(m.notes||m.observacoes||"").trim().slice(0,250),items,kcal:number(m.kcal??sum.kcal,mealName+" — kcal")??sum.kcal,protein:number(m.protein??m.proteina??sum.protein,mealName+" — proteína",10000)??sum.protein,carbs:number(m.carbs??m.carboidratos??sum.carbs,mealName+" — carboidratos",10000)??sum.carbs,fat:number(m.fat??m.gorduras??sum.fat,mealName+" — gorduras",10000)??sum.fat};
  });
- const totals=meals.reduce((a,m)=>({kcal:a.kcal+m.kcal,protein:a.protein+m.protein,carbs:a.carbs+m.carbs,fat:a.fat+m.fat}),{kcal:0,protein:0,carbs:0,fat:0});
- const explicit=src.totals||raw.totals||{};
- ["kcal","protein","carbs","fat"].forEach(k=>{if(explicit[k]!==undefined)totals[k]=number(explicit[k],`Total — ${k}`,100000);});
- return {name,objective,meals,totals,createdAt:new Date().toISOString()};
+ const totals=meals.reduce((a,m)=>({kcal:a.kcal+m.kcal,protein:a.protein+m.protein,carbs:a.carbs+m.carbs,fat:a.fat+m.fat}),{kcal:0,protein:0,carbs:0,fat:0}),explicit=src.totals||raw.totals||{};
+ ["kcal","protein","carbs","fat"].forEach(k=>{if(explicit[k]!==undefined)totals[k]=number(explicit[k],"Total — "+k,100000)??totals[k];});
+ return {schemaVersion:1,name,objective,meals,totals,createdAt:new Date().toISOString()};
 }
 function parseReadableNutritionPlan(source){
  const lines=String(source||"").replace(/^\uFEFF/,"").split(/\r?\n/);let name="Plano nutricional personalizado",objective="",meals=[],current=null;
