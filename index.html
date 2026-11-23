@@ -4483,9 +4483,10 @@ function importEmbeddedFoodRecords(records){
  records.forEach((raw,index)=>{
   if(!raw||typeof raw!=="object") {result.invalid++;return;}
   const name=String(raw.name||raw.foodName||raw.alimento||"").trim();
-  if(!name||!formaHasCompleteMacros(raw)){result.invalid++;return;}
+  if(!name){result.invalid++;return;}
   const existing=Object.entries(catalog()).find(([key,food])=>normalizeFoodText(food?.name)===normalizeFoodText(name)||String(key)===String(raw.key||""));
   if(existing){if(raw.key)result.keyMap[String(raw.key)]=existing[0];result.duplicates++;return;}
+  if(!formaHasCompleteMacros(raw)){result.invalid++;return;}
   const base=Number(raw.basisAmount??raw.basis_amount)||100;
   if(!Number.isFinite(base)||base<=0||base>10000){result.invalid++;return;}
   const factor=100/base,unit=String(raw.unit||raw.basisUnit||"g").toLowerCase()==="ml"?"ml":"g";
