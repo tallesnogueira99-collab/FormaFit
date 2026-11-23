@@ -6713,6 +6713,12 @@ body.forma-files-mode .top-tabs{display:none!important}
    const generated=typeof state!=='undefined'?state.autoFoodPlan:null;
    const targets=typeof state!=='undefined'?(state.targets||{}):{};
    const profileName=$('profileNameLabel')?.textContent||'Perfil atual';
+   if(imported&&(imported.schemaVersion===2||imported.targets)){
+    const plan=JSON.parse(JSON.stringify(imported)),targets=plan.targets||{},micros=Object.entries(plan.micronutrients||{}).map(([key,m])=>[key.replace(/_/g,' '),m?.value??'',m?.unit||'',m?.reference||'']);
+    const payload={format:'FORMA_NUTRITION_PLAN',version:2,plan};
+    const summary='<section class="section"><h2>'+escapeHtml(plan.name||'Plano nutricional')+'</h2><p class="muted">Perfil: '+escapeHtml(profileName)+' · Plano de metas nutricionais, sem cronograma de refeições</p><p>'+escapeHtml(plan.objective||'')+'</p><h3>Metas diárias</h3>'+table(['Indicador','Meta','Unidade'],[['Energia',targets.kcal??'','kcal/dia'],['Proteínas',targets.protein??'','g/dia'],['Carboidratos',targets.carbs??'','g/dia'],['Gorduras',targets.fat??'','g/dia'],['Fibras',targets.fiber??'','g/dia'],['Água',targets.water??'','ml ou L/dia'],['Sódio',targets.sodium??'','mg/dia']])+'<h3>Distribuição de macronutrientes</h3>'+table(['Macro','Participação energética (%)'],Object.entries(plan.macroDistribution||{}).map(([k,v])=>[k,v]))+'<h3>Micronutrientes</h3>'+table(['Nutriente','Meta','Unidade','Referência'],micros)+'<p class="muted">As referências devem ser individualizadas conforme idade, sexo e estágio de vida. Campos não informados permanecem em branco.</p>'+(plan.strategy?'<p><strong>Estratégia:</strong> '+escapeHtml(plan.strategy)+'</p>':'')+(plan.notes?'<p>'+escapeHtml(plan.notes)+'</p>':'')+'</section>';
+    return openStructuredPdf('Plano nutricional',plan.objective||'Metas energéticas, macro e micronutrientes · PDF',summary,payload);
+   }
    const sourcePlan=(imported&&Array.isArray(imported.meals)&&imported.meals.length)?{kind:'imported',value:imported}:
     (schedule&&Array.isArray(schedule.meals)&&schedule.meals.length)?{kind:'schedule',value:schedule}:
     (generated&&Array.isArray(generated.meals)&&generated.meals.length)?{kind:'generated',value:generated}:null;
