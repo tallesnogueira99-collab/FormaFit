@@ -4587,7 +4587,7 @@ async function importSavedMealsFile(input){
     const rawFoodKey=String(raw.foodKey??raw.food_key??raw.key??"");
     const mappedKey=foodResult.keyMap[rawFoodKey]||rawFoodKey;
     const keyedFood=FOOD_DB[mappedKey]||state.customFoods?.[mappedKey];
-    const foodName=String(raw.name||raw.food||raw.alimento||raw.ingredient||raw.ingrediente||keyedFood?.name||"").trim();
+    const foodName=String(raw.name||raw.food||raw.alimento||raw.ingredient||raw.ingrediente||raw.snapshot?.name||raw.foodSnapshot?.name||raw.food_snapshot?.name||keyedFood?.name||"").trim();
     const amount=importNumeric(raw.amount??raw.quantidade??raw.grams??raw.gramas);
     if(!foodName||!amount||amount<=0||amount>10000)continue;
     const match=Object.entries({...FOOD_DB,...(state.customFoods||{})}).find(([key,food])=>normalizeFoodText(food?.name)===normalizeFoodText(foodName)||key===mappedKey);
