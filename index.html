@@ -5972,7 +5972,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  function openStructuredPdf(titleText,subtitle,summaryHtml,obj){
   const json=JSON.stringify(obj,null,2);
   const payload='<section class="section"><h2>Dados estruturados para importação</h2><p class="muted">Este bloco contém os dados do documento. Mantenha-o no PDF para permitir que o FORMA reconheça o conteúdo em uma importação futura.</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font:4px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;overflow-wrap:normal;word-break:normal;color:#e8edf6;background:#0b1220;padding:12px;border:1px solid #2a3c58;border-radius:8px">'+escapeHtml(json)+'</pre></section>';
-  return openFormaPrintDocument(titleText,subtitle,(summaryHtml||'')+payload,$('settingsExportStatus'));
+  return openFormaPrintDocument(titleText,subtitle,(summaryHtml||'')+payload,status);
  }
  function table(headers,rows){return '<table class="table"><thead><tr>'+headers.map(h=>'<th>'+escapeHtml(h)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(v=>'<td>'+escapeHtml(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';}
  function exportPdf(kind){
@@ -6011,8 +6011,10 @@ body.forma-files-mode .top-tabs{display:none!important}
    return openStructuredPdf('Cronograma alimentar','Refeições planejadas · PDF',summary,payload);
   }
   if(kind==='report'){
-   if(typeof printNutritionReport!=='function'){showStatus('O relatório nutricional não está disponível.',true);return false;}
-   printNutritionReport();return true;
+   if(typeof nutritionReportData!=='function'){showStatus('O relatório nutricional não está disponível.',true);return false;}
+   const report=nutritionReportData(),fmt=v=>v===null||v===undefined?'—':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:1});
+   const summary='<div class="stats"><div class="stat"><span>Dias registrados</span><strong>'+report.recordedDays+'</strong></div><div class="stat"><span>Média de energia</span><strong>'+fmt(report.averages.kcal)+' kcal</strong></div><div class="stat"><span>Média de proteína</span><strong>'+fmt(report.averages.protein_g)+' g</strong></div><div class="stat"><span>Período</span><strong style="font-size:10px">'+escapeHtml(report.period.start)+' a '+escapeHtml(report.period.end)+'</strong></div></div><section class="section"><h2>Médias e metas</h2>'+table(['Indicador','Média diária','Meta'],[['Energia',fmt(report.averages.kcal)+' kcal',fmt(report.targets?.kcal)+' kcal'],['Proteínas',fmt(report.averages.protein_g)+' g',fmt(report.targets?.protein)+' g'],['Carboidratos',fmt(report.averages.carbohydrates_g)+' g',fmt(report.targets?.carbs)+' g'],['Gorduras',fmt(report.averages.fat_g)+' g',fmt(report.targets?.fat)+' g']])+'</section><section class="section"><h2>Registros diários</h2>'+table(['Data','kcal','Proteína','Carboidratos','Gorduras','Itens'],(report.daily||[]).map(d=>[d.date,fmt(d.k),fmt(d.p),fmt(d.c),fmt(d.f),d.items]))+'</section>';
+   return openStructuredPdf('Relatório nutricional','Resumo do período selecionado · PDF',summary,{format:'FORMA_NUTRITION_REPORT',version:1,report:report});
   }
   if(kind==='body'){
    const progress=typeof state!=='undefined'?(state.progress||[]):[],bio=typeof state!=='undefined'?(state.bioimpedance||[]):[];
@@ -6033,7 +6035,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   return null;
  }
  function downloadPdfTemplate(kind){
-  if(kind==='bio'){const html='<section class="section"><h2>Laudo de bioimpedância — modelo</h2><p>Preencha os campos abaixo com os valores do exame. Não estime valores ausentes.</p><p><strong>Data do exame:</strong> ____ / ____ / ______</p><p><strong>Peso:</strong> ______ kg</p><p><strong>Percentual de gordura corporal:</strong> ______ %</p><p><strong>Massa muscular:</strong> ______ kg</p><p><strong>Água corporal:</strong> ______ %</p><p><strong>Circunferência da cintura:</strong> ______ cm</p><p class="muted">O modelo serve como referência. O leitor automático reconhece PDFs com texto selecionável e rótulos correspondentes; documentos preenchidos à mão ou escaneados exigem OCR ou entrada manual.</p></section>';return openFormaPrintDocument('Modelo de bioimpedância','Modelo para preenchimento · PDF',html,$('settingsExportStatus'));}
+  if(kind==='bio'){const html='<section class="section"><h2>Laudo de bioimpedância — modelo</h2><p>Preencha os campos abaixo com os valores do exame. Não estime valores ausentes.</p><p><strong>Data do exame:</strong> ____ / ____ / ______</p><p><strong>Peso:</strong> ______ kg</p><p><strong>Percentual de gordura corporal:</strong> ______ %</p><p><strong>Massa muscular:</strong> ______ kg</p><p><strong>Água corporal:</strong> ______ %</p><p><strong>Circunferência da cintura:</strong> ______ cm</p><p class="muted">O modelo serve como referência. O leitor automático reconhece PDFs com texto selecionável e rótulos correspondentes; documentos preenchidos à mão ou escaneados exigem OCR ou entrada manual.</p></section>';return openFormaPrintDocument('Modelo de bioimpedância','Modelo para preenchimento · PDF',html,status);}
   const obj=templateObject(kind);if(!obj){showStatus('Modelo não encontrado.',true);return false;}
   const names={foods:'Modelo de alimentos',meals:'Modelo de refeições',all:'Modelo combinado de alimentos e refeições',exercises:'Modelo de exercícios',workout:'Modelo de plano de treino',nutrition:'Modelo de plano nutricional',schedule:'Modelo de cronograma alimentar'};
   const summary='<section class="section"><h2>'+escapeHtml(names[kind])+'</h2><p>Este PDF contém um exemplo estruturado para edição. Substitua os dados ilustrativos pelos seus dados reais, preserve os nomes dos campos e mantenha o bloco estruturado completo para que o FORMA possa identificar a importação.</p></section>';
