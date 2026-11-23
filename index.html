@@ -3784,6 +3784,76 @@ function openUpdate(){closeTabMenu();$("uDate").value=dateKey();const last=state
 function closeUpdate(){$("updateModal").classList.remove("open")}
 $("updateDataBtn").addEventListener("click",openUpdate);$("closeUpdate").addEventListener("click",closeUpdate);$("cancelUpdate").addEventListener("click",closeUpdate);$("updateModal").addEventListener("click",e=>{if(e.target.id==="updateModal")closeUpdate()});
 async function loadPdfJs(){if(window.pdfjsLib)return window.pdfjsLib;await new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc)});if(window.pdfjsLib)window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";return window.pdfjsLib;}
+function applyFormaPdfField(payload,key,rawValue){
+ const value=String(rawValue??"");
+ const num=v=>{if(v===null||v===undefined||String(v).trim()==="")return "";const n=Number(String(v).trim().replace(",", "."));return Number.isFinite(n)?n:v;};
+ const arr=v=>String(v||"").split(/\r?\n|[;|]/).map(x=>x.trim()).filter(Boolean);
+ const set=(obj,k,v)=>{if(obj&&k)obj[k]=v;};
+ const foodField=(food,suffix)=>{
+  if(!food)return;
+  if(suffix.startsWith("micro_")){
+   const m=suffix.match(/^micro_(.+)_(g|mg|mcg|µg)$/i);if(!m)return;
+   food.micronutrients=food.micronutrients&&typeof food.micronutrients==="object"?food.micronutrients:{};
+   food.micronutrients[m[1]]={value:num(value),unit:m[2]};return;
+  }
+  const map={name:"name",category:"category",brand:"brand",barcode:"barcode",preparation:"preparation",unit:"unit",basisAmount:"basisAmount",sourceType:"sourceType",k:"k",p:"p",c:"c",f:"f",fiber:"fiber",sodium:"sodium",description:"description",source:"source",sourceRef:"sourceRef",notes:"notes"};
+  const k=map[suffix];if(!k)return;
+  set(food,k,["basisAmount","k","p","c","f","fiber","sodium"].includes(k)?num(value):value);
+ };
+ const exerciseField=(exercise,suffix)=>{
+  if(!exercise)return;
+  const arrays=["secondary","tips","cues","errors","contraindications","regressions","progressions","alternatives"];
+  set(exercise,suffix,arrays.includes(suffix)?arr(value):value);
+ };
+ let m;
+ if((m=key.match(/^food_(\d+)_(.+)$/))){payload.foods=payload.foods||[];payload.foods[Number(m[1])]=payload.foods[Number(m[1])]||{};foodField(payload.foods[Number(m[1])],m[2]);return;}
+ if(key.startsWith("food_")){payload.foods=payload.foods||[{}];foodField(payload.foods[0],key.slice(5));return;}
+ if((m=key.match(/^meal_food_(\d+)_(.+)$/))){payload.foods=payload.foods||[];payload.foods[Number(m[1])]=payload.foods[Number(m[1])]||{};foodField(payload.foods[Number(m[1])],m[2]);return;}
+ if((m=key.match(/^meal_item_(\d+)_(.+)$/))){const meal=payload.meals?.[0];if(!meal)return;meal.items=meal.items||[];meal.items[Number(m[1])]=meal.items[Number(m[1])]||{};const prop=m[2];set(meal.items[Number(m[1])],prop,prop==="amount"?num(value):value);return;}
+ if(key==="meal_name"||key==="meal_category"||key==="meal_notes"){const meal=payload.meals?.[0];if(meal)set(meal,key.slice(5),value);return;}
+ if((m=key.match(/^exercise_(\d+)_(.+)$/))){payload.exercises=payload.exercises||[];payload.exercises[Number(m[1])]=payload.exercises[Number(m[1])]||{};exerciseField(payload.exercises[Number(m[1])],m[2]);return;}
+ if(key.startsWith("exercise_")){payload.exercises=payload.exercises||[{}];exerciseField(payload.exercises[0],key.slice(9));return;}
+ if((m=key.match(/^workout_catalog_(\d+)_(.+)$/))){payload.exerciseCatalog=payload.exerciseCatalog||[];payload.exerciseCatalog[Number(m[1])]=payload.exerciseCatalog[Number(m[1])]||{};exerciseField(payload.exerciseCatalog[Number(m[1])],m[2]);return;}
+ if((m=key.match(/^workout_day_(\d+)_exercise_(\d+)_(.+)$/))){const day=payload.days?.[Number(m[1])];if(!day)return;day.exercises=day.exercises||[];day.exercises[Number(m[2])]=day.exercises[Number(m[2])]||{};const prop=m[3];set(day.exercises[Number(m[2])],prop,["sets","rpe","rir"].includes(prop)?num(value):value);return;}
+ if((m=key.match(/^workout_day_(\d+)_(.+)$/))){payload.days=payload.days||[];payload.days[Number(m[1])]=payload.days[Number(m[1])]||{};set(payload.days[Number(m[1])],m[2],value);return;}
+ if(key==="workout_name"||key==="workout_objective"||key==="workout_frequency"||key==="workout_duration"||key==="workout_notes"||key==="workout_warmup"||key==="workout_cooldown"||key==="workout_progression"){const prop=key.slice(8);set(payload,prop,value);return;}
+ if(key.startsWith("nutrition_")){
+  const p=payload.plan||(payload.plan={});
+  if(key==="nutrition_name"){p.name=value;return;}if(key==="nutrition_objective"){p.objective=value;return;}
+  if(key.startsWith("nutrition_person_")){p.person=p.person||{};set(p.person,key.slice(17),value);return;}
+  if(key.startsWith("nutrition_energy_")){p.energy=p.energy||{};set(p.energy,key.slice(17),value);return;}
+  if(key.startsWith("nutrition_target_")){p.targets=p.targets||{};set(p.targets,key.slice(17),num(value));return;}
+  if(key.startsWith("nutrition_macro_")){p.macroDistribution=p.macroDistribution||{};set(p.macroDistribution,key.slice(16),num(value));return;}
+  if(key.startsWith("nutrition_micro_")){const mm=key.match(/^nutrition_micro_(.+)_(g|mg|mcg|µg)$/i);if(mm){p.micronutrients=p.micronutrients||{};p.micronutrients[mm[1]]={value:num(value),unit:mm[2]};}return;}
+  const prop=key.slice(10);if(["strategy","supplements","notes"].includes(prop))set(p,prop,value);
+  else if(["kcal","protein","carbs","fat"].includes(prop)){p.targets=p.targets||{};p.targets[prop]=num(value);}
+  return;
+ }
+ if(key.startsWith("schedule_food_")){
+  const m2=key.match(/^schedule_food_(\d+)_(.+)$/);if(m2){payload.foods=payload.foods||[];payload.foods[Number(m2[1])]=payload.foods[Number(m2[1])]||{};foodField(payload.foods[Number(m2[1])],m2[2]);return;}
+ }
+ if((m=key.match(/^schedule_item_(\d+)_(\d+)_(.+)$/))){const p=payload.schedule||(payload.schedule={});p.meals=p.meals||[];p.meals[Number(m[1])]=p.meals[Number(m[1])]||{items:[]};const meal=p.meals[Number(m[1])];meal.items=meal.items||[];meal.items[Number(m[2])]=meal.items[Number(m[2])]||{};const prop=m[3];set(meal.items[Number(m[2])],prop,prop==="g"?num(value):value);return;}
+ if((m=key.match(/^schedule_meal_(\d+)_(.+)$/))){const p=payload.schedule||(payload.schedule={});p.meals=p.meals||[];p.meals[Number(m[1])]=p.meals[Number(m[1])]||{items:[]};set(p.meals[Number(m[1])],m[2],value);return;}
+ if(key.startsWith("schedule_")){
+  const p=payload.schedule||(payload.schedule={});
+  if(key==="schedule_name"){p.name=value;return;}if(key==="schedule_objective"){p.objective=value;return;}if(key==="schedule_notes"){p.notes=value;return;}
+  if(key.startsWith("schedule_target_")){p.target=p.target||{};set(p.target,key.slice(16),num(value));return;}
+  const map={schedule_kcal:"kcal",schedule_protein:"protein",schedule_carbs:"carbs",schedule_fat:"fat"};if(map[key]){p.target=p.target||{};p.target[map[key]]=num(value);}return;
+ }
+ if(key.startsWith("bio_")){
+  const d=payload.bioimpedance||(payload.bioimpedance={}),prop=key.slice(4);
+  const numeric=/^(weight|height|bmi|waist|hip|waist_hip_ratio|neck|arm|thigh|calf|fat|fat_percent|fat_mass|lean_mass|muscle|skeletal_muscle|bone_mass|protein_mass|water|total_body_water|intracellular_water|extracellular_water|ecw_tbw|visceral_fat|visceral_fat_area|subcutaneous_fat|bmr|metabolic_age|segmental_|resistance|reactance|impedance|phase_angle|raw_frequency|skinfold_|temperature)/.test(prop);
+  const val=numeric?num(value):value;
+  set(d,prop,val);
+  if(prop==="fat_percent")d.fat=val;
+  if(prop==="fat")d.fat_percent=val;
+  if(prop==="date")d.date=value;
+  return;
+ }
+ // Compatibilidade com campos de versões anteriores dos modelos.
+ const legacy={nutrition_kcal:["plan","target","kcal"],nutrition_protein:["plan","target","protein"],nutrition_carbs:["plan","target","carbs"],nutrition_fat:["plan","target","fat"]};
+ if(legacy[key]){const [a,b,c]=legacy[key];payload[a]=payload[a]||{};payload[a][b]=payload[a][b]||{};payload[a][b][c]=num(value);}
+}
 async function readFormaImportPdfText(file){
  if(!file||(!/\.pdf$/i.test(file.name)&&file.type!=="application/pdf"))throw new Error("O FORMA aceita somente arquivos PDF para importação.");
  if(file.size>15*1024*1024)throw new Error("O PDF ultrapassa o limite de 15 MB.");
@@ -3799,25 +3869,7 @@ async function readFormaImportPdfText(file){
     const fields=await pdf.getFieldObjects?.(),values={};
     if(fields)for(const [name,group] of Object.entries(fields)){const value=group?.[0]?.fieldValue;if(value!==undefined&&value!==null&&String(value).trim())values[name]=String(value);}
     const payload=container.payload;
-    for(const [key,value] of Object.entries(values)){
-     if(key.startsWith("food_")&&payload.foods?.[0]){
-      const map={food_name:"name",food_category:"category",food_description:"description",food_brand:"brand",food_barcode:"barcode",food_preparation:"preparation",food_portion:"basisAmount",food_unit:"unit",food_kcal:"k",food_protein:"p",food_carbs:"c",food_fat:"f",food_fiber:"fiber",food_sodium:"sodium",food_source:"source",food_notes:"notes"};
-      const target=map[key];if(target)payload.foods[0][target]=["food_portion","food_kcal","food_protein","food_carbs","food_fat","food_fiber","food_sodium"].includes(key)?(Number(value)||0):value;
-     }else if(key.startsWith("meal_")&&payload.meals?.[0]){
-      if(key==="meal_name")payload.meals[0].name=value;
-      else if(key==="meal_notes")payload.meals[0].notes=value;
-      else if(key==="meal_items")payload.meals[0].items=String(value).split(/\n+/).map(line=>{const m=line.match(/^\s*(.+?)\s*:\s*(\d+(?:[.,]\d+)?)\s*(g|ml|un)?\s*$/i);return m?{name:m[1].trim(),amount:Number(m[2].replace(",",".")),unit:(m[3]||"g").toLowerCase()}:null;}).filter(Boolean);
-     }else if(key.startsWith("exercise_")&&payload.exercises?.[0]){
-      const map={exercise_name:"name",exercise_muscle:"muscle",exercise_equipment:"equipment",exercise_type:"type",exercise_level:"level",exercise_sets:"sets",exercise_reps:"reps",exercise_rest:"rest"};const target=map[key];if(target)payload.exercises[0][target]=value;
-     }else if(key==="workout_name")payload.name=value;
-     else if(key==="workout_objective")payload.objective=value;
-     else if(key==="schedule_name"&&payload.schedule)payload.schedule.name=value;
-     else if(key==="schedule_objective"&&payload.schedule)payload.schedule.objective=value;
-     else if(key.startsWith("schedule_")&&payload.schedule?.target){const map={schedule_kcal:"kcal",schedule_protein:"protein",schedule_carbs:"carbs",schedule_fat:"fat"};const target=map[key];if(target)payload.schedule.target[target]=Number(value)||0;}
-     else if(key==="nutrition_name")(payload.plan||payload).name=value;
-     else if(key==="nutrition_objective")(payload.plan||payload).objective=value;
-     else if(key.startsWith("bio_")&&payload.bioimpedance){const map={bio_date:"date",bio_weight:"weight",bio_waist:"waist",bio_fat:"fat",bio_muscle:"muscle",bio_water:"water",bio_notes:"notes"};const target=map[key];if(target)payload.bioimpedance[target]=["bio_weight","bio_waist","bio_fat","bio_muscle","bio_water"].includes(key)?(Number(value)||0):value;}
-    }
+    for(const [key,value] of Object.entries(values)){applyFormaPdfField(payload,key,value);}
     return JSON.stringify(payload);
    }catch(err){console.warn("FORMA: não foi possível ler o anexo interno do PDF",err);}
   }
