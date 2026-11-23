@@ -6409,12 +6409,12 @@ body.forma-files-mode .top-tabs{display:none!important}
    const p=o.plan||o,person=p.person||{},energy=p.energy||{},targets=p.targets||p.target||{};
    add("IDENTIFICAÇÃO E OBJETIVO",[F("nutrition_name","Nome do planejamento"),F("nutrition_objective","Objetivo nutricional",true),F("nutrition_person_age","Idade"),F("nutrition_person_sex","Sexo utilizado no cálculo"),F("nutrition_person_height","Estatura (cm)"),F("nutrition_person_weight","Peso de referência (kg)"),F("nutrition_person_activity","Nível de atividade física"),F("nutrition_person_notes","Contexto / observações",true)]);
    add("ESTIMATIVA ENERGÉTICA",[F("nutrition_energy_method","Método / equação utilizada"),F("nutrition_energy_maintenance","Gasto energético estimado (kcal/dia)"),F("nutrition_energy_adjustment","Ajuste energético (kcal/dia)"),F("nutrition_energy_notes","Premissas e justificativa",true)]);
-   add("METAS DIÁRIAS E DISTRIBUIÇÃO",[F("nutrition_target_kcal","Energia (kcal/dia)"),F("nutrition_target_protein","Proteínas (g/dia)"),F("nutrition_target_carbs","Carboidratos (g/dia)"),F("nutrition_target_fat","Gorduras (g/dia)"),F("nutrition_target_fiber","Fibras (g/dia)"),F("nutrition_target_water","Água / líquidos (ml ou L/dia)"),F("nutrition_target_sodium","Sódio (mg/dia)"),F("nutrition_macro_protein","Proteínas (% da energia)"),F("nutrition_macro_carbs","Carboidratos (% da energia)"),F("nutrition_macro_fat","Gorduras (% da energia)")]);
+   add("METAS DIÁRIAS E DISTRIBUIÇÃO",[F("nutrition_target_kcal","Energia (kcal/dia)"),F("nutrition_target_protein","Proteínas (g/dia)"),F("nutrition_target_carbs","Carboidratos (g/dia)"),F("nutrition_target_fat","Gorduras (g/dia)"),F("nutrition_target_fiber","Fibras (g/dia)"),F("nutrition_target_water","Água / líquidos (ml ou L/dia)"),F("nutrition_target_sodium","Sódio (mg/dia)"),F("nutrition_target_protein_per_kg","Proteína (g/kg de peso)"),F("nutrition_target_carbs_per_kg","Carboidratos (g/kg de peso)"),F("nutrition_target_fat_per_kg","Gorduras (g/kg de peso)"),F("nutrition_macro_protein","Proteínas (% da energia)"),F("nutrition_macro_carbs","Carboidratos (% da energia)"),F("nutrition_macro_fat","Gorduras (% da energia)")]);
    const micros=p.micronutrients&&typeof p.micronutrients==="object"?Object.entries(p.micronutrients):[];
    const microList=[...FORMA_MICRO_FIELDS.map(x=>({slug:x[0],label:x[1],unit:x[2]}))];
    micros.forEach(([key,raw])=>{const m=formaMicroInfo(key,raw);if(!microList.some(x=>x.slug===m.slug))microList.push({slug:m.slug,label:m.slug.replace(/_/g," "),unit:m.unit});});
    add("MICRONUTRIENTES · METAS / REFERÊNCIAS",microList.map(m=>F("nutrition_micro_"+m.slug+"_"+m.unit,m.label+" ("+m.unit+")")));
-   add("ESTRATÉGIA E OBSERVAÇÕES",[F("nutrition_strategy","Estratégia nutricional",true),F("nutrition_supplements","Suplementação (se aplicável)",true),F("nutrition_notes","Observações, critérios e acompanhamento",true)]);
+   add("ESTRATÉGIA E OBSERVAÇÕES",[F("nutrition_strategy","Estratégia nutricional",true),F("nutrition_supplements","Suplementação (se aplicável)",true),F("nutrition_reference","Fontes e critérios de referência (DRI / RDA / AI)",true),F("nutrition_upperLimits","Limites superiores (UL) e cuidados",true),F("nutrition_notes","Observações, critérios e acompanhamento",true)]);
   }else if(f==="FORMA_NUTRITION_SCHEDULE"){
    const p=o.schedule||{};
    add("IDENTIFICAÇÃO E METAS",[F("schedule_name","Nome do cronograma"),F("schedule_objective","Objetivo",true),F("schedule_target_kcal","Energia (kcal/dia)"),F("schedule_target_protein","Proteínas (g/dia)"),F("schedule_target_carbs","Carboidratos (g/dia)"),F("schedule_target_fat","Gorduras (g/dia)"),F("schedule_notes","Orientações gerais",true)]);
@@ -6459,10 +6459,10 @@ body.forma-files-mode .top-tabs{display:none!important}
    put("nutrition_name",p.name);put("nutrition_objective",p.objective);
    Object.entries(person).forEach(([k,val])=>put("nutrition_person_"+k,val));
    Object.entries(energy).forEach(([k,val])=>put("nutrition_energy_"+k,val));
-   ["kcal","protein","carbs","fat","fiber","water","sodium"].forEach(k=>put("nutrition_target_"+k,t[k]));
+   ["kcal","protein","carbs","fat","fiber","water","sodium","protein_per_kg","carbs_per_kg","fat_per_kg"].forEach(k=>put("nutrition_target_"+k,t[k]));
    Object.entries(p.macroDistribution||{}).forEach(([k,val])=>put("nutrition_macro_"+k,val));
    Object.entries(p.micronutrients||{}).forEach(([key,raw])=>{const m=formaMicroInfo(key,raw);put("nutrition_micro_"+m.slug+"_"+m.unit,m.value);});
-   put("nutrition_strategy",p.strategy);put("nutrition_supplements",p.supplements);put("nutrition_notes",p.notes);
+   put("nutrition_strategy",p.strategy);put("nutrition_supplements",p.supplements);put("nutrition_reference",p.reference);put("nutrition_upperLimits",p.upperLimits);put("nutrition_notes",p.notes);
   }else if(o.format==="FORMA_NUTRITION_SCHEDULE"){
    const p=o.schedule||{};put("schedule_name",p.name);put("schedule_objective",p.objective);put("schedule_notes",p.notes);
    const t=p.target||{};["kcal","protein","carbs","fat"].forEach(k=>put("schedule_target_"+k,t[k]));
