@@ -6060,17 +6060,25 @@ body.forma-files-mode .top-tabs{display:none!important}
   const drawWrapped=(txt,x,top,max,size=8,color=white,f=font,leading=size*1.45)=>{const words=String(txt??"").replace(/\s+/g," ").trim().split(" "),rows=[];let row="";for(const word of words){const test=row?row+" "+word:word;if(f.widthOfTextAtSize(test,size)>max&&row){rows.push(row);row=word;}else row=test;}if(row)rows.push(row);ensure(Math.max(leading,rows.length*leading)+4);rows.forEach((v,i)=>page.drawText(v,{x,y:top-i*leading,size,font:f,color}));y=top-rows.length*leading-5;};
   const drawSectionTitle=(txt,level=2)=>{ensure(30);const size=level===1?13:10;page.drawText(String(txt).slice(0,100),{x:margin,y,size,font:bold,color:red});y-=size+9;};
   const drawTable=(table)=>{
-   const rows=[...table.querySelectorAll("tr")].map(tr=>[...tr.children].map(td=>(td.innerText||td.textContent||"").trim()));if(!rows.length)return;
+   const rows=[...table.querySelectorAll("tr")].map(tr=>[...tr.children].map(td=>(td.innerText||td.textContent||"").trim()));
+   if(!rows.length)return;
    const cols=Math.max(...rows.map(r=>r.length)),width=contentW/cols,cellPad=5,fs=7.2,leading=9.2;
-   const drawRow=(row,ri)=>{const cells=Array.from({length:cols},(_,i)=>row[i]||"");const wrapped=cells.map(v=>{const words=String(v).split(/\s+/),out=[];let ln="";for(const word of words){const test=ln?ln+" "+word:word;if(font.widthOfTextAtSize(test,fs)>width-cellPad*2&&ln){out.push(ln);ln=word;}else ln=test;}if(ln)out.push(ln);return out.length?out:[""];});const rowH=Math.max(22,...wrapped.map(a=>a.length*leading+cellPad*2));ensure(rowH+4);let x=margin;for(let c=0;c<cols;c++){page.drawRectangle({x,y:y-rowH+3,width,height:rowH,color:ri===0?panel:(ri%2?rgb(.055,.09,.15):navy),borderColor:line,borderWidth:.45});wrapped[c].forEach((ln,j)=>page.drawText(ln.slice(0,100),{x:x+cellPad,y:y-cellPad-fs-j*leading,size:fs,font:ri===0?bold:font,color:ri===0?red:white}));x+=width;}y-=rowH;};
-   rows.forEach((row,ri)=>{if(ri>0&&y-34<58){nextPage();drawRow(rows[0],0);}drawRow(row,ri===0?0:ri);});y-=10;
+   const prepare=row=>{
+    const cells=Array.from({length:cols},(_,i)=>row[i]||"");
+    const wrapped=cells.map(v=>{const words=String(v).split(/\s+/),out=[];let ln="";for(const word of words){const test=ln?ln+" "+word:word;if(font.widthOfTextAtSize(test,fs)>width-cellPad*2&&ln){out.push(ln);ln=word;}else ln=test;}if(ln)out.push(ln);return out.length?out:[""];});
+    return {wrapped,height:Math.max(22,...wrapped.map(a=>a.length*leading+cellPad*2))};
+   };
+   const drawRow=(row,ri,prepared)=>{const {wrapped,height:rowH}=prepared;let x=margin;for(let c=0;c<cols;c++){page.drawRectangle({x,y:y-rowH+3,width,height:rowH,color:ri===0?panel:(ri%2?rgb(.055,.09,.15):navy),borderColor:line,borderWidth:.45});wrapped[c].forEach((ln,j)=>page.drawText(ln.slice(0,100),{x:x+cellPad,y:y-cellPad-fs-j*leading,size:fs,font:ri===0?bold:font,color:ri===0?red:white}));x+=width;}y-=rowH;};
+   const header=prepare(rows[0]);ensure(header.height+4);drawRow(rows[0],0,header);
+   for(let ri=1;ri<rows.length;ri++){const prepared=prepare(rows[ri]);if(y-prepared.height<58){nextPage();drawRow(rows[0],0,header);}drawRow(rows[ri],ri,prepared);}
+   y-=10;
   };
   const renderNode=(node)=>{
    if(node.nodeType===3){const t=node.textContent.trim();if(t)drawWrapped(t,margin,y,contentW,8,white,font,11);return;}
    if(node.nodeType!==1)return;
    const tag=node.tagName.toLowerCase(),cls=String(node.className||"");
    if(tag==="table"){drawTable(node);return;}
-   if(cls.split(/\s+/).includes("stats")){const cards=[...node.querySelectorAll(":scope > .stat")];if(cards.length){const gap=10,cw=(contentW-gap)/2,ch=66;for(let i=0;i<cards.length;i+=2){ensure(ch+12);const top=y;for(let j=0;j<2&&i+j<cards.length;j++){const card=cards[i+j],x=margin+j*(cw+gap);page.drawRectangle({x,y:top-ch,width:cw,height:ch,color:panel,borderColor:line,borderWidth:.6});const label=card.querySelector("span")?.innerText||"",value=card.querySelector("strong")?.innerText||"";page.drawText(String(label).slice(0,42),{x:x+10,y:top-17,size:7,font:bold,color:red});const valueSize=String(value).length>25?9:String(value).length>17?10:12;drawWrapped(value,x+10,top-39,cw-20,valueSize,white,bold,valueSize*1.2);}y-=ch+12;}}return;}
+   if(cls.split(/\s+/).includes("stats")){const cards=[...node.querySelectorAll(":scope > .stat")];if(cards.length){const gap=10,cw=(contentW-gap)/2,ch=66;for(let i=0;i<cards.length;i+=2){ensure(ch+12);const top=y;for(let j=0;j<2&&i+j<cards.length;j++){const card=cards[i+j],x=margin+j*(cw+gap);page.drawRectangle({x,y:top-ch,width:cw,height:ch,color:panel,borderColor:line,borderWidth:.6});const label=card.querySelector("span")?.innerText||"",value=card.querySelector("strong")?.innerText||"";page.drawText(String(label).slice(0,42),{x:x+10,y:top-17,size:7,font:bold,color:red});const valueSize=String(value).length>25?9:String(value).length>17?10:12;page.drawText(String(value).slice(0,38),{x:x+10,y:top-43,size:valueSize,font:bold,color:white});}y-=ch+12;}}return;}
    if(tag==="h1"||tag==="h2"||tag==="h3"||tag==="h4"){ensure(tag==="h3"?72:42);drawSectionTitle(node.innerText||node.textContent,tag==="h1"?1:2);return;}
    if(tag==="p"){const t=(node.innerText||node.textContent||"").trim();if(t)drawWrapped(t,margin,y,contentW,8,cls.includes("muted")?muted:white,font,11);return;}
    if(tag==="div"&&node.children.length===0){const t=(node.innerText||node.textContent||"").trim();if(t)drawWrapped(t,margin,y,contentW,8,white,font,11);return;}
