@@ -5964,7 +5964,7 @@ body.forma-files-mode .top-tabs{display:none!important}
 #configuracoes.forma-central-v2 .settings-back{margin-bottom:14px}
 #configuracoes.forma-central-v2 .settings-privacy-note{margin-top:16px}
 .nutrition-file-tools{display:none!important}\n#exportNutritionReportCsv,#exportNutritionReportJson{display:none!important}
-.forma-files-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,8,16,.76);backdrop-filter:blur(9px)}
+.forma-files-modal{position:fixed;inset:0;z-index:13120!important;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,8,16,.76);backdrop-filter:blur(9px)}
 .forma-files-modal.open{display:flex}
 .forma-files-panel{width:min(100%,650px);max-height:min(88dvh,850px);overflow:auto;border:1px solid var(--line);border-radius:24px;background:var(--surface,#111c2b);color:var(--text);box-shadow:0 24px 80px #0009;animation:formaFilesModalIn .18s ease-out}
 @keyframes formaFilesModalIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
@@ -6013,7 +6013,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const modal=document.createElement('div');modal.className='forma-files-modal';modal.id='formaFilesActionModal';modal.setAttribute('role','presentation');
  modal.innerHTML='<section class="forma-files-panel" role="dialog" aria-modal="true" aria-labelledby="formaFilesModalTitle"><header class="forma-files-modal-head"><span class="forma-files-modal-mark" id="formaFilesModalIcon" aria-hidden="true">⇧</span><div class="forma-files-modal-copy"><h3 id="formaFilesModalTitle">Importar PDF</h3><p id="formaFilesModalDescription"></p></div><button class="forma-files-close" type="button" aria-label="Fechar janela">×</button></header><div class="forma-files-modal-body" id="formaFilesModalBody"></div><footer class="forma-files-modal-foot" id="formaFilesModalFoot"></footer></section>';
- page.append(modal);
+ document.body.append(modal);
  const modalBody=$('formaFilesModalBody'),modalTitle=$('formaFilesModalTitle'),modalDesc=$('formaFilesModalDescription'),modalIcon=$('formaFilesModalIcon'),modalFoot=$('formaFilesModalFoot'),status=document.createElement('div');status.className='forma-files-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');modalBody.append(status);
  const pdfInput=document.createElement('input');pdfInput.type='file';pdfInput.accept='.pdf,application/pdf';pdfInput.hidden=true;pdfInput.id='formaUniversalPdfInput';page.append(pdfInput);
  const close=()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true');};
@@ -6039,6 +6039,7 @@ body.forma-files-mode .top-tabs{display:none!important}
    const choices=kind==='exportar'?[
     ['foods','Alimentos','Biblioteca de alimentos personalizados','◉'],
     ['meals','Refeições salvas','Preparações e ingredientes','♨'],
+    ['all','Alimentos + refeições','Arquivo completo da biblioteca','▦'],
     ['exercises','Exercícios','Biblioteca de exercícios personalizados','⌘'],
     ['workout','Plano de treino','Ficha de musculação ativa','↗'],
     ['nutrition','Plano nutricional','Plano nutricional atual do perfil','≋'],
@@ -6048,6 +6049,7 @@ body.forma-files-mode .top-tabs{display:none!important}
    ]:[
     ['foods','Alimentos','Nome, unidade e valores nutricionais','◉'],
     ['meals','Refeições','Refeições e ingredientes','♨'],
+    ['all','Alimentos + refeições','Modelo combinado da biblioteca','▦'],
     ['exercises','Exercícios','Ficha completa de exercícios','⌘'],
     ['workout','Plano de treino','Dias, exercícios, séries e descanso','↗'],
     ['nutrition','Plano nutricional','Refeições, porções e macronutrientes','≋'],
@@ -6317,6 +6319,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  function templateObject(kind){
   if(kind==='foods')return {format:'FORMA_LIBRARY_IMPORT',version:1,foods:[{name:'Exemplo: Iogurte natural',k:61,p:3.5,c:4.7,f:3.3,unit:'g',basisAmount:100,sourceType:'label',source:'Exemplo didático'}]};
   if(kind==='meals')return {format:'FORMA_LIBRARY_IMPORT',version:1,meals:[{name:'Exemplo: Café da manhã',items:[{name:'Iogurte natural',amount:170,unit:'g',k:61,p:3.5,c:4.7,f:3.3,basisAmount:100}]}]};
+  if(kind==='all')return {format:'FORMA_LIBRARY_IMPORT',version:1,foods:[{name:'Exemplo: Iogurte natural',k:61,p:3.5,c:4.7,f:3.3,unit:'g',basisAmount:100,sourceType:'label',source:'Exemplo didático'}],meals:[{name:'Exemplo: Café da manhã',items:[{name:'Iogurte natural',amount:170,unit:'g',k:61,p:3.5,c:4.7,f:3.3,basisAmount:100}]}]};
 
   if(kind==='exercises')return {format:'FORMA_EXERCISE_LIBRARY',version:1,exercises:[{name:'Supino na máquina',muscle:'Peito',focus:'Peitoral',secondary:['Tríceps','Deltoide anterior'],equipment:'Máquina',type:'Composto',level:'Iniciante',pattern:'Empurrar horizontal',tips:['Ajuste o banco para manter a amplitude confortável.'],errors:['Elevar os ombros durante a execução.'],alternatives:['Supino com halteres'],sets:'3',reps:'8–12',rest:'90 s'}]};
   if(kind==='workout')return {format:'FORMA_WORKOUT_PLAN',version:1,name:'Exemplo — plano personalizado',objective:'Ex.: hipertrofia',days:[{day:'Segunda-feira',short:'SEG',title:'Peito e tríceps',subtitle:'Ênfase em movimentos estáveis',exercises:[{name:'Supino inclinado na máquina',sets:3,reps:'8–12 reps',rest:'90–120 s'},{name:'Tríceps na polia',sets:3,reps:'10–12 reps',rest:'60–90 s'}]},{day:'Quarta-feira',short:'QUA',title:'Costas e bíceps',exercises:[{name:'Puxada frontal',sets:3,reps:'8–12 reps',rest:'120 s'}]}]};
@@ -6327,7 +6330,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  function downloadPdfTemplate(kind){
   if(kind==='bio'){const obj={format:'FORMA_BIOIMPEDANCE',version:1,bioimpedance:{date:'2026-01-15',weight:72.5,waist:85,fat:20,muscle:30,water:55,notes:'EXEMPLO DIDÁTICO — substitua pelos dados reais do seu exame.'}};const summary='<section class="section"><h2>Modelo de bioimpedância</h2><p>Este PDF contém um exemplo estruturado para edição. Substitua os valores ilustrativos pelos dados reais do exame, preserve os nomes dos campos e mantenha o bloco estruturado completo para que o FORMA reconheça a importação.</p><div class="stats"><div class="stat"><span>Peso</span><strong>72,5 kg</strong></div><div class="stat"><span>Gordura corporal</span><strong>20%</strong></div><div class="stat"><span>Massa muscular</span><strong>30 kg</strong></div><div class="stat"><span>Água corporal</span><strong>55%</strong></div></div><p class="muted">Todos os valores acima são fictícios e servem apenas para demonstrar o preenchimento.</p></section>';return openStructuredPdf('Modelo de bioimpedância','Modelo editável e compatível com importação · PDF',summary,obj);}
   const obj=templateObject(kind);if(!obj){showStatus('Modelo não encontrado.',true);return false;}
-  const names={foods:'Modelo de alimentos',meals:'Modelo de refeições',exercises:'Modelo de exercícios',workout:'Modelo de plano de treino',nutrition:'Modelo de plano nutricional',schedule:'Modelo de cronograma alimentar'};
+  const names={foods:'Modelo de alimentos',meals:'Modelo de refeições',all:'Modelo de alimentos e refeições',exercises:'Modelo de exercícios',workout:'Modelo de plano de treino',nutrition:'Modelo de plano nutricional',schedule:'Modelo de cronograma alimentar'};
   const summary='<section class="section"><h2>'+escapeHtml(names[kind])+'</h2><p>Este PDF contém um exemplo estruturado para edição. Substitua os dados ilustrativos pelos seus dados reais, preserve os nomes dos campos e mantenha o bloco estruturado completo para que o FORMA possa identificar a importação.</p></section>';
   return openStructuredPdf(names[kind],'Modelo editável e compatível com importação · PDF',summary,obj);
  }
@@ -6413,6 +6416,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  ['importBackupFile','importFoodsFile','importMealsFile','importExercisesFile','nutritionImportFile','workoutImportFile','nutritionScheduleFile','bioFile','overviewBioFile'].forEach(id=>{const input=$(id);if(input)input.accept='.pdf,application/pdf';});
  const bioFile=$('bioFile');if(bioFile){bioFile.closest('.field')?.classList.add('forma-bio-import-legacy');bioFile.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(typeof window.showTab==='function')window.showTab('configuracoes');openModal('importar');},true);}
  setHome();
+ window.formaResetFilesHome=()=>{setHome();if(home)home.hidden=false;if(routes){routes.querySelectorAll('.central-files-route').forEach(route=>route.hidden=true);routes.style.display='none';}page.dataset.centralRoute='home';};
  // Expor as rotinas necessárias aos scripts legados e aos botões inline fora desta IIFE.
  window.openStructuredPdf=openStructuredPdf;
  window.downloadPdfTemplate=downloadPdfTemplate;
@@ -6467,6 +6471,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   if(isOpen())return;
   previousFocus=document.activeElement;
   previousOverflow=document.body.style.overflow;
+  window.formaResetFilesHome?.();
   page.classList.add('active');
   page.setAttribute('aria-hidden','false');
   document.body.style.overflow='hidden';
@@ -6474,6 +6479,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  }
  function close(){
   if(!isOpen())return;
+  const inner=document.querySelector('.forma-files-modal.open');if(inner){inner.classList.remove('open');inner.setAttribute('aria-hidden','true');}
   page.classList.remove('active');
   page.setAttribute('aria-hidden','true');
   document.body.style.overflow=previousOverflow;
@@ -6486,7 +6492,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  page.addEventListener('click',e=>{if(e.target===page)close();});
  document.addEventListener('keydown',e=>{
   if(e.key!=='Escape'||!isOpen())return;
-  const inner=page.querySelector('.forma-files-modal.open');
+  const inner=document.querySelector('.forma-files-modal.open');
   if(inner){inner.classList.remove('open');inner.setAttribute('aria-hidden','true');e.preventDefault();e.stopImmediatePropagation();}
   else close();
  },true);
