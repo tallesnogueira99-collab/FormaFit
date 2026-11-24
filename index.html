@@ -1710,7 +1710,7 @@ body.forma-area-picker-open{overflow:hidden}
 <div class="app overview-active">
 <header>
  <div class="brand area-brand-trigger" role="button" tabindex="0" aria-label="Escolher entre Treinos e Nutrição" aria-haspopup="dialog" aria-controls="formaAreaPicker" aria-expanded="false" title="Alternar entre Treinos e Nutrição"><div class="logo">F</div><div><h1>FORMA<span style="color:var(--lime)">.</span></h1><p>Seu plano. Seu ritmo. Sua evolução.</p></div></div>
- <div class="header-actions"><div class="header-tools-wrap"><button class="header-tools-trigger" id="toolsTrigger" type="button" aria-label="Abrir atalhos e ajuda" aria-haspopup="true" aria-expanded="false" title="Atalhos e ajuda">⋯</button><div class="tools-popover" id="toolsMenu" role="menu" aria-label="Menu do aplicativo">
+ <div class="header-actions"><div class="header-tools-wrap"><button class="header-tools-trigger" id="toolsTrigger" type="button" aria-label="Abrir menu do aplicativo" aria-haspopup="true" aria-expanded="false" title="Menu do aplicativo">⋯</button><div class="tools-popover" id="toolsMenu" role="menu" aria-label="Menu do aplicativo">
   <div class="menu-caption">MENU DO FORMA</div>
   <button class="menu-item" id="settingsHubBtn" type="button" role="menuitem"><span aria-hidden="true">⚙</span><span class="menu-item-copy"><strong>Configurações</strong><small>Perfil, aparência e instalação</small></span></button>
   <button class="menu-item" id="settingsMenuBtn" type="button" role="menuitem"><span aria-hidden="true">⇧</span><span class="menu-item-copy"><strong>Importar e exportar</strong><small>Arquivos, modelos e backups</small></span></button>
@@ -6787,6 +6787,11 @@ body.forma-files-mode .top-tabs{display:none!important}
  $('profileBadge').addEventListener('contextmenu',function(){openSettings();});
  $('profilesModal').addEventListener('click',function(e){if(e.target===$('profilesModal'))closeProfileManagerDisplay();});
  $('closeProfiles').addEventListener('click',closeProfileManagerDisplay);
+ // Alguns comandos internos (trocar/excluir perfil) também fecham o modal sem clicar no X.
+ if(typeof MutationObserver==='function'){
+  const profileModalObserver=new MutationObserver(function(){if(!$('profilesModal').classList.contains('open'))closeProfileManagerDisplay();});
+  profileModalObserver.observe($('profilesModal'),{attributes:true,attributeFilter:['class']});
+ }
  function findTourTarget(step){
   if(step.selector){const explicit=document.querySelector(step.selector);if(explicit&&explicit.getClientRects().length)return explicit;}
   if(step.tab){
