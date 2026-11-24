@@ -4369,7 +4369,7 @@ function parseFormaHumanPdfRows(source){
  // PDFs preenchíveis do FORMA expõem os valores dos campos como metadados [FORM FIELD].
  // Esses campos são a fonte estruturada e devem prevalecer sobre o texto visual do modelo.
  const formLines=text.split(/\r?\n/).map(x=>x.trim()).filter(x=>/^\[FORM FIELD\]\s*/i.test(x));
- if(formLines.length){const record={};for(const line of formLines){const m=line.replace(/^\[FORM FIELD\]\s*/i,'').match(/^([^:：]+)\s*[:：]\s*(.*)$/);if(!m)continue;const key=formaImportCanonicalKey(m[1]);if(key)record[key]=m[2].replace(/\\\\n/g,'\n').trim();}if(record.name||record.meal_name||record.food_name)return [record];}
+ if(formLines.length){const record={};for(const line of formLines){const m=line.replace(/^\[FORM FIELD\]\s*/i,'').match(/^([^:：]+)\s*[:：]\s*(.*)$/);if(!m)continue;const key=formaImportCanonicalKey(m[1]);if(key)record[key]=m[2].replace(/\\n/g,'\n').trim();}if(record.name||record.meal_name||record.food_name)return [record];}
  const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
  const splitCells=line=>{if(line.includes('|'))return line.split('|').map(x=>x.trim()).filter((x,i,a)=>!(i===0&&!x)&&!(i===a.length-1&&!x));if(line.includes('\t'))return line.split(/\t+/).map(x=>x.trim());if(/\s{2,}/.test(line))return line.split(/\s{2,}/).map(x=>x.trim());return [];};
  for(let h=0;h<Math.min(lines.length,30);h++){
