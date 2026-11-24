@@ -6710,7 +6710,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   closeTabMenu();
   if(action==='settingsHubBtn'){openSettings();return;}
   if(action==='settingsMenuBtn'){showTab('configuracoes');if(window.formaOpenFilesWindow)window.formaOpenFilesWindow();return;}
-  if(action==='refreshPageBtn'){window.location.reload();return;}
+  if(action==='refreshPageBtn'){if(window.formaPersistActiveView)window.formaPersistActiveView();window.location.reload();return;}
   if(action==='helpMenuBtn'){openHelp();return;}
  }
  document.addEventListener('click',function(e){
@@ -6877,7 +6877,7 @@ body.forma-files-mode .top-tabs{display:none!important}
 
 <style id="forma-nav-restore-settings-return-v1-css">
 /* Subáreas abertas a partir das configurações devem ficar acima da janela principal. */
-#customModal,#profilesModal{z-index:13100!important}
+#customModal,#profilesModal,#syncModal{z-index:13110!important}
 #configuracoes.settings-view.active{z-index:13100!important}
 #configuracoes .forma-files-modal{z-index:13120!important}
 </style>
@@ -6887,14 +6887,13 @@ body.forma-files-mode .top-tabs{display:none!important}
  if(window.__formaNavRestoreSettingsReturnV1)return;
  window.__formaNavRestoreSettingsReturnV1=true;
  const KEY='forma:last-active-view:v1';
+ const $=id=>document.getElementById(id);
  function safeGet(){try{return sessionStorage.getItem(KEY)||'';}catch(e){return '';}}
  function safeSet(value){try{if(value)sessionStorage.setItem(KEY,value);}catch(e){}}
  function safeRemove(){try{sessionStorage.removeItem(KEY);}catch(e){}}
- function currentView(){
-  const active=document.querySelector('.view.active');
-  return active&&active.id&&active.id!=='configuracoes'?active.id:'';
- }
+ function currentView(){const active=document.querySelector('.view.active');return active&&active.id&&active.id!=='configuracoes'?active.id:'';}
  function persistCurrent(){const id=currentView();if(id)safeSet(id);}
+ window.formaPersistActiveView=persistCurrent;
  const baseShowTab=window.showTab;
  if(typeof baseShowTab==='function'){
   window.showTab=function(tab){
@@ -6902,53 +6901,40 @@ body.forma-files-mode .top-tabs{display:none!important}
    return baseShowTab.apply(this,arguments);
   };
  }
- // The current view is stored as navigation occurs, and again when the page is hidden.
  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')persistCurrent();});
  window.addEventListener('pagehide',persistCurrent);
  window.addEventListener('beforeunload',persistCurrent);
- // Restore only once in this tab after the application's own initialization.
  const saved=safeGet();
  if(saved){
   setTimeout(function(){
-   const valid=document.getElementById(saved);
-   if(valid&&typeof window.showTab==='function')window.showTab(saved);
+   const target=$(saved);
+   if(target&&typeof window.showTab==='function')window.showTab(saved);
    safeRemove();
-  },80);
+  },120);
  }
- // The settings hub stays visible behind child destinations; closing the child returns to it.
+ // Child windows launched from Settings are layered over the hub, not instead of it.
+ const settingsModal=$('formaSettingsModal');
+ const filesPage=$('configuracoes');
  let filesFromSettings=false;
- const originalOpen=window.formaOpenFilesWindow;
- const originalClose=window.formaCloseFilesWindow;
- const originalSettingsOpen=window.formaOpenSettings;
- const settingsButton=document.querySelector('[data-settings-action="files"]');
- if(settingsButton){
-  settingsButton.addEventListener('click',function(){filesFromSettings=true;},true);
- }
- // menu entry uses the same action path but does not click the settings card.
- const menuFiles=document.getElementById('settingsMenuBtn');
- if(menuFiles){
-  menuFiles.addEventListener('click',function(){filesFromSettings=false;},true);
- }
- if(typeof originalClose==='function'){
-  window.formaCloseFilesWindow=function(){
-   const result=originalClose.apply(this,arguments);
-   if(filesFromSettings){
-    filesFromSettings=false;
-    setTimeout(function(){if(typeof originalSettingsOpen==='function')originalSettingsOpen();},0);
-   }
-   return result;
+ const openFiles=window.formaOpenFilesWindow;
+ if(typeof openFiles==='function'){
+  window.formaOpenFilesWindow=function(){
+   if(settingsModal&&settingsModal.classList.contains('open'))filesFromSettings=true;
+   return openFiles.apply(this,arguments);
   };
  }
- // Ensure the direct settings shortcut is treated as a child view, while top-level menu remains standalone.
- window.__formaSettingsChildFiles=function(){filesFromSettings=true;};
- const menuActionButton=document.getElementById('settingsMenuBtn');
- if(menuActionButton){
-  menuActionButton.addEventListener('click',function(){
-   filesFromSettings=false;
-  },true);
+ if(filesPage&&typeof MutationObserver==='function'){
+  const observer=new MutationObserver(function(){
+   if(filesFromSettings&&!filesPage.classList.contains('active')){
+    filesFromSettings=false;
+    setTimeout(function(){
+     if(settingsModal&&typeof window.formaOpenSettings==='function')window.formaOpenSettings();
+    },0);
+   }
+  });
+  observer.observe(filesPage,{attributes:true,attributeFilter:['class']});
  }
- // Refresh command explicitly snapshots the visible tab before requesting a reload.
- const refresh=document.getElementById('refreshPageBtn');
+ const refresh=$('refreshPageBtn');
  if(refresh)refresh.addEventListener('click',persistCurrent,true);
 })();
 </script>
