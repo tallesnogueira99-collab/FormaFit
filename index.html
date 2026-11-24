@@ -5345,6 +5345,12 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
  const reflectNutritionReportStatus=()=>setTimeout(()=>{const source=$('nutritionReportStatus');if(source?.textContent?.trim()&&exportStatus){exportStatus.textContent=source.textContent.trim();exportStatus.className='settings-status visible '+(source.classList.contains('error')?'error':'success');placeExportStatus('exportar');}},0);
  [['↓ Exportar relatório CSV','exportNutritionReportCsv'],['↓ Exportar relatório JSON','exportNutritionReportJson'],['▤ Imprimir / salvar relatório em PDF','exportNutritionReportPdf']].forEach(([label,id])=>{const b=document.createElement('button');b.type='button';b.className='btn ghost central-existing-action';b.textContent=label;b.addEventListener('click',()=>{if(id==='exportNutritionReportCsv')downloadNutritionReport('csv');else if(id==='exportNutritionReportJson')downloadNutritionReport('json');else printNutritionReport();reflectNutritionReportStatus();});nutritionReportExportCard.body.append(b);});
  routes.exportar.body.append(nutritionReportExportCard.card);
+
+ const trainingHistoryExportCard=makeCard('Relatório analítico de treinamento','Histórico completo de musculação e cardio, evolução mensal e anual, distribuição muscular, exercícios e dados estruturados para análise por IA.');
+ const trainingHistoryExportButton=document.createElement('button');trainingHistoryExportButton.type='button';trainingHistoryExportButton.className='btn ghost central-existing-action';trainingHistoryExportButton.textContent='▤ Gerar relatório completo em PDF';
+ trainingHistoryExportButton.addEventListener('click',async()=>{trainingHistoryExportButton.disabled=true;trainingHistoryExportButton.textContent='Gerando relatório…';try{const result=await window.exportPdf('training');if(result!==false&&exportStatus){exportStatus.textContent='Relatório analítico de treinamento gerado. O PDF contém o histórico estruturado completo em um anexo JSON interno.';exportStatus.className='settings-status visible success';placeExportStatus('exportar');}}catch(error){console.error('FORMA relatório de treinamento',error);if(exportStatus){exportStatus.textContent='Não foi possível gerar o relatório: '+(error.message||'erro inesperado');exportStatus.className='settings-status visible error';placeExportStatus('exportar');}}finally{trainingHistoryExportButton.disabled=false;trainingHistoryExportButton.textContent='▤ Gerar relatório completo em PDF';}});
+ trainingHistoryExportCard.body.append(trainingHistoryExportButton);
+ routes.exportar.body.append(trainingHistoryExportCard.card);
  if(exportStatus)routes.exportar.statusHost.append(exportStatus);
  const exportNote=addNote(routes.exportar.body,'Exportar não altera seus registros:','os arquivos são gerados a partir dos dados disponíveis no perfil ativo.');
 
@@ -6448,6 +6454,122 @@ body.forma-files-mode .top-tabs{display:none!important}
    if(!progress.length&&!bio.length){showStatus('Não há registros de peso ou bioimpedância neste perfil.',true);return false;}
    const fmt=v=>v===null||v===undefined||v===''?'—':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:1}),pick=(obj,keys)=>{for(const key of keys){const value=obj?.[key];if(value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value)))return Number(value);}return null;},orderedProgress=progress.filter(x=>x&&x.date).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))),orderedBio=bio.filter(x=>x&&x.date).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))),weightRows=orderedProgress.map(x=>[x.date,fmt(x.weight)+' kg',x.waist!==null&&x.waist!==undefined&&x.waist!==''?fmt(x.waist)+' cm':'—']),bioRows=orderedBio.map(x=>[x.date,pick(x,['fat','bodyFatPercent','body_fat_percent','fatPercent','bodyFat','body_fat','percentFat']),pick(x,['muscle','muscleMassKg','muscle_mass_kg','muscleMass','muscle_mass','skeletalMuscleMass']),pick(x,['water','bodyWaterPercent','body_water_percent','waterPercent','bodyWater','body_water'])].map((v,i)=>i===0?v:v===null?'—':fmt(v)+(i===2?' kg':'%'))),latest=orderedProgress.at(-1),first=orderedProgress[0],delta=latest&&first?Number(latest.weight)-Number(first.weight):null,stats='<div class="stats"><div class="stat"><span>Registros de peso</span><strong>'+orderedProgress.length+'</strong></div><div class="stat"><span>Último peso</span><strong>'+(latest?fmt(latest.weight)+' kg':'—')+'</strong></div><div class="stat"><span>Variação no histórico</span><strong>'+(delta===null?'—':(delta>0?'+':'')+fmt(delta)+' kg')+'</strong></div><div class="stat"><span>Avaliações de bioimpedância</span><strong>'+orderedBio.length+'</strong></div></div>',summary=stats+'<section class="section"><h2>Histórico de peso e medidas</h2>'+(weightRows.length?table(['Data','Peso','Cintura'],weightRows):'<p class="muted">Não há registros de peso e medidas neste perfil.</p>')+'</section><section class="section"><h2>Bioimpedância</h2>'+(bioRows.length?table(['Data','Gordura corporal','Massa muscular','Água corporal'],bioRows):table(['Situação'],[['Nenhuma avaliação de bioimpedância consta nos dados deste perfil. O histórico de peso e cintura é exibido separadamente.']]))+'</section>';
    return openStructuredPdf('Composição corporal','Histórico do perfil · PDF',summary,{format:'FORMA_BODY_COMPOSITION_REPORT',version:1,progress:progress,bioimpedance:bio});
+  }
+
+  if(kind==='training'){
+   const now=new Date(),isoDate=value=>{const d=value instanceof Date?value:new Date(value);if(!Number.isFinite(d.getTime()))return '';return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+   const validDate=value=>/^\d{4}-\d{2}-\d{2}$/.test(String(value||''))?String(value):'';
+   const safeClone=value=>{try{return JSON.parse(JSON.stringify(value??null));}catch(e){return null;}};
+   const normalizeExerciseName=value=>String(value||'').toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+   const setRows=[],sessionMap=new Map(),rawHistory=Array.isArray(state.sessionHistory)?state.sessionHistory:[];
+   rawHistory.forEach(item=>{if(!item||!item.id)return;const id=String(item.id);sessionMap.set(id,{...item,id,date:validDate(sessionDateOf(item))||validDate(isoDate(item.finishedAt))||validDate(isoDate(item.startedAt)),source:'sessionHistory'});});
+   Object.entries(state.logs||{}).forEach(([logKey,log])=>{
+    if(!log||!Array.isArray(log.sets))return;
+    log.sets.forEach((set,setIndex)=>{
+     if(!set)return;
+     const date=validDate(set.date)||validDate(log.date)||validDate((String(logKey).match(/\d{4}-\d{2}-\d{2}/)||[])[0]);
+     const sessionId=String(set.sessionId||log.sessionId||('legacy-'+(date||'sem-data')+'-'+(log.sessionDayIndex??'x')));
+     const exerciseName=String(set.exerciseName||log.exerciseName||'Exercício').trim()||'Exercício';
+     if(set.completed===true&&set.savedAt&&date){
+      const weightRaw=set.weight,repsRaw=set.reps,weight=Number(weightRaw),reps=Number(repsRaw);
+      const hasWeight=weightRaw!==''&&weightRaw!==null&&weightRaw!==undefined&&Number.isFinite(weight)&&weight>=0;
+      const hasReps=repsRaw!==''&&repsRaw!==null&&repsRaw!==undefined&&Number.isFinite(reps)&&reps>0;
+      if(hasWeight&&hasReps){
+       setRows.push({date,sessionId,exercise:exerciseName,weight,reps,volume:weight>0?weight*reps:0,restSeconds:Number.isFinite(Number(set.restSeconds))?Number(set.restSeconds):null,savedAt:set.savedAt,logKey,setIndex,workoutName:set.workoutName||log.workoutName||'',day:set.day||log.day||'',rpe:log.rpe??null});
+       if(!sessionMap.has(sessionId))sessionMap.set(sessionId,{id:sessionId,date,sessionDate:date,workoutName:set.workoutName||log.workoutName||'',day:set.day||log.day||'',startedAt:log.sessionStartedAt||null,finishedAt:null,legacy:true,source:'completedSets'});
+       else if(!sessionMap.get(sessionId).date)sessionMap.get(sessionId).date=date;
+      }
+     }
+    });
+   });
+   const sessions=[...sessionMap.values()].filter(s=>s.date).sort((a,b)=>a.date.localeCompare(b.date)||String(a.startedAt||'').localeCompare(String(b.startedAt||'')));
+   const cardioRows=(Array.isArray(state.cardioSessions)?state.cardioSessions:[]).filter(x=>x&&validDate(x.date)).map(x=>({...x,date:validDate(x.date)})).sort((a,b)=>a.date.localeCompare(b.date));
+   const allDates=[...sessions.map(x=>x.date),...setRows.map(x=>x.date),...cardioRows.map(x=>x.date)].filter(Boolean).sort();
+   const periodStart=allDates[0]||null,periodEnd=allDates[allDates.length-1]||null;
+   const totalSets=setRows.length,totalReps=setRows.reduce((sum,x)=>sum+x.reps,0),totalVolume=setRows.reduce((sum,x)=>sum+x.volume,0);
+   const weightedSets=setRows.filter(x=>x.weight>0),maxLoad=weightedSets.length?Math.max(...weightedSets.map(x=>x.weight)):null;
+   const durations=sessions.map(s=>s.startedAt&&s.finishedAt?Math.max(0,(new Date(s.finishedAt)-new Date(s.startedAt))/60000):null).filter(x=>Number.isFinite(x));
+   const strengthMinutes=durations.reduce((sum,x)=>sum+x,0),cardioMinutes=cardioRows.reduce((sum,x)=>sum+Math.max(0,Number(x.duration)||0),0);
+   const weekKeyForDate=date=>{const d=new Date(date+'T12:00:00');d.setDate(d.getDate()-((d.getDay()+6)%7));return isoDate(d);};
+   const activeWeeks=[...new Set([...sessions.map(x=>weekKeyForDate(x.date)),...cardioRows.map(x=>weekKeyForDate(x.date))])].sort();
+   let longestStreak=0,currentStreak=0,previousWeek=null;
+   activeWeeks.forEach(week=>{const time=new Date(week+'T12:00:00').getTime();if(previousWeek!==null&&time-previousWeek===7*86400000)currentStreak++;else currentStreak=1;longestStreak=Math.max(longestStreak,currentStreak);previousWeek=time;});
+   const elapsedWeeks=periodStart&&periodEnd?Math.max(1,Math.ceil((new Date(periodEnd+'T12:00:00')-new Date(periodStart+'T12:00:00'))/(7*86400000))+1):0;
+   const avgSessionsPerWeek=elapsedWeeks?(sessions.length+cardioRows.length)/elapsedWeeks:null;
+   const fmt=value=>value===null||value===undefined||!Number.isFinite(Number(value))?'—':Number(value).toLocaleString('pt-BR',{maximumFractionDigits:1});
+   const fmtInt=value=>Number(value||0).toLocaleString('pt-BR',{maximumFractionDigits:0});
+   const dateLabel=value=>value?new Date(value+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}):'—';
+   const exerciseMeta=new Map();
+   const addExerciseMeta=(item,fallback)=>{if(!item)return;const name=String(item.name||item.exerciseName||'').trim();if(!name)return;const key=normalizeExerciseName(name);exerciseMeta.set(key,{...item,_fallback:fallback||''});};
+   (Array.isArray(state.customExercises)?state.customExercises:[]).forEach(x=>addExerciseMeta(x,''));
+   Object.values(state.exerciseCatalogEdits||{}).forEach(x=>addExerciseMeta(x,''));
+   (Array.isArray(workouts)?workouts:[]).forEach(w=>{const fallback=typeof getWorkoutMuscleTitle==='function'?getWorkoutMuscleTitle(w):(w.title||w.day||'');(w.ex||[]).forEach(ex=>addExerciseMeta({name:ex[0]},fallback));});
+   const exerciseStats=new Map(),muscleStats=new Map();
+   setRows.forEach(row=>{
+    const key=normalizeExerciseName(row.exercise),meta=exerciseMeta.get(key)||{};
+    const group=String(meta.muscle||meta.primaryMuscle||meta.primary_muscle||meta.focus||meta.group||meta._fallback||'Não classificado').trim()||'Não classificado';
+    let ex=exerciseStats.get(key);if(!ex){ex={name:row.exercise,sets:0,reps:0,volume:0,sessions:new Set(),firstDate:row.date,lastDate:row.date,firstLoad:null,lastLoad:null,maxLoad:null,maxReps:0};exerciseStats.set(key,ex);}
+    ex.sets++;ex.reps+=row.reps;ex.volume+=row.volume;ex.sessions.add(row.sessionId);if(row.date<ex.firstDate)ex.firstDate=row.date;if(row.date>ex.lastDate)ex.lastDate=row.date;
+    if(row.weight>0){if(ex.firstLoad===null||row.date<ex.firstLoad.date)ex.firstLoad={date:row.date,value:row.weight};if(ex.lastLoad===null||row.date>ex.lastLoad.date||(row.date===ex.lastLoad.date&&String(row.savedAt)>String(ex.lastLoad.savedAt||'')))ex.lastLoad={date:row.date,value:row.weight,savedAt:row.savedAt};ex.maxLoad=ex.maxLoad===null?row.weight:Math.max(ex.maxLoad,row.weight);}
+    ex.maxReps=Math.max(ex.maxReps,row.reps);
+    let muscle=muscleStats.get(group);if(!muscle){muscle={name:group,sets:0,reps:0,volume:0,sessions:new Set(),exercises:new Set()};muscleStats.set(group,muscle);}
+    muscle.sets++;muscle.reps+=row.reps;muscle.volume+=row.volume;muscle.sessions.add(row.sessionId);muscle.exercises.add(row.exercise);
+   });
+   const exerciseList=[...exerciseStats.values()].sort((a,b)=>b.volume-a.volume||b.sets-a.sets);
+   const muscleList=[...muscleStats.values()].sort((a,b)=>b.sets-a.sets);
+   const progressionList=exerciseList.filter(x=>x.firstLoad&&x.lastLoad).map(x=>({...x,delta:x.lastLoad.value-x.firstLoad.value,deltaPercent:x.firstLoad.value>0?(x.lastLoad.value/x.firstLoad.value-1)*100:null})).sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta)).slice(0,12);
+   const monthMap=new Map(),yearMap=new Map();
+   const ensureBucket=(map,key,label)=>{if(!map.has(key))map.set(key,{label,sessions:new Set(),cardio:0,sets:0,reps:0,volume:0,minutes:0});return map.get(key);};
+   sessions.forEach(s=>{const month=s.date.slice(0,7),year=s.date.slice(0,4);ensureBucket(monthMap,month,month).sessions.add(String(s.id));ensureBucket(yearMap,year,year).sessions.add(String(s.id));});
+   cardioRows.forEach(c=>{const month=c.date.slice(0,7),year=c.date.slice(0,4);ensureBucket(monthMap,month,month).cardio++;ensureBucket(yearMap,year,year).cardio++;ensureBucket(monthMap,month,month).minutes+=Math.max(0,Number(c.duration)||0);ensureBucket(yearMap,year,year).minutes+=Math.max(0,Number(c.duration)||0);});
+   setRows.forEach(r=>{const month=r.date.slice(0,7),year=r.date.slice(0,4);const m=ensureBucket(monthMap,month,month),y=ensureBucket(yearMap,year,year);m.sets++;m.reps+=r.reps;m.volume+=r.volume;y.sets++;y.reps+=r.reps;y.volume+=r.volume;});
+   const monthData=[...monthMap.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([key,v])=>({period:key,...v}));
+   const yearData=[...yearMap.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([key,v])=>({period:key,...v}));
+   const maxMonthVolume=Math.max(1,...monthData.map(x=>x.volume));
+   const monthlyRows=monthData.map(x=>[x.period,fmtInt(x.sessions.size),fmtInt(x.cardio),fmtInt(x.sets),fmtInt(x.reps),fmtInt(x.volume)+' kg·reps',x.volume>0?'#'.repeat(Math.max(1,Math.round(x.volume/maxMonthVolume*12))):'—']);
+   const yearlyRows=yearData.map(x=>[x.period,fmtInt(x.sessions.size),fmtInt(x.cardio),fmtInt(x.sets),fmtInt(x.reps),fmtInt(x.volume)+' kg·reps',fmtInt(x.minutes)+' min']);
+   const muscleRows=muscleList.map(x=>[x.name,fmtInt(x.sessions.size),fmtInt(x.exercises.size),fmtInt(x.sets),fmtInt(x.reps),fmtInt(x.volume)+' kg·reps']);
+   const exerciseRows=exerciseList.slice(0,25).map(x=>[x.name,fmtInt(x.sessions.size),fmtInt(x.sets),fmtInt(x.reps),x.maxLoad===null?'—':fmt(x.maxLoad)+' kg',fmtInt(x.volume)+' kg·reps']);
+   const progressionRows=progressionList.map(x=>[x.name,dateLabel(x.firstLoad.date),fmt(x.firstLoad.value)+' kg',dateLabel(x.lastLoad.date),fmt(x.lastLoad.value)+' kg',(x.delta>0?'+':'')+fmt(x.delta)+' kg'+(x.deltaPercent===null?'':' ('+(x.deltaPercent>0?'+':'')+fmt(x.deltaPercent)+'%)')]);
+   const sessionsWithoutSets=sessions.filter(s=>!setRows.some(r=>r.sessionId===String(s.id))).length;
+   const unknownGroupSets=setRows.filter(r=>{const meta=exerciseMeta.get(normalizeExerciseName(r.exercise))||{};return !(meta.muscle||meta.primaryMuscle||meta.primary_muscle||meta.focus||meta.group||meta._fallback);}).length;
+   const totalRawSetEntries=Object.values(state.logs||{}).reduce((sum,log)=>sum+(Array.isArray(log?.sets)?log.sets.length:0),0);
+   const profileName=$('profileNameLabel')?.textContent?.trim()||'Perfil atual';
+   const summaryHtml=
+    '<div class="stats">'+
+     '<div class="stat"><span>Sessões de musculação</span><strong>'+fmtInt(sessions.length)+'</strong></div>'+
+     '<div class="stat"><span>Sessões cardiovasculares</span><strong>'+fmtInt(cardioRows.length)+'</strong></div>'+
+     '<div class="stat"><span>Séries concluídas</span><strong>'+fmtInt(totalSets)+'</strong></div>'+
+     '<div class="stat"><span>Volume externo acumulado</span><strong>'+fmtInt(totalVolume)+' kg·reps</strong></div>'+
+     '<div class="stat"><span>Repetições concluídas</span><strong>'+fmtInt(totalReps)+'</strong></div>'+
+     '<div class="stat"><span>Tempo de musculação cronometrado</span><strong>'+fmtInt(strengthMinutes)+' min</strong></div>'+
+     '<div class="stat"><span>Tempo cardiovascular registrado</span><strong>'+fmtInt(cardioMinutes)+' min</strong></div>'+
+     '<div class="stat"><span>Média de sessões por semana</span><strong>'+(avgSessionsPerWeek===null?'—':fmt(avgSessionsPerWeek))+'</strong></div>'+
+    '</div>'+
+    '<h2>Panorama da trajetória</h2>'+
+    '<p class="muted">Perfil: '+escapeHtml(profileName)+'. Período com registros: '+escapeHtml(dateLabel(periodStart))+' a '+escapeHtml(dateLabel(periodEnd))+'. Foram identificadas '+fmtInt(activeWeeks.length)+' semanas com atividade e uma sequência máxima de '+fmtInt(longestStreak)+' semana(s) consecutiva(s). O cálculo de frequência considera musculação e cardio registrados; não presume atividade nos dias sem dados.</p>'+
+    '<h2>Evolução mensal</h2><p class="muted">Cada linha representa um mês com pelo menos um registro. A barra em # representa, de forma relativa, o volume externo registrado naquele mês. Volume = carga × repetições; séries sem carga externa positiva não entram nesse cálculo.</p>'+
+    (monthlyRows.length?table(['Mês','Musculação','Cardio','Séries','Reps','Volume','Escala'],monthlyRows):'<p class="muted">Não há sessões ou séries com datas válidas para análise mensal.</p>')+
+    '<h2>Resumo anual</h2>'+
+    (yearlyRows.length?table(['Ano','Musculação','Cardio','Séries','Reps','Volume','Min cardio'],yearlyRows):'<p class="muted">Não há registros anuais disponíveis.</p>')+
+    '<h2>Distribuição por grupos musculares</h2><p class="muted">A classificação usa o grupo principal disponível na biblioteca ou no plano atual. Quando não há metadados confiáveis, o exercício permanece como não classificado; músculos secundários não são contabilizados como séries completas.</p>'+
+    (muscleRows.length?table(['Grupo principal','Sessões','Exercícios','Séries','Reps','Volume'],muscleRows):'<p class="muted">Não há séries concluídas para distribuir por grupo muscular.</p>')+
+    '<h2>Exercícios mais registrados</h2>'+
+    (exerciseRows.length?table(['Exercício','Sessões','Séries','Reps','Maior carga','Volume'],exerciseRows):'<p class="muted">Ainda não há séries concluídas com dados válidos.</p>')+
+    '<h2>Variação de carga registrada</h2><p class="muted">Compara a primeira e a última carga positiva registrada para o mesmo exercício. É uma descrição dos registros, não uma medida isolada de força ou de hipertrofia; técnica, amplitude e equipamento podem mudar.</p>'+
+    (progressionRows.length?table(['Exercício','Primeiro registro','Carga inicial','Último registro','Carga final','Diferença'],progressionRows):'<p class="muted">Não há registros comparáveis de carga para identificar variações.</p>')+
+    '<h2>Qualidade e limites dos dados</h2>'+
+    '<p class="muted">Séries concluídas com dados válidos: '+fmtInt(totalSets)+' de '+fmtInt(totalRawSetEntries)+' entradas de série armazenadas. Sessões sem séries concluídas associadas: '+fmtInt(sessionsWithoutSets)+'. Séries sem classificação muscular identificável: '+fmtInt(unknownGroupSets)+'. Duração da musculação soma somente sessões com início e término registrados. O histórico bruto anexado também preserva rascunhos, sessões pausadas e campos não preenchidos, que não entram nos indicadores.</p>'+
+    '<h2>Histórico cardiovascular</h2>'+
+    (cardioRows.length?table(['Data','Atividade','Duração','Distância','Calorias','Observações'],cardioRows.map(x=>[dateLabel(x.date),x.type||'Cardio',fmtInt(x.duration)+' min',x.distance===null||x.distance===undefined?'—':String(x.distance),x.calories===null||x.calories===undefined?'—':String(x.calories),String(x.notes||'').slice(0,120)])):'<p class="muted">Não há sessões cardiovasculares registradas neste perfil.</p>');
+   const payload={
+    format:'FORMA_TRAINING_HISTORY_REPORT',version:1,generatedAt:now.toISOString(),profile:{name:profileName},
+    period:{start:periodStart,end:periodEnd},summary:{strengthSessions:sessions.length,cardioSessions:cardioRows.length,completedSets:totalSets,repetitions:totalReps,externalVolumeKgReps:totalVolume,trackedStrengthMinutes:strengthMinutes,cardioMinutes,activeWeeks:activeWeeks.length,longestConsecutiveActiveWeeks:longestStreak,averageSessionsPerWeek:avgSessionsPerWeek},
+    analysis:{monthly:monthData.map(x=>({period:x.period,strengthSessions:x.sessions.size,cardioSessions:x.cardio,sets:x.sets,repetitions:x.reps,externalVolumeKgReps:x.volume,cardioMinutes:x.minutes})),yearly:yearData.map(x=>({period:x.period,strengthSessions:x.sessions.size,cardioSessions:x.cardio,sets:x.sets,repetitions:x.reps,externalVolumeKgReps:x.volume,cardioMinutes:x.minutes})),muscleGroups:muscleList.map(x=>({name:x.name,sessions:x.sessions.size,exercises:[...x.exercises],sets:x.sets,repetitions:x.reps,externalVolumeKgReps:x.volume})),exercises:exerciseList.map(x=>({name:x.name,sessions:x.sessions.size,sets:x.sets,repetitions:x.reps,externalVolumeKgReps:x.volume,firstDate:x.firstDate,lastDate:x.lastDate,firstLoad:x.firstLoad,lastLoad:x.lastLoad,maximumLoad:x.maxLoad,maximumRepetitions:x.maxReps})),dataQuality:{rawSetEntries:totalRawSetEntries,validCompletedSets:totalSets,sessionsWithoutCompletedSets:sessionsWithoutSets,setsWithoutPrimaryMuscleClassification:unknownGroupSets}},
+    raw:{sessionHistory:safeClone(state.sessionHistory||[]),logs:safeClone(state.logs||{}),cardioSessions:safeClone(state.cardioSessions||[]),workoutCycles:safeClone(state.workoutCycles||[]),workoutCycle:safeClone(state.workoutCycle||null),progressionDecisions:safeClone(state.progressionDecisions||[]),customExercises:safeClone(state.customExercises||[]),exerciseCatalogEdits:safeClone(state.exerciseCatalogEdits||{}),exerciseFocusOverrides:safeClone(state.exerciseFocusOverrides||{}),generatedWorkoutPlan:safeClone(state.generatedWorkoutPlan||[]),activeWorkoutPlan:safeClone(workouts||[])},
+    dataDictionary:{sessionHistory:'Sessões de musculação finalizadas, com snapshots dos exercícios e horários quando disponíveis.',logs:'Registros individuais por exercício; cada item sets contém carga, repetições, descanso, data, savedAt, completed e demais campos originais. Inclui rascunhos e sessões pausadas.',cardioSessions:'Sessões cardiovasculares salvas no perfil.',workoutCycles:'Ciclos de treino registrados.',progressionDecisions:'Decisões e recomendações de progressão registradas pelo FORMA.',customExercises:'Biblioteca personalizada de exercícios e metadados disponíveis.',units:{weight:'kg',duration:'min',volume:'kg·reps',rest:'seconds'},calculationRules:{completedSet:'completed=true, savedAt presente, data válida, carga numérica maior ou igual a zero e repetições maiores que zero.',externalVolume:'Soma de carga × repetições somente quando a carga é maior que zero; não representa trabalho mecânico total nem hipertrofia.',frequency:'Sessões identificadas por semana do calendário; semanas sem registro não são tratadas como treino.',muscleGroups:'Apenas o grupo principal identificado é contabilizado; grupos secundários não são duplicados.'},limitations:['Ausência de registro não significa ausência de treino.','Duração é somada apenas quando início e término estão disponíveis.','Classificação muscular depende dos metadados existentes na biblioteca ou no plano atual.','Alterações de técnica, amplitude, equipamento e execução não podem ser inferidas apenas por carga e repetições.']}
+   };
+   return openStructuredPdf('Relatório de treinamento','Histórico completo · análise de desempenho e consistência · PDF',summaryHtml,payload);
   }
   showStatus('Opção de exportação não reconhecida.',true);return false;
  }
