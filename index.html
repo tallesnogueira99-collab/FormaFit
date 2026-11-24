@@ -6360,5 +6360,88 @@ body.forma-files-mode .top-tabs{display:none!important}
 })();
 </script>
 
+
+<!-- FORMA_FILES_OVERLAY_MODAL_V1 -->
+<style>
+#configuracoes.settings-view.active{position:fixed!important;inset:0!important;z-index:10040!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%;height:100dvh;max-height:100dvh;box-sizing:border-box;padding:clamp(10px,3vw,28px)!important;margin:0!important;overflow:hidden!important;background:rgba(3,8,16,.74)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#configuracoes .forma-files-dialog{position:relative;width:min(100%,980px);max-height:min(92dvh,960px);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:clamp(14px,2.8vw,28px);box-sizing:border-box;border:1px solid color-mix(in srgb,var(--line) 85%,#8292aa);border-radius:24px;background:var(--bg,var(--surface,#101a2a));color:var(--text);box-shadow:0 28px 100px #000a;scrollbar-gutter:stable;animation:formaFilesWindowIn .2s ease-out}
+@keyframes formaFilesWindowIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+#configuracoes .forma-files-window-close{position:absolute;top:clamp(14px,2.8vw,28px);right:clamp(14px,2.8vw,28px);z-index:2;display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:13px;background:var(--surface);color:var(--text);font-size:24px;line-height:1;cursor:pointer}
+#configuracoes .forma-files-window-close:hover{border-color:var(--accent);color:var(--accent)}
+#configuracoes .settings-hero{padding-right:58px}
+#configuracoes .forma-files-modal{z-index:10060}
+@media(max-width:600px){#configuracoes.settings-view.active{padding:0!important;align-items:stretch}#configuracoes .forma-files-dialog{width:100%;height:100dvh;max-height:100dvh;border-radius:0;border:0;padding:14px 13px 28px}#configuracoes .settings-hero{gap:11px;padding:17px 54px 17px 15px;border-radius:17px}#configuracoes .settings-hero-icon{width:44px;height:44px;flex-basis:44px}#configuracoes .forma-files-window-close{top:13px;right:13px;width:36px;height:36px}#configuracoes .central-files-home{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){#configuracoes .forma-files-dialog{animation:none}}
+</style>
+<script>
+(function(){
+ 'use strict';
+ if(window.__formaFilesOverlayV1)return;
+ const page=document.getElementById('configuracoes');
+ if(!page)return;
+ window.__formaFilesOverlayV1=true;
+ const dialog=document.createElement('div');
+ dialog.className='forma-files-dialog';
+ dialog.setAttribute('role','dialog');
+ dialog.setAttribute('aria-modal','true');
+ dialog.setAttribute('aria-labelledby','settingsPageTitle');
+ const nestedModal=page.querySelector('.forma-files-modal');
+ const hiddenInputs=Array.from(page.querySelectorAll('input[type="file"][hidden]'));
+ Array.from(page.childNodes).forEach(node=>{
+  if(node===nestedModal||hiddenInputs.includes(node))return;
+  dialog.appendChild(node);
+ });
+ page.appendChild(dialog);
+ hiddenInputs.forEach(node=>page.appendChild(node));
+ if(nestedModal)page.appendChild(nestedModal);
+ const hero=dialog.querySelector('.settings-hero');
+ const closeButton=document.createElement('button');
+ closeButton.type='button';closeButton.className='forma-files-window-close';
+ closeButton.setAttribute('aria-label','Fechar importação e exportação');
+ closeButton.title='Fechar';closeButton.textContent='×';
+ if(hero)hero.appendChild(closeButton);
+ let previousOverflow='',previousFocus=null;
+ const isOpen=()=>page.classList.contains('active');
+ function open(){
+  if(isOpen())return;
+  previousFocus=document.activeElement;
+  previousOverflow=document.body.style.overflow;
+  page.classList.add('active');
+  page.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>closeButton.focus({preventScroll:true}));
+ }
+ function close(){
+  if(!isOpen())return;
+  page.classList.remove('active');
+  page.setAttribute('aria-hidden','true');
+  document.body.style.overflow=previousOverflow;
+  if(previousFocus&&typeof previousFocus.focus==='function')previousFocus.focus({preventScroll:true});
+ }
+ closeButton.addEventListener('click',close);
+ dialog.querySelector('#settingsBackBtn')?.addEventListener('click',e=>{
+  e.preventDefault();e.stopImmediatePropagation();close();
+ },true);
+ page.addEventListener('click',e=>{if(e.target===page)close();});
+ document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape'||!isOpen())return;
+  const inner=page.querySelector('.forma-files-modal.open');
+  if(inner){inner.classList.remove('open');inner.setAttribute('aria-hidden','true');e.preventDefault();e.stopImmediatePropagation();}
+  else close();
+ },true);
+ const original=window.showTab;
+ if(typeof original==='function'){
+  window.showTab=function(tab){
+   if(tab==='configuracoes'){open();return;}
+   if(isOpen())close();
+   return original.apply(this,arguments);
+  };
+ }
+ window.formaOpenFilesWindow=open;
+ window.formaCloseFilesWindow=close;
+ page.setAttribute('aria-hidden','true');
+})();
+</script>
+
 </body>
 </html>
