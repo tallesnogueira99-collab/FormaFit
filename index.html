@@ -5193,7 +5193,7 @@ $('replaceDay').innerHTML=workouts.map((w,i)=>`<option value="${i}">${html(w.day
  }
  const exerciseCard=makeCard('Biblioteca de exercícios','Importe exercícios personalizados para ampliar ou atualizar sua biblioteca. Os registros existentes são preservados quando não há correspondência para atualização.');
  const exerciseButton=document.createElement('button');exerciseButton.type='button';exerciseButton.className='btn secondary central-full-button';exerciseButton.innerHTML='<span aria-hidden="true">↑</span> Selecionar arquivo de exercícios';
- const exerciseFile=$('importExercisesFile');exerciseButton.addEventListener('click',()=>exerciseFile?.click());exerciseCard.body.append(exerciseButton);if(exerciseFile)exerciseCard.body.append(exerciseFile);
+ const exerciseFile=$('importExercisesFile');exerciseButton.addEventListener('click',()=>exerciseFile?.click());exerciseCard.body.append(exerciseButton);if(exerciseFile)document.body.append(exerciseFile);
  routes.importar.body.append(exerciseCard.card);
  const scheduleImportCard=makeCard('Cronograma alimentar','Importe um cronograma em PDF. O FORMA valida refeições, quantidades e dados nutricionais antes de pedir confirmação.');
  const scheduleImportButton=document.createElement('button');scheduleImportButton.type='button';scheduleImportButton.className='btn secondary central-full-button';scheduleImportButton.textContent='↑ Selecionar cronograma em PDF';
