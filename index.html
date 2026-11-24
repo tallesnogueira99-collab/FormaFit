@@ -3086,11 +3086,10 @@ function renderNextMealRecommendation(entries,totals){
  const goal={k:Number(state.targets?.kcal)||1900,p:Number(state.targets?.protein)||130,c:Number(state.targets?.carbs)||210,f:Number(state.targets?.fat)||60};
  const remaining={k:Math.max(0,goal.k-totals.k),p:Math.max(0,goal.p-totals.p),c:Math.max(0,goal.c-totals.c),f:Math.max(0,goal.f-totals.f)};
  const weights={'Café da manhã':.22,'Lanche da manhã':.10,'Almoço':.30,'Lanche / pré-treino':.10,'Jantar':.25,'Ceia opcional':.03,'Lanche da tarde':.10,'Ceia':.03};
- const pending=schedule.length?schedule.filter(m=>!recorded.has(String(m.name||'').trim())).map(m=>m.name):order.filter(n=>!recorded.has(n));
- const denominator=pending.reduce((sum,n)=>sum+(weights[n]||.10),0)||1;
+ 
  let target=null,source='';
  if(plannedNext){try{const x=typeof scheduleTotals==='function'?scheduleTotals(plannedNext):null;if(x&&['k','p','c','f'].every(k=>Number.isFinite(Number(x[k])))){target={k:Number(x.k),p:Number(x.p),c:Number(x.c),f:Number(x.f)};source='Calculada a partir da refeição planejada';}}catch(_){}}
- if(!target){const share=(weights[nextName]||.10)/denominator;target={k:remaining.k*share,p:remaining.p*share,c:remaining.c*share,f:remaining.f*share};source='Distribuição proporcional ao papel da refeição no dia, considerando o saldo e as refeições pendentes';}
+ if(!target){const share=weights[nextName]||.10;target={k:Math.min(remaining.k,goal.k*share),p:Math.min(remaining.p,goal.p*share),c:Math.min(remaining.c,goal.c*share),f:Math.min(remaining.f,goal.f*share)};source='Distribuição proporcional ao papel da refeição no dia, considerando o saldo e as refeições pendentes';}
  target={k:Math.min(remaining.k,target.k),p:Math.min(remaining.p,target.p),c:Math.min(remaining.c,target.c),f:Math.min(remaining.f,target.f)};
  const fmt=(v,d=0)=>foodFmt(Math.max(0,v),d);
  const planItems=Array.isArray(plannedNext?.items)?plannedNext.items.map(x=>{const key=x.key||x.foodKey;return FOOD_DB[key]?.name?`${FOOD_DB[key].name} (${foodFmt(x.g??x.amount,0)} g)`:''}).filter(Boolean):[];
