@@ -4343,6 +4343,7 @@ function formaImportKey(value){return String(value??'').toLocaleLowerCase('pt-BR
 function formaImportCanonicalKey(value){
  const k=formaImportKey(value),map={
   nome:'name',name:'name',alimento:'name',food:'name',exercicio:'name',exercise:'name',nome_do_alimento:'name',nome_do_exercicio:'name',
+  exercise_name:'name',exercise_muscle:'muscle',exercise_focus:'focus',exercise_secondary:'secondary',exercise_equipment:'equipment',exercise_type:'type',exercise_level:'level',exercise_pattern:'pattern',exercise_tips:'tips',exercise_errors:'errors',exercise_alternatives:'alternatives',exercise_sets:'sets',exercise_reps:'reps',exercise_rest:'rest',exercise_notes:'notes',
   nome_da_refeicao:'meal_name',refeicao:'meal_name',meal:'meal_name',meal_name:'meal_name',
   ingrediente:'food_name',alimento_utilizado:'food_name',nome_do_ingrediente:'food_name',food_name:'food_name',ingredient:'food_name',
   kcal:'k',caloria:'k',calorias:'k',energia:'k',energia_kcal:'k',calories:'k',calorias_kcal:'k',kcal_100g:'k',kcal_por_100g:'k',energia_kcal_100g:'k',
@@ -4365,6 +4366,10 @@ function formaImportCanonicalKey(value){
 }
 function parseFormaHumanPdfRows(source){
  const text=String(source||'').replace(/^\uFEFF/,'').trim();if(!text||/^\s*[\[{]/.test(text))return [];
+ // PDFs preenchíveis do FORMA expõem os valores dos campos como metadados [FORM FIELD].
+ // Esses campos são a fonte estruturada e devem prevalecer sobre o texto visual do modelo.
+ const formLines=text.split(/\r?\n/).map(x=>x.trim()).filter(x=>/^\[FORM FIELD\]\s*/i.test(x));
+ if(formLines.length){const record={};for(const line of formLines){const m=line.replace(/^\[FORM FIELD\]\s*/i,'').match(/^([^:：]+)\s*[:：]\s*(.*)$/);if(!m)continue;const key=formaImportCanonicalKey(m[1]);if(key)record[key]=m[2].replace(/\\\\n/g,'\n').trim();}if(record.name||record.meal_name||record.food_name)return [record];}
  const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
  const splitCells=line=>{if(line.includes('|'))return line.split('|').map(x=>x.trim()).filter((x,i,a)=>!(i===0&&!x)&&!(i===a.length-1&&!x));if(line.includes('\t'))return line.split(/\t+/).map(x=>x.trim());if(/\s{2,}/.test(line))return line.split(/\s{2,}/).map(x=>x.trim());return [];};
  for(let h=0;h<Math.min(lines.length,30);h++){
