@@ -6784,7 +6784,6 @@ body.forma-files-mode .top-tabs{display:none!important}
  document.querySelectorAll('[data-help-tab]').forEach(function(button){
   button.addEventListener('click',function(){const tab=button.getAttribute('data-help-tab');closeHelp();showTab(tab);});
  });
- $('profileBadge').addEventListener('contextmenu',function(){openSettings();});
  $('profilesModal').addEventListener('click',function(e){if(e.target===$('profilesModal'))closeProfileManagerDisplay();});
  $('closeProfiles').addEventListener('click',closeProfileManagerDisplay);
  // Alguns comandos internos (trocar/excluir perfil) também fecham o modal sem clicar no X.
@@ -6873,6 +6872,7 @@ body.forma-files-mode .top-tabs{display:none!important}
  window.formaOpenHelp=openHelp;
  window.formaStartGuidedTour=startTour;
  window.formaInstallApp=installForma;
+ window.addEventListener('appinstalled',function(){if(typeof installPrompt!=='undefined')installPrompt=null;if(settings.classList.contains('open'))showInstallHelp('<strong>FORMA instalado com sucesso.</strong><br>Agora você pode abrir o aplicativo pelo ícone da tela inicial.');});
 })();
 </script>
 
