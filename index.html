@@ -3838,7 +3838,7 @@ async function readFormaImportPdfText(file){
  for(let n=1;n<=Math.min(pdf.numPages,1000);n++){
   const page=await pdf.getPage(n),content=await page.getTextContent(),rows=new Map();
   for(const item of content.items){if(!item.str||!item.str.trim())continue;const y=Math.round((item.transform?.[5]||0)/2)*2;const line=rows.get(y)||[];line.push({x:item.transform?.[4]||0,text:item.str});rows.set(y,line);}
-  const ordered=[...rows.entries()].sort((a,b)=>b[0]-a[0]).map(([,items])=>{const sorted=items.sort((a,b)=>a.x-b.x);let line='',end=null;for(const item of sorted){if(end!==null){const gap=item.x-end;line+=gap>24?'\\t':gap>3?' ':'';}line+=item.text;end=item.x+(Number(item.width)||String(item.text||'').length*4);}return line;});
+  const ordered=[...rows.entries()].sort((a,b)=>b[0]-a[0]).map(([,items])=>{const sorted=items.sort((a,b)=>a.x-b.x);let line='',end=null;for(const item of sorted){if(end!==null){const gap=item.x-end;line+=gap>24?'\t':gap>3?' ':'';}line+=item.text;end=item.x+(Number(item.width)||String(item.text||'').length*4);}return line;});
   pages.push(ordered.join("\n"));
  }
  const extracted=pages.join("\n\n").trim();
@@ -6355,7 +6355,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   if(/(?:s[eé]ries\s*:|repeti[cç][oõ]es\s*:|descanso\s*:)/i.test(low)&&/(?:##\s|plano de treino|treino)/i.test(low))return 'workout';
   if(/(?:quantidade\s*:|por[cç][aã]o\s*:)/i.test(low)&&/(?:kcal\s*:|prote[ií]na\s*:|carboidratos\s*:)/i.test(low)&&/(?:café da manhã|almoço|jantar|refeição)/i.test(low))return 'nutrition';
   if(/(?:focus|foco muscular|grupo muscular|equipment|equipamento)/i.test(low)&&/(?:exerc[ií]cio|exercise|nome)/i.test(low))return 'exercises';
-  if(/(?:alimento|food|refei[cç][aã]o|meal)/i.test(low)&&/(?:prote[ií]na|protein|kcal|calorias)/i.test(low))return 'library';
+  if(/(?:alimento|food|refei[cç][aã]o|meal)/i.test(low)&&/(?:prote[ií]na|protein|kcal|calorias)/i.test(low))return 'library';\n  if(/(?:nome|name|alimento|food)/i.test(low)&&/(?:prote[ií]na|protein|kcal|calorias|carboidratos)/i.test(low))return 'library';
   return 'unknown';
  }
  async function handleUniversalImport(file){
@@ -6366,7 +6366,7 @@ body.forma-files-mode .top-tabs{display:none!important}
   try{
    const text=await readFormaImportPdfText(file),kind=classify(text);
    const labels={backup:'backup completo',workout:'plano de treino',nutrition:'plano nutricional',schedule:'cronograma alimentar',exercises:'biblioteca de exercícios',library:'alimentos e/ou refeições',bio:'laudo de bioimpedância'};
-   if(kind==='unknown')throw new Error('Consegui ler o PDF, mas não identifiquei com segurança o tipo de conteúdo. Baixe o modelo correspondente na opção “Modelos” e mantenha o bloco de dados estruturados no documento.');
+   if(kind==='unknown')throw new Error('Consegui ler o texto, mas não identifiquei com segurança a categoria. Para facilitar, organize o documento em campos identificados (por exemplo, Nome, Equipamento, Séries ou Calorias) ou em uma tabela com cabeçalhos. Se o PDF for escaneado como imagem, será necessário OCR.');
    if(kind==='bio'){
     close();if(typeof window.showTab==='function')window.showTab('inicio');
     const input=$('overviewBioFile');if(!input)throw new Error('A leitura de bioimpedância não está disponível nesta tela.');
@@ -6993,3 +6993,4 @@ body.forma-files-mode .top-tabs{display:none!important}
 
 </body>
 </html>
+<script async data-explicit-opt-in="true" data-deployment-id="dpl_4ac45bLu2nQmoezefMspu3SsTY9A" src="https://vercel.live/_next-live/feedback/feedback.js"></script>
