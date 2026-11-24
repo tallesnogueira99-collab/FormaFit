@@ -3796,6 +3796,20 @@ function openUpdate(){closeTabMenu();$("uDate").value=dateKey();const last=state
 function closeUpdate(){$("updateModal").classList.remove("open")}
 $("updateDataBtn").addEventListener("click",openUpdate);$("closeUpdate").addEventListener("click",closeUpdate);$("cancelUpdate").addEventListener("click",closeUpdate);$("updateModal").addEventListener("click",e=>{if(e.target.id==="updateModal")closeUpdate()});
 async function loadPdfJs(){if(window.pdfjsLib)return window.pdfjsLib;await new Promise((resolve,reject)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";sc.onload=resolve;sc.onerror=reject;document.head.appendChild(sc)});if(window.pdfjsLib)window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";return window.pdfjsLib;}
+async function decodeFormaPdfAttachment(content){
+ const bytes=content instanceof Uint8Array?content:new Uint8Array(content||[]);
+ const decode=value=>new TextDecoder("utf-8",{fatal:true}).decode(value);
+ try{return decode(bytes);}catch(_){}
+ if(typeof DecompressionStream==="function"){
+  for(const format of ["deflate","deflate-raw","gzip"]){
+   try{
+    const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream(format));
+    return await new Response(stream).text();
+   }catch(_){}
+  }
+ }
+ throw new Error("O anexo estruturado do PDF está compactado em um formato não reconhecido.");
+}
 async function readFormaImportPdfText(file){
  if(!file||(!/\.pdf$/i.test(file.name)&&file.type!=="application/pdf"))throw new Error("O FORMA aceita somente arquivos PDF para importação.");
  if(file.size>15*1024*1024)throw new Error("O PDF ultrapassa o limite de 15 MB.");
@@ -3806,7 +3820,7 @@ async function readFormaImportPdfText(file){
   for(const item of Object.values(attachments)){
    if(!item||!(/forma-data\.json$/i.test(item.filename||"")))continue;
    try{
-    const container=JSON.parse(new TextDecoder().decode(item.content));
+    const container=JSON.parse(await decodeFormaPdfAttachment(item.content));
     if(container.format!=="FORMA_PDF_CONTAINER"||!container.payload)continue;
     const fields=await pdf.getFieldObjects?.(),values={};
     if(fields)for(const [name,group] of Object.entries(fields)){const value=group?.[0]?.fieldValue;if(value!==undefined&&value!==null&&String(value).trim())values[name]=String(value);}
