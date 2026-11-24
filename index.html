@@ -3834,7 +3834,7 @@ async function readFormaImportPdfText(file){
       else if(key==="meal_notes")payload.meals[0].notes=value;
       else if(key==="meal_items")payload.meals[0].items=String(value).split(/\n+/).map(line=>{const m=line.match(/^\s*(.+?)\s*:\s*(\d+(?:[.,]\d+)?)\s*(g|ml|un)?\s*$/i);return m?{name:m[1].trim(),amount:Number(m[2].replace(",",".")),unit:(m[3]||"g").toLowerCase()}:null;}).filter(Boolean);
      }else if(key.startsWith("exercise_")&&payload.exercises?.[0]){
-      const map={exercise_name:"name",exercise_muscle:"muscle",exercise_focus:"focus",exercise_secondary:"secondary",exercise_equipment:"equipment",exercise_type:"type",exercise_level:"level",exercise_pattern:"pattern",exercise_tips:"tips",exercise_errors:"errors",exercise_alternatives:"alternatives",exercise_sets:"sets",exercise_reps:"reps",exercise_rest:"rest",exercise_notes:"notes"};const target=map[key];if(target){const listFields=["exercise_secondary","exercise_tips","exercise_errors","exercise_alternatives"];payload.exercises[0][target]=listFields.includes(key)?String(value).split(/[\r\n;,|]+/).map(x=>x.trim()).filter(Boolean):value;}
+      const map={exercise_name:"name",exercise_muscle:"muscle",exercise_focus:"focus",exercise_secondary:"secondary",exercise_equipment:"equipment",exercise_type:"type",exercise_level:"level",exercise_pattern:"pattern",exercise_tips:"tips",exercise_errors:"errors",exercise_alternatives:"alternatives",exercise_sets:"sets",exercise_reps:"reps",exercise_rest:"rest",exercise_notes:"notes"};const target=map[key];if(target){const listFields=["exercise_secondary","exercise_tips","exercise_errors","exercise_alternatives"];payload.exercises[0][target]=listFields.includes(key)?String(value).split(/\\n|\r?\n|[;,|]+/).map(x=>x.trim()).filter(Boolean):value;}
      }else if(key==="workout_name")payload.name=value;
      else if(key==="workout_objective")payload.objective=value;
      else if(key==="schedule_name"&&payload.schedule)payload.schedule.name=value;
@@ -3864,7 +3864,7 @@ async function readFormaImportPdfText(file){
     if(values[field]===undefined)continue;
     const value=values[field];
     exercise[target]=["secondary","tips","errors","alternatives"].includes(target)
-     ?value.split(/\\r?\\n|\\\\n|[;|]+/).map(x=>x.trim()).filter(Boolean)
+     ?value.split(/\\n|\r?\n|[;|]+/).map(x=>x.trim()).filter(Boolean)
      :value;
    }
    if(exercise.name&&exercise.focus){
