@@ -3834,6 +3834,30 @@ async function readFormaImportPdfText(file){
    }catch(err){console.warn("FORMA: não foi possível ler o anexo interno do PDF",err);}
   }
  }
+ // Campos AcroForm devem ser lidos independentemente da existência do anexo forma-data.json.
+ // O PDF preenchível pode conter os valores no próprio formulário, sem arquivo anexado.
+ try{
+  const fieldObjects=await pdf.getFieldObjects?.();
+  if(fieldObjects){
+   const values={};
+   for(const [fieldName,group] of Object.entries(fieldObjects)){
+    const value=group?.[0]?.fieldValue;
+    if(value!==undefined&&value!==null&&String(value).trim())values[fieldName]=String(value).trim();
+   }
+   const exerciseMap={exercise_name:"name",exercise_muscle:"muscle",exercise_focus:"focus",exercise_secondary:"secondary",exercise_equipment:"equipment",exercise_type:"type",exercise_level:"level",exercise_pattern:"pattern",exercise_tips:"tips",exercise_errors:"errors",exercise_alternatives:"alternatives",exercise_sets:"sets",exercise_reps:"reps",exercise_rest:"rest",exercise_notes:"notes"};
+   const exercise={};
+   for(const [field,target] of Object.entries(exerciseMap)){
+    if(values[field]===undefined)continue;
+    const value=values[field];
+    exercise[target]=["secondary","tips","errors","alternatives"].includes(target)
+     ?value.split(/\\r?\\n|\\\\n|[;|]+/).map(x=>x.trim()).filter(Boolean)
+     :value;
+   }
+   if(exercise.name&&exercise.focus){
+    return JSON.stringify({exercises:[exercise]});
+   }
+  }
+ }catch(err){console.warn("FORMA: não foi possível ler os campos preenchíveis do PDF",err);}
  const pages=[];
  for(let n=1;n<=Math.min(pdf.numPages,1000);n++){
   const page=await pdf.getPage(n),content=await page.getTextContent(),rows=new Map();
