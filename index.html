@@ -6654,7 +6654,6 @@ body.forma-files-mode .top-tabs{display:none!important}
  function openHelp(){closeTabMenu();openOverlay(help);}
  function closeHelp(){closeOverlay(help);}
  function openProfileEdit(){
-  closeSettings();
   const d=(typeof state!=='undefined'&&state.profileData&&typeof state.profileData==='object')?state.profileData:{};
   const latest=(typeof state!=='undefined'&&Array.isArray(state.progress)&&state.progress.length)?state.progress[state.progress.length-1]:null;
   $('formaEditAge').value=d.age||'';
@@ -6696,7 +6695,6 @@ body.forma-files-mode .top-tabs{display:none!important}
   }
  }
  function openProfileManager(){
-  closeSettings();
   const modal=$('profilesModal');
   if(!modal)return;
   if(typeof renderProfiles==='function')renderProfiles();
@@ -6771,12 +6769,12 @@ body.forma-files-mode .top-tabs{display:none!important}
  document.querySelectorAll('[data-settings-action]').forEach(function(button){
   button.addEventListener('click',function(){
    const action=button.getAttribute('data-settings-action');
-   if(action==='customize'){closeSettings();if(typeof openCustom==='function')openCustom();}
+   if(action==='customize'){if(typeof openCustom==='function')openCustom();}
    else if(action==='install'){installForma();}
    else if(action==='profile-manager'){openProfileManager();}
    else if(action==='profile-edit'){openProfileEdit();}
-   else if(action==='account'){closeSettings();const badge=$('profileBadge');if(badge)badge.click();}
-   else if(action==='files'){closeSettings();showTab('configuracoes');if(window.formaOpenFilesWindow)window.formaOpenFilesWindow();}
+   else if(action==='account'){const badge=$('profileBadge');if(badge)badge.click();}
+   else if(action==='files'){window.__formaFilesOpenedFromSettings=true;showTab('configuracoes');if(window.formaOpenFilesWindow)window.formaOpenFilesWindow();}
   });
  });
  $('formaStartTour').addEventListener('click',function(){closeHelp();startTour();});
@@ -6873,6 +6871,85 @@ body.forma-files-mode .top-tabs{display:none!important}
  window.formaStartGuidedTour=startTour;
  window.formaInstallApp=installForma;
  window.addEventListener('appinstalled',function(){if(typeof installPrompt!=='undefined')installPrompt=null;if(settings.classList.contains('open'))showInstallHelp('<strong>FORMA instalado com sucesso.</strong><br>Agora você pode abrir o aplicativo pelo ícone da tela inicial.');});
+})();
+</script>
+
+
+<style id="forma-nav-restore-settings-return-v1-css">
+/* Subáreas abertas a partir das configurações devem ficar acima da janela principal. */
+#customModal,#profilesModal{z-index:13100!important}
+#configuracoes.settings-view.active{z-index:13100!important}
+#configuracoes .forma-files-modal{z-index:13120!important}
+</style>
+<script id="forma-nav-restore-settings-return-v1-js">
+(function(){
+ 'use strict';
+ if(window.__formaNavRestoreSettingsReturnV1)return;
+ window.__formaNavRestoreSettingsReturnV1=true;
+ const KEY='forma:last-active-view:v1';
+ function safeGet(){try{return sessionStorage.getItem(KEY)||'';}catch(e){return '';}}
+ function safeSet(value){try{if(value)sessionStorage.setItem(KEY,value);}catch(e){}}
+ function safeRemove(){try{sessionStorage.removeItem(KEY);}catch(e){}}
+ function currentView(){
+  const active=document.querySelector('.view.active');
+  return active&&active.id&&active.id!=='configuracoes'?active.id:'';
+ }
+ function persistCurrent(){const id=currentView();if(id)safeSet(id);}
+ const baseShowTab=window.showTab;
+ if(typeof baseShowTab==='function'){
+  window.showTab=function(tab){
+   if(tab&&tab!=='configuracoes')safeSet(tab);
+   return baseShowTab.apply(this,arguments);
+  };
+ }
+ // The current view is stored as navigation occurs, and again when the page is hidden.
+ document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')persistCurrent();});
+ window.addEventListener('pagehide',persistCurrent);
+ window.addEventListener('beforeunload',persistCurrent);
+ // Restore only once in this tab after the application's own initialization.
+ const saved=safeGet();
+ if(saved){
+  setTimeout(function(){
+   const valid=document.getElementById(saved);
+   if(valid&&typeof window.showTab==='function')window.showTab(saved);
+   safeRemove();
+  },80);
+ }
+ // The settings hub stays visible behind child destinations; closing the child returns to it.
+ let filesFromSettings=false;
+ const originalOpen=window.formaOpenFilesWindow;
+ const originalClose=window.formaCloseFilesWindow;
+ const originalSettingsOpen=window.formaOpenSettings;
+ const settingsButton=document.querySelector('[data-settings-action="files"]');
+ if(settingsButton){
+  settingsButton.addEventListener('click',function(){filesFromSettings=true;},true);
+ }
+ // menu entry uses the same action path but does not click the settings card.
+ const menuFiles=document.getElementById('settingsMenuBtn');
+ if(menuFiles){
+  menuFiles.addEventListener('click',function(){filesFromSettings=false;},true);
+ }
+ if(typeof originalClose==='function'){
+  window.formaCloseFilesWindow=function(){
+   const result=originalClose.apply(this,arguments);
+   if(filesFromSettings){
+    filesFromSettings=false;
+    setTimeout(function(){if(typeof originalSettingsOpen==='function')originalSettingsOpen();},0);
+   }
+   return result;
+  };
+ }
+ // Ensure the direct settings shortcut is treated as a child view, while top-level menu remains standalone.
+ window.__formaSettingsChildFiles=function(){filesFromSettings=true;};
+ const menuActionButton=document.getElementById('settingsMenuBtn');
+ if(menuActionButton){
+  menuActionButton.addEventListener('click',function(){
+   filesFromSettings=false;
+  },true);
+ }
+ // Refresh command explicitly snapshots the visible tab before requesting a reload.
+ const refresh=document.getElementById('refreshPageBtn');
+ if(refresh)refresh.addEventListener('click',persistCurrent,true);
 })();
 </script>
 
