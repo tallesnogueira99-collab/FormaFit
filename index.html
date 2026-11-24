@@ -1710,7 +1710,15 @@ body.forma-area-picker-open{overflow:hidden}
 <div class="app overview-active">
 <header>
  <div class="brand area-brand-trigger" role="button" tabindex="0" aria-label="Escolher entre Treinos e Nutrição" aria-haspopup="dialog" aria-controls="formaAreaPicker" aria-expanded="false" title="Alternar entre Treinos e Nutrição"><div class="logo">F</div><div><h1>FORMA<span style="color:var(--lime)">.</span></h1><p>Seu plano. Seu ritmo. Sua evolução.</p></div></div>
- <div class="header-actions"><div class="header-tools-wrap"><button class="header-tools-trigger" id="toolsTrigger" type="button" aria-label="Abrir atalhos e ajuda" aria-haspopup="true" aria-expanded="false" title="Atalhos e ajuda">⋯</button><div class="tools-popover" id="toolsMenu" role="menu" aria-label="Atalhos e ajuda"><div class="menu-caption">ATALHOS</div><div class="menu-caption" style="padding-top:5px">APLICATIVO</div><button class="menu-item" id="installAppBtn" role="menuitem"><span>＋</span>Instalar aplicativo</button><button class="menu-item" id="customizeBtn" role="menuitem"><span>⚙</span>Personalizar aparência</button><button class="menu-item" id="settingsMenuBtn" role="menuitem"><span class="menu-icon-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4v4M14 3.5v4h4M5 13v7.5h14V13"/><path d="M9 16.5l3-3 3 3M12 13.5v6"/></svg></span>Importar e exportar</button><button class="menu-item" id="refreshPageBtn" role="menuitem" title="Recarregar o FORMA"><span aria-hidden="true">↻</span>Atualizar página</button><div style="height:1px;background:var(--line);margin:7px 4px"></div><div class="menu-caption" style="padding-top:4px">SUPORTE</div><button class="menu-item" id="helpMenuBtn" role="menuitem"><span>?</span>Ajuda e orientações</button><input id="importBackupFile" type="file" accept=".pdf,application/pdf" hidden><input id="importFoodsFile" type="file" accept=".pdf,application/pdf" hidden><input id="importMealsFile" type="file" accept=".pdf,application/pdf" hidden><input id="importExercisesFile" type="file" accept=".pdf,application/pdf" hidden></div></div><button class="profile-chip" id="profileBadge" type="button" aria-label="Abrir perfil e conta" title="Perfil e conta"><span class="profile-avatar" id="profileAvatar" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.6-3.6 3.2-5.5 7-5.5s6.4 1.9 7 5.5"></path></svg></span><span class="profile-name-label" id="profileNameLabel">Meu perfil</span></button></div>
+ <div class="header-actions"><div class="header-tools-wrap"><button class="header-tools-trigger" id="toolsTrigger" type="button" aria-label="Abrir atalhos e ajuda" aria-haspopup="true" aria-expanded="false" title="Atalhos e ajuda">⋯</button><div class="tools-popover" id="toolsMenu" role="menu" aria-label="Menu do aplicativo">
+  <div class="menu-caption">MENU DO FORMA</div>
+  <button class="menu-item" id="settingsHubBtn" type="button" role="menuitem"><span aria-hidden="true">⚙</span><span class="menu-item-copy"><strong>Configurações</strong><small>Perfil, aparência e instalação</small></span></button>
+  <button class="menu-item" id="settingsMenuBtn" type="button" role="menuitem"><span aria-hidden="true">⇧</span><span class="menu-item-copy"><strong>Importar e exportar</strong><small>Arquivos, modelos e backups</small></span></button>
+  <button class="menu-item" id="refreshPageBtn" type="button" role="menuitem"><span aria-hidden="true">↻</span><span class="menu-item-copy"><strong>Recarregar página</strong><small>Atualizar o aplicativo</small></span></button>
+  <div class="tools-menu-divider"></div>
+  <button class="menu-item" id="helpMenuBtn" type="button" role="menuitem"><span aria-hidden="true">?</span><span class="menu-item-copy"><strong>Ajuda e orientações</strong><small>Guias, dúvidas e tutorial assistido</small></span></button>
+  <input id="importBackupFile" type="file" accept=".pdf,application/pdf" hidden><input id="importFoodsFile" type="file" accept=".pdf,application/pdf" hidden><input id="importMealsFile" type="file" accept=".pdf,application/pdf" hidden><input id="importExercisesFile" type="file" accept=".pdf,application/pdf" hidden>
+ </div></div><button class="profile-chip" id="profileBadge" type="button" aria-label="Abrir perfil e conta" title="Perfil e conta"><span class="profile-avatar" id="profileAvatar" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.6-3.6 3.2-5.5 7-5.5s6.4 1.9 7 5.5"></path></svg></span><span class="profile-name-label" id="profileNameLabel">Meu perfil</span></button></div>
 </header>
 <nav class="top-tabs" aria-label="Seções do FORMA">
  <button class="top-tab active" data-tab="inicio"><svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>Visão geral</button>
@@ -3886,7 +3894,7 @@ function applyCustomAppearance(){renderProfiles();applyAppearanceSettings();$("g
 async function exportFormaData(){try{if(!save())throw new Error("Não foi possível salvar os dados locais antes da exportação.");const active=profiles[activeProfileId];if(!active||!activeProfileId)throw new Error("Não foi possível identificar o perfil atualmente aberto.");let avatar=typeof active.avatar==="string"&&/^data:image\/(?:jpeg|png|webp);base64,/i.test(active.avatar)?active.avatar:"";const authMeta=formaAuthUser?.user_metadata||{};const googlePhoto=authMeta.avatar_url||authMeta.picture||"";if(!avatar&&googlePhoto){try{const response=await fetch(googlePhoto,{mode:"cors",credentials:"omit",cache:"no-store"});if(!response.ok)throw new Error("Imagem de perfil indisponível");const blob=await response.blob(),bitmap=await createImageBitmap(blob),canvas=document.createElement("canvas"),max=256,scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height));canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));const ctx=canvas.getContext("2d");ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();avatar=canvas.toDataURL("image/jpeg",.86);}catch(photoError){console.warn("FORMA: não foi possível incorporar a foto do Google ao backup; será usado o avatar alternativo.",photoError);}}const profile={id:activeProfileId,name:String(active.name||"Perfil"),...(avatar?{avatar}:{}),data:migrateFoodStateObject(JSON.parse(JSON.stringify(state)))};profiles[activeProfileId]={...active,data:JSON.parse(JSON.stringify(profile.data))};localStorage.setItem(PROFILE_STORE,JSON.stringify(profiles));const backup={format:"FORMA-backup",version:4,exportedAt:new Date().toISOString(),profile};const safeName=String(profile.name).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));const summary='<section class="section"><h2>Backup individual do FORMA</h2><p>Esta cópia contém exclusivamente os dados do perfil selecionado no momento da exportação. Os demais perfis deste dispositivo não são incluídos nem serão alterados durante a restauração.</p><div class="stats"><div class="stat"><span>Perfil incluído</span><strong>'+safeName+'</strong></div><div class="stat"><span>Perfis no backup</span><strong>1</strong></div><div class="stat"><span>Formato</span><strong>PDF</strong></div></div></section>';return window.openStructuredPdf("Backup do perfil — "+profile.name,"Cópia de segurança individual · PDF",summary,backup);}catch(err){console.error("FORMA export",err);alert("Não foi possível preparar o backup em PDF: "+(err.message||"erro inesperado"));}}
 $("todayLabel").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"short"});
 let installPrompt=null;
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;$("installAppBtn").textContent="＋ Instalar aplicativo";});
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;const installButton=$("installAppBtn");if(installButton)installButton.textContent="＋ Instalar aplicativo";});
 
 // Delegação robusta para o menu Ferramentas: funciona com toque e clique, sem depender de listeners dispersos.
 const toolsMenuElement=$("toolsMenu");
@@ -6440,6 +6448,426 @@ body.forma-files-mode .top-tabs{display:none!important}
  window.formaOpenFilesWindow=open;
  window.formaCloseFilesWindow=close;
  page.setAttribute('aria-hidden','true');
+})();
+</script>
+
+
+<style id="forma-settings-help-v2-css">
+/* FORMA v2 — menu, configurações, ajuda e orientação assistida */
+#toolsMenu{width:min(326px,calc(100vw - 24px));padding:10px}
+#toolsMenu .menu-item{min-height:52px;padding:9px 10px;gap:12px;border-radius:12px}
+#toolsMenu .menu-item>span:first-child{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 16%,#101827);color:var(--accent);font-size:17px}
+#toolsMenu .menu-item-copy{display:flex;min-width:0;flex-direction:column;gap:3px}
+#toolsMenu .menu-item-copy strong{font-size:13px;line-height:1.2;color:var(--text);font-weight:750}
+#toolsMenu .menu-item-copy small{font-size:10px;line-height:1.35;color:var(--muted);font-weight:500}
+#toolsMenu .menu-item:hover .menu-item-copy strong{color:var(--lime)}
+.tools-menu-divider{height:1px;background:var(--line);margin:6px 5px}
+.forma-overlay-v2{display:none;position:fixed;inset:0;z-index:13000;align-items:center;justify-content:center;padding:18px;background:rgba(3,8,16,.76);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.forma-overlay-v2.open{display:flex;animation:formaOverlayIn .16s ease}
+@keyframes formaOverlayIn{from{opacity:0}to{opacity:1}}
+.forma-dialog-v2{width:min(720px,100%);max-height:min(88dvh,900px);overflow:auto;overscroll-behavior:contain;background:#111d30;border:1px solid color-mix(in srgb,var(--accent) 28%,#31445c);border-radius:24px;box-shadow:0 28px 90px #000b;color:var(--text);padding:22px}
+.forma-dialog-v2.narrow{width:min(620px,100%)}
+.forma-dialog-v2.wide{width:min(880px,100%)}
+.forma-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.forma-dialog-head h2{margin:4px 0 5px;font-size:clamp(22px,3vw,29px);letter-spacing:-.7px}
+.forma-dialog-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.6;max-width:650px}
+.forma-dialog-kicker{font-size:10px;letter-spacing:1.5px;font-weight:850;color:var(--accent);text-transform:uppercase}
+.forma-dialog-close{width:38px;height:38px;flex:0 0 38px;border:1px solid var(--line);border-radius:12px;background:#0c1727;color:var(--text);font-size:20px;display:grid;place-items:center}
+.forma-dialog-close:hover{border-color:var(--accent);color:var(--accent)}
+.forma-settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.forma-setting-card{display:flex;align-items:center;gap:12px;min-height:84px;padding:14px;border:1px solid #2a3e56;border-radius:16px;background:linear-gradient(145deg,#17263b,#111d30);color:var(--text);text-align:left;cursor:pointer;transition:border-color .16s,transform .16s,background .16s}
+.forma-setting-card:hover{border-color:color-mix(in srgb,var(--accent) 65%,#2a3e56);background:#1b2b42;transform:translateY(-1px)}
+.forma-setting-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:13px;background:color-mix(in srgb,var(--accent) 17%,#101827);color:var(--accent);font-size:20px}
+.forma-setting-copy{display:flex;min-width:0;flex:1;flex-direction:column;gap:4px}
+.forma-setting-copy strong{font-size:13px;line-height:1.25}
+.forma-setting-copy small{font-size:10px;line-height:1.4;color:var(--muted)}
+.forma-setting-arrow{color:#8da1ba;font-size:20px}
+.forma-settings-group{margin-top:20px}
+.forma-settings-group-title{display:flex;align-items:center;gap:8px;margin:0 0 10px;color:#9db0c7;font-size:10px;letter-spacing:1.25px;font-weight:850;text-transform:uppercase}
+.forma-settings-note{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:13px 14px;border:1px solid #2d435b;border-radius:14px;background:#0d1929;color:#aebdd0;font-size:11px;line-height:1.55}
+.forma-settings-note strong{color:#eaf0f8}
+.forma-install-help{margin-top:12px;padding:14px;border:1px solid color-mix(in srgb,var(--accent) 35%,#2a3e56);border-radius:15px;background:color-mix(in srgb,var(--accent) 8%,#101a2a);font-size:12px;line-height:1.6;color:#c6d2e1}
+.forma-install-help[hidden]{display:none!important}
+.forma-install-help strong{color:#fff}
+.forma-install-help ol{padding-left:20px;margin:8px 0}
+.forma-install-help li{padding:2px 0}
+.forma-profile-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.forma-profile-edit-grid .field{min-width:0}
+.forma-profile-edit-grid input,.forma-profile-edit-grid select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #31465f;border-radius:11px;background:#0b1626;color:#f2f6fc}
+.forma-profile-edit-grid label{display:block;margin:0 0 6px;color:#bdcadb;font-size:11px;font-weight:700}
+.forma-profile-edit-foot{margin-top:14px;padding:12px 13px;border:1px solid #2c4159;border-radius:12px;background:#0d1929;color:#aebdd0;font-size:11px;line-height:1.55}
+.forma-help-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(150px,.8fr);gap:18px;align-items:center;padding:21px;border:1px solid #2b435c;border-radius:20px;background:radial-gradient(circle at 84% 15%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 37%),linear-gradient(125deg,#1b3048,#111d30 72%)}
+.forma-help-hero h3{font-size:clamp(20px,3vw,27px);line-height:1.15;letter-spacing:-.6px;margin:5px 0 8px}
+.forma-help-hero p{font-size:12px;line-height:1.6;color:#bac8d9;margin:0;max-width:430px}
+.forma-help-visual{display:flex;justify-content:center;align-items:center;min-height:130px}
+.forma-help-visual-card{width:148px;height:116px;position:relative;border:1px solid #45607a;border-radius:18px;background:linear-gradient(145deg,#233b54,#132238);box-shadow:0 15px 30px #0004;transform:rotate(4deg);padding:13px}
+.forma-help-visual-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:var(--accent);color:#101827;font-weight:950;font-size:19px}
+.forma-help-visual-line{height:6px;border-radius:8px;background:#526a84;margin-top:10px;width:80%}
+.forma-help-visual-line.short{width:51%;margin-top:7px}
+.forma-help-visual-pill{position:absolute;right:-12px;bottom:15px;border:1px solid #49627b;border-radius:12px;padding:8px 10px;background:#0b1727;color:#dce6f2;font-size:10px;box-shadow:0 8px 18px #0005}
+.forma-help-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}
+.forma-help-quick{padding:13px 10px;border:1px solid #2a3e56;border-radius:14px;background:#142238;color:var(--text);text-align:left;cursor:pointer;min-height:102px}
+.forma-help-quick:hover{border-color:var(--accent);background:#192b42}
+.forma-help-quick .quick-symbol{display:grid;place-items:center;width:30px;height:30px;margin-bottom:8px;border-radius:10px;background:color-mix(in srgb,var(--accent) 18%,#101827);color:var(--accent);font-size:16px}
+.forma-help-quick strong{display:block;font-size:11px;line-height:1.3}
+.forma-help-quick small{display:block;color:var(--muted);font-size:9px;line-height:1.35;margin-top:4px}
+.forma-help-section{margin-top:21px}
+.forma-help-section h3{font-size:14px;margin:0 0 10px}
+.forma-help-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.forma-help-step{padding:13px;border:1px solid #2a3e56;border-radius:14px;background:#0e1a2a}
+.forma-help-step-num{display:grid;place-items:center;width:26px;height:26px;border-radius:9px;background:color-mix(in srgb,var(--accent) 22%,#101827);color:var(--accent);font-weight:850;font-size:11px}
+.forma-help-step strong{display:block;font-size:11px;margin-top:9px}
+.forma-help-step p{font-size:10px;color:var(--muted);line-height:1.5;margin:5px 0 0}
+.forma-help-accordion{display:grid;gap:8px}
+.forma-help-accordion details{border:1px solid #2a3e56;border-radius:13px;background:#0e1a2a;overflow:hidden}
+.forma-help-accordion summary{padding:13px 15px;cursor:pointer;list-style:none;font-size:12px;font-weight:750;display:flex;justify-content:space-between;gap:12px}
+.forma-help-accordion summary::-webkit-details-marker{display:none}
+.forma-help-accordion summary:after{content:"＋";color:var(--accent);font-size:17px;line-height:1}
+.forma-help-accordion details[open] summary:after{content:"−"}
+.forma-help-accordion details p,.forma-help-accordion details ul{margin:0;padding:0 15px 14px;color:#aebdd0;font-size:11px;line-height:1.65}
+.forma-help-accordion details ul{padding-left:32px}
+.forma-help-accordion details li{padding:2px 0}
+.forma-help-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.forma-help-actions .btn{min-height:42px}
+.forma-tour-overlay{display:none;position:fixed;inset:0;z-index:15000;background:transparent;touch-action:pan-y}
+.forma-tour-overlay.open{display:block}
+.forma-tour-target{position:fixed;z-index:15001;border:2px solid var(--lime);border-radius:15px;box-shadow:0 0 0 9999px rgba(3,8,16,.78),0 0 0 6px color-mix(in srgb,var(--lime) 20%,transparent);pointer-events:none;transition:all .2s ease}
+.forma-tour-card{position:fixed;z-index:15002;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(490px,calc(100vw - 24px));padding:17px;border:1px solid #3a526b;border-radius:19px;background:#132238;box-shadow:0 20px 60px #000a;color:#f3f6fb}
+.forma-tour-meta{display:flex;justify-content:space-between;gap:12px;color:#9fb2c9;font-size:10px;font-weight:750;letter-spacing:.6px;text-transform:uppercase}
+.forma-tour-card h3{font-size:18px;margin:8px 0 5px}
+.forma-tour-card p{font-size:12px;line-height:1.55;color:#b8c7d9;margin:0}
+.forma-tour-progress{height:4px;border-radius:6px;background:#2a4058;overflow:hidden;margin-top:13px}
+.forma-tour-progress span{display:block;height:100%;background:var(--lime);transition:width .2s}
+.forma-tour-controls{display:flex;align-items:center;gap:8px;margin-top:13px}
+.forma-tour-controls .btn{min-height:38px}
+.forma-tour-controls .tour-spacer{flex:1}
+@media(max-width:620px){
+ .forma-overlay-v2{padding:0;align-items:flex-end}
+ .forma-dialog-v2{width:100%;max-height:92dvh;border-radius:22px 22px 0 0;padding:19px 16px calc(18px + env(safe-area-inset-bottom));}
+ .forma-settings-grid{grid-template-columns:1fr;gap:8px}
+ .forma-setting-card{min-height:70px;padding:11px}
+ .forma-help-hero{grid-template-columns:1fr;padding:18px}
+ .forma-help-visual{display:none}
+ .forma-help-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .forma-help-steps{grid-template-columns:1fr}
+ .forma-profile-edit-grid{grid-template-columns:1fr}
+ .forma-tour-card{bottom:max(8px,env(safe-area-inset-bottom));padding:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .forma-overlay-v2,.forma-setting-card,.forma-tour-target{animation:none!important;transition:none!important}
+}
+</style>
+<div class="forma-overlay-v2" id="formaSettingsModal" aria-hidden="true">
+ <section class="forma-dialog-v2 narrow" role="dialog" aria-modal="true" aria-labelledby="formaSettingsTitle">
+  <div class="forma-dialog-head"><div><div class="forma-dialog-kicker">SEU APLICATIVO</div><h2 id="formaSettingsTitle">Configurações</h2><p>Personalize a experiência, gerencie seu perfil e ajuste como usa o FORMA.</p></div><button class="forma-dialog-close" id="formaSettingsClose" type="button" aria-label="Fechar configurações">×</button></div>
+  <div class="forma-settings-group"><div class="forma-settings-group-title">Aparência e experiência</div><div class="forma-settings-grid">
+   <button class="forma-setting-card" type="button" data-settings-action="customize"><span class="forma-setting-icon">◐</span><span class="forma-setting-copy"><strong>Personalizar aparência</strong><small>Cores, cartões e densidade da interface</small></span><span class="forma-setting-arrow">›</span></button>
+   <button class="forma-setting-card" type="button" data-settings-action="install"><span class="forma-setting-icon">⇧</span><span class="forma-setting-copy"><strong>Instalar o FORMA</strong><small>Adicionar à tela inicial ou ao computador</small></span><span class="forma-setting-arrow">›</span></button>
+  </div></div>
+  <div class="forma-settings-group"><div class="forma-settings-group-title">Perfil e conta</div><div class="forma-settings-grid">
+   <button class="forma-setting-card" type="button" data-settings-action="profile-manager"><span class="forma-setting-icon">◉</span><span class="forma-setting-copy"><strong>Gerenciar perfil local</strong><small>Nome, foto e perfis deste dispositivo</small></span><span class="forma-setting-arrow">›</span></button>
+   <button class="forma-setting-card" type="button" data-settings-action="profile-edit"><span class="forma-setting-icon">✎</span><span class="forma-setting-copy"><strong>Dados pessoais</strong><small>Idade, altura, objetivo e preferências</small></span><span class="forma-setting-arrow">›</span></button>
+   <button class="forma-setting-card" type="button" data-settings-action="account"><span class="forma-setting-icon">⇄</span><span class="forma-setting-copy"><strong>Conta e sincronização</strong><small>Entrar, conferir a conta ou sair</small></span><span class="forma-setting-arrow">›</span></button>
+   <button class="forma-setting-card" type="button" data-settings-action="files"><span class="forma-setting-icon">▤</span><span class="forma-setting-copy"><strong>Dados e backups</strong><small>Importar, exportar e proteger seus registros</small></span><span class="forma-setting-arrow">›</span></button>
+  </div></div>
+  <div class="forma-settings-note"><span aria-hidden="true">ⓘ</span><div><strong>Seus dados, suas escolhas.</strong> Perfis locais ficam neste navegador. Ao entrar em uma conta FORMA, seus registros podem ser sincronizados conforme o status exibido na área de conta. Faça backups antes de mudanças importantes.</div></div>
+  <div class="forma-install-help" id="formaInstallHelp" hidden aria-live="polite"></div>
+ </section>
+</div>
+<div class="forma-overlay-v2" id="formaProfileEditModal" aria-hidden="true">
+ <section class="forma-dialog-v2 narrow" role="dialog" aria-modal="true" aria-labelledby="formaProfileEditTitle">
+  <div class="forma-dialog-head"><div><div class="forma-dialog-kicker">MEU PERFIL</div><h2 id="formaProfileEditTitle">Dados pessoais</h2><p>Atualize as informações usadas como referência pelo seu planejamento.</p></div><button class="forma-dialog-close" id="formaProfileEditClose" type="button" aria-label="Fechar dados pessoais">×</button></div>
+  <form id="formaProfileEditForm">
+   <div class="forma-profile-edit-grid">
+    <div class="field"><label for="formaEditAge">Idade</label><input id="formaEditAge" type="number" min="14" max="100" placeholder="Ex.: 27"></div>
+    <div class="field"><label for="formaEditSex">Sexo para estimativas energéticas</label><select id="formaEditSex"><option value="male">Masculino</option><option value="female">Feminino</option><option value="other">Prefiro não informar / outro</option></select></div>
+    <div class="field"><label for="formaEditHeight">Altura (cm)</label><input id="formaEditHeight" type="number" min="120" max="230" placeholder="Ex.: 180"></div>
+    <div class="field"><label for="formaEditWeight">Peso atual (kg)</label><input id="formaEditWeight" type="number" min="30" max="300" step="0.1" placeholder="Registre uma pesagem"></div>
+    <div class="field"><label for="formaEditGoal">Objetivo principal</label><select id="formaEditGoal"><option value="fatloss">Reduzir gordura e preservar músculos</option><option value="recomp">Recomposição corporal</option><option value="muscle">Ganhar massa muscular</option><option value="strength">Ganhar força e desempenho</option><option value="conditioning">Melhorar condicionamento</option></select></div>
+    <div class="field"><label for="formaEditGoalWeight">Meta de peso (kg)</label><input id="formaEditGoalWeight" type="number" min="30" max="300" step="0.1" placeholder="Opcional"></div>
+    <div class="field"><label for="formaEditActivity">Atividade fora dos treinos</label><select id="formaEditActivity"><option value="sedentary">Baixa — fico muito sentado</option><option value="light">Leve — caminho um pouco</option><option value="moderate">Moderada — caminho bastante</option><option value="high">Alta — trabalho físico ou muito ativo</option></select></div>
+    <div class="field"><label for="formaEditDiet">Preferência alimentar</label><select id="formaEditDiet"><option value="omnivore">Onívora</option><option value="vegetarian">Ovolactovegetariana</option><option value="vegan">Vegana</option><option value="other">Outra / sem preferência</option></select></div>
+    <div class="field"><label for="formaEditExperience">Experiência de treino</label><select id="formaEditExperience"><option value="beginner">Iniciante ou retornando</option><option value="intermediate">Intermediário</option><option value="advanced">Avançado</option></select></div>
+    <div class="field"><label for="formaEditDays">Dias de treino por semana</label><select id="formaEditDays"><option value="3">3 dias</option><option value="4">4 dias</option><option value="5">5 dias</option><option value="6">6 dias</option></select></div>
+   </div>
+   <div class="forma-profile-edit-foot">O peso preenchido será registrado como uma pesagem de hoje. A edição dos dados não recalcula automaticamente suas metas nutricionais nem substitui sua ficha de treino; isso evita mudanças inesperadas no seu plano.</div>
+   <div class="custom-actions"><button class="btn" type="submit">Salvar dados pessoais</button><button class="btn secondary" id="formaProfileEditCancel" type="button">Cancelar</button></div>
+  </form>
+ </section>
+</div>
+<div class="forma-overlay-v2" id="formaHelpModal" aria-hidden="true">
+ <section class="forma-dialog-v2 wide" role="dialog" aria-modal="true" aria-labelledby="formaHelpTitle">
+  <div class="forma-dialog-head"><div><div class="forma-dialog-kicker">CENTRAL DE APRENDIZADO</div><h2 id="formaHelpTitle">Ajuda e orientações</h2><p>Um guia prático para começar, encontrar cada recurso e entender como seus dados são organizados.</p></div><button class="forma-dialog-close" id="formaHelpClose" type="button" aria-label="Fechar ajuda">×</button></div>
+  <div class="forma-help-hero">
+   <div><div class="forma-dialog-kicker">BEM-VINDO AO FORMA</div><h3>Seu treino, sua alimentação e sua evolução em um só lugar.</h3><p>Não precisa aprender tudo de uma vez. Explore os atalhos ou deixe o próprio aplicativo apresentar cada área em um passo a passo.</p>
+    <div class="forma-help-actions"><button class="btn" id="formaStartTour" type="button">▶ Iniciar tutorial assistido</button><button class="btn secondary" id="formaHelpGoOverview" type="button">Abrir visão geral</button></div>
+   </div>
+   <div class="forma-help-visual" aria-hidden="true"><div class="forma-help-visual-card"><div class="forma-help-visual-mark">F</div><div class="forma-help-visual-line"></div><div class="forma-help-visual-line short"></div><div class="forma-help-visual-line"></div><div class="forma-help-visual-pill">Seu progresso</div></div></div>
+  </div>
+  <div class="forma-help-section"><h3>Ir direto para uma área</h3><div class="forma-help-quick-grid">
+   <button class="forma-help-quick" type="button" data-help-tab="treino"><span class="quick-symbol">↗</span><strong>Treinos</strong><small>Fichas, exercícios e sessões</small></button>
+   <button class="forma-help-quick" type="button" data-help-tab="nutritionOverview"><span class="quick-symbol">◉</span><strong>Alimentação</strong><small>Visão geral e metas nutricionais</small></button>
+   <button class="forma-help-quick" type="button" data-help-tab="dieta"><span class="quick-symbol">☷</span><strong>Diário</strong><small>Registrar o que você consome</small></button>
+   <button class="forma-help-quick" type="button" data-help-tab="progresso"><span class="quick-symbol">⌁</span><strong>Progresso</strong><small>Peso, medidas e evolução</small></button>
+  </div></div>
+  <div class="forma-help-section"><h3>Comece em três passos</h3><div class="forma-help-steps">
+   <div class="forma-help-step"><span class="forma-help-step-num">01</span><strong>Conheça seu espaço</strong><p>Use o seletor FORMA no topo para alternar entre Treinos e Nutrição. O menu principal leva às telas de cada área.</p></div>
+   <div class="forma-help-step"><span class="forma-help-step-num">02</span><strong>Configure o seu ponto de partida</strong><p>Preencha seu perfil e organize a rotina. Você pode ajustar preferências e dados pessoais nas configurações.</p></div>
+   <div class="forma-help-step"><span class="forma-help-step-num">03</span><strong>Registre e acompanhe</strong><p>Use o diário e as sessões para registrar o que fez. A área Progresso ajuda a observar tendências ao longo do tempo.</p></div>
+  </div></div>
+  <div class="forma-help-section"><h3>Guias por assunto</h3><div class="forma-help-accordion">
+   <details><summary>Treinos: como organizar e registrar uma sessão?</summary><p>Abra <strong>Treinos</strong> para escolher o dia e consultar a ficha. Você pode editar exercícios, séries, repetições e descanso. Ao iniciar uma sessão, registre cargas e repetições realizadas; finalize o treino para manter o histórico. A modalidade cardiovascular tem um fluxo próprio de registro.</p></details>
+   <details><summary>Alimentação: qual é a diferença entre visão geral, diário e planejamento?</summary><p><strong>Visão geral</strong> reúne indicadores e metas. <strong>Diário</strong> é onde você registra alimentos e porções consumidas. <strong>Planejamento</strong> ajuda a organizar metas, refeições e cronogramas. A <strong>Biblioteca</strong> reúne alimentos e receitas disponíveis para selecionar e reutilizar.</p></details>
+   <details><summary>Progresso: como acompanhar a evolução?</summary><p>Registre peso e medidas de forma consistente e, quando desejar, importe dados reconhecíveis de um laudo de bioimpedância. Confira os valores antes de confirmar. Compare tendências em períodos semelhantes; uma única medição não deve determinar mudanças no treino ou na alimentação.</p></details>
+   <details><summary>Biblioteca: para que servem alimentos e exercícios?</summary><p>A biblioteca concentra itens que podem ser utilizados em diferentes partes do FORMA. Consulte informações, crie itens personalizados quando necessário e use os dados disponíveis para montar treinos e refeições. Confira sempre as informações antes de utilizá-las.</p></details>
+   <details><summary>Importação, exportação e backups: como proteger meus dados?</summary><p>Acesse <strong>Importar e exportar</strong> no menu de três pontos. A central reúne importações, exportações e modelos. Revise as prévias antes de confirmar importações e faça backups periódicos. Um backup deve ser guardado em local seguro, pois pode conter informações pessoais.</p><p>Os importadores de biblioteca e plano aceitam os formatos indicados na própria central. Para os fluxos atuais de importação de conteúdo, utilize os modelos e PDFs disponibilizados pelo FORMA.</p></details>
+   <details><summary>Perfil local x conta FORMA: qual é a diferença?</summary><p><strong>Perfil local</strong> organiza perfis neste dispositivo e navegador. <strong>Conta FORMA</strong> é o acesso por e-mail ou Google e permite sincronização quando a conta está conectada e o status confirma o envio. Trocar de perfil local não é o mesmo que entrar ou sair de uma conta.</p></details>
+   <details><summary>Posso usar o FORMA em outro dispositivo?</summary><p>Entre com a mesma conta FORMA e confira o status da sincronização. Antes de sair de uma conta ou trocar de dispositivo, aguarde a confirmação de sincronização e mantenha um backup atualizado. Perfis locais, por si só, não são enviados para outros aparelhos.</p></details>
+   <details><summary>O que fazer se uma tela não atualizar?</summary><p>Primeiro, aguarde a sincronização terminar. Depois, use <strong>Recarregar página</strong> no menu de três pontos. Se o problema continuar, faça um backup e procure a ajuda do suporte com a descrição da tela e da ação que gerou o erro.</p></details>
+  </div></div>
+  <div class="forma-settings-note"><span aria-hidden="true">ⓘ</span><div><strong>Orientação importante.</strong> O FORMA é uma ferramenta de organização e acompanhamento. As estimativas não substituem avaliação profissional individual, e os registros devem ser conferidos antes de orientar decisões.</div></div>
+ </section>
+</div>
+<div class="forma-tour-overlay" id="formaTourOverlay" aria-hidden="true">
+ <div class="forma-tour-target" id="formaTourTarget"></div>
+ <section class="forma-tour-card" role="dialog" aria-modal="true" aria-labelledby="formaTourTitle">
+  <div class="forma-tour-meta"><span id="formaTourStepLabel">ETAPA 1 DE 9</span><span>GUIA INTERATIVO</span></div>
+  <h3 id="formaTourTitle">Conheça o FORMA</h3><p id="formaTourText"></p>
+  <div class="forma-tour-progress"><span id="formaTourProgressFill" style="width:11%"></span></div>
+  <div class="forma-tour-controls"><button class="btn secondary" id="formaTourExit" type="button">Sair</button><span class="tour-spacer"></span><button class="btn ghost" id="formaTourPrev" type="button">Anterior</button><button class="btn" id="formaTourNext" type="button">Próximo</button></div>
+ </section>
+</div>
+<script id="forma-settings-help-v2-js">
+(function(){
+ 'use strict';
+ if(window.__formaSettingsHelpV2)return;
+ window.__formaSettingsHelpV2=true;
+ const $=function(id){return document.getElementById(id);};
+ const settings=$('formaSettingsModal'),help=$('formaHelpModal'),profileEdit=$('formaProfileEditModal'),tour=$('formaTourOverlay');
+ let previousOverflow='',helpOverflow='',editOverflow='';
+ function lockBody(){previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';}
+ function unlockBody(value){document.body.style.overflow=value||'';}
+ function openOverlay(el){if(!el)return;lockBody();el.classList.add('open');el.setAttribute('aria-hidden','false');}
+ function closeOverlay(el,restore){if(!el)return;el.classList.remove('open');el.setAttribute('aria-hidden','true');unlockBody(restore===undefined?previousOverflow:restore);}
+ function openSettings(){closeTabMenu();if(settings.classList.contains('open'))return;openOverlay(settings);$('formaInstallHelp').hidden=true;}
+ function closeSettings(){closeOverlay(settings);}
+ function openHelp(){closeTabMenu();openOverlay(help);}
+ function closeHelp(){closeOverlay(help);}
+ function openProfileEdit(){
+  closeSettings();
+  const d=(typeof state!=='undefined'&&state.profileData&&typeof state.profileData==='object')?state.profileData:{};
+  const latest=(typeof state!=='undefined'&&Array.isArray(state.progress)&&state.progress.length)?state.progress[state.progress.length-1]:null;
+  $('formaEditAge').value=d.age||'';
+  $('formaEditSex').value=d.sex||'male';
+  $('formaEditHeight').value=d.height||'';
+  $('formaEditWeight').value=latest&&latest.weight?latest.weight:(d.weight||'');
+  $('formaEditGoal').value=d.goal||'fatloss';
+  $('formaEditGoalWeight').value=(typeof state!=='undefined'&&state.goalWeight)||d.goalWeight||'';
+  $('formaEditActivity').value=d.activity||'sedentary';
+  $('formaEditDiet').value=d.diet||'other';
+  $('formaEditExperience').value=d.experience||'beginner';
+  $('formaEditDays').value=String(d.days||((typeof state!=='undefined'&&state.trainingDays)||5));
+  editOverflow=document.body.style.overflow;
+  openOverlay(profileEdit);
+ }
+ function closeProfileEdit(){closeOverlay(profileEdit,editOverflow);}
+ function showInstallHelp(html){const el=$('formaInstallHelp');el.innerHTML=html;el.hidden=false;el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});}
+ function isStandalone(){return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;}
+ function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)||((navigator.platform||'')==='MacIntel'&&navigator.maxTouchPoints>1);}
+ async function installForma(){
+  if(isStandalone()){showInstallHelp('<strong>O FORMA já está instalado neste dispositivo.</strong><br>Abra-o pelo ícone na tela inicial ou na lista de aplicativos.');return;}
+  try{
+   if(typeof installPrompt!=='undefined'&&installPrompt){
+    const promptEvent=installPrompt;
+    installPrompt=null;
+    const result=await promptEvent.prompt();
+    const choice=result&&result.outcome?result.outcome:'unknown';
+    if(choice==='accepted')showInstallHelp('<strong>Solicitação aceita.</strong><br>Conclua a instalação na janela do navegador. Depois, abra o FORMA pelo novo ícone.');
+    else showInstallHelp('<strong>A instalação não foi concluída.</strong><br>Você pode tentar novamente quando o navegador disponibilizar o comando ou seguir as instruções manuais.');
+    return;
+   }
+  }catch(err){console.warn('FORMA instalação',err);}
+  if(isIOS()){
+   showInstallHelp('<strong>Instalar no iPhone ou iPad</strong><ol><li>Abra o FORMA no <strong>Safari</strong>.</li><li>Toque em <strong>Compartilhar</strong> (ícone do quadrado com seta para cima).</li><li>Role a lista e escolha <strong>Adicionar à Tela de Início</strong>.</li><li>Confirme em <strong>Adicionar</strong>. O FORMA aparecerá junto aos seus aplicativos.</li></ol><small>O iOS não permite que um site abra essa confirmação de instalação automaticamente. Esta orientação leva você ao caminho oficial do sistema.</small>');
+  }else if(/android/i.test(navigator.userAgent)){
+   showInstallHelp('<strong>Instalar no Android</strong><p>O navegador ainda não liberou o aviso automático nesta visita. No Chrome, abra o menu <strong>⋮</strong> e escolha <strong>Instalar aplicativo</strong> ou <strong>Adicionar à tela inicial</strong>. Confirme quando o Chrome solicitar.</p>');
+  }else{
+   showInstallHelp('<strong>Instalar no computador</strong><p>No Chrome ou Edge, procure o ícone de instalação na barra de endereço ou abra o menu do navegador e escolha <strong>Instalar FORMA</strong>. Confirme na janela do navegador.</p>');
+  }
+ }
+ function openProfileManager(){
+  closeSettings();
+  const modal=$('profilesModal');
+  if(!modal)return;
+  if(typeof renderProfiles==='function')renderProfiles();
+  modal.style.setProperty('display','flex','important');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+ }
+ function closeProfileManagerDisplay(){
+  const modal=$('profilesModal');if(!modal)return;
+  requestAnimationFrame(function(){if(!modal.classList.contains('open')){modal.style.setProperty('display','none','important');modal.setAttribute('aria-hidden','true');}});
+ }
+ function menuAction(action){
+  closeTabMenu();
+  if(action==='settingsHubBtn'){openSettings();return;}
+  if(action==='settingsMenuBtn'){showTab('configuracoes');if(window.formaOpenFilesWindow)window.formaOpenFilesWindow();return;}
+  if(action==='refreshPageBtn'){window.location.reload();return;}
+  if(action==='helpMenuBtn'){openHelp();return;}
+ }
+ document.addEventListener('click',function(e){
+  const button=e.target&&e.target.closest?e.target.closest('#toolsMenu button.menu-item'):null;
+  if(!button)return;
+  const action=button.id;
+  if(['settingsHubBtn','settingsMenuBtn','refreshPageBtn','helpMenuBtn'].indexOf(action)<0)return;
+  e.preventDefault();e.stopImmediatePropagation();menuAction(action);
+ },true);
+ $('formaSettingsClose').addEventListener('click',closeSettings);
+ settings.addEventListener('click',function(e){if(e.target===settings)closeSettings();});
+ $('formaHelpClose').addEventListener('click',closeHelp);
+ help.addEventListener('click',function(e){if(e.target===help)closeHelp();});
+ $('formaProfileEditClose').addEventListener('click',closeProfileEdit);
+ $('formaProfileEditCancel').addEventListener('click',closeProfileEdit);
+ profileEdit.addEventListener('click',function(e){if(e.target===profileEdit)closeProfileEdit();});
+ $('formaProfileEditForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  if(typeof state==='undefined'){alert('Não foi possível acessar os dados deste perfil.');return;}
+  const age=$('formaEditAge').value.trim()?Number($('formaEditAge').value):null;
+  const height=$('formaEditHeight').value.trim()?Number($('formaEditHeight').value):null;
+  const weight=$('formaEditWeight').value.trim()?Number($('formaEditWeight').value):null;
+  const goalWeight=$('formaEditGoalWeight').value.trim()?Number($('formaEditGoalWeight').value):null;
+  if(age!==null&&(!Number.isFinite(age)||age<14||age>100)){alert('Confira a idade (14 a 100 anos).');return;}
+  if(height!==null&&(!Number.isFinite(height)||height<120||height>230)){alert('Confira a altura (120 a 230 cm).');return;}
+  if(weight!==null&&(!Number.isFinite(weight)||weight<30||weight>300)){alert('Confira o peso atual (30 a 300 kg).');return;}
+  if(goalWeight!==null&&(!Number.isFinite(goalWeight)||goalWeight<30||goalWeight>300)){alert('Confira a meta de peso (30 a 300 kg).');return;}
+  const d=Object.assign({},state.profileData||{});
+  if(age!==null)d.age=age;
+  d.sex=$('formaEditSex').value;
+  if(height!==null)d.height=height;
+  d.goal=$('formaEditGoal').value;
+  d.goalWeight=goalWeight;
+  d.activity=$('formaEditActivity').value;
+  d.diet=$('formaEditDiet').value;
+  d.experience=$('formaEditExperience').value;
+  d.days=Number($('formaEditDays').value)||5;
+  if(weight!==null){
+   d.weight=weight;
+   const today=(typeof dateKey==='function')?dateKey():new Date().toISOString().slice(0,10);
+   state.progress=Array.isArray(state.progress)?state.progress:[];
+   const existing=state.progress.find(function(p){return p.date===today;});
+   if(existing)existing.weight=weight;
+   else state.progress.push({id:'profile-weight-'+Date.now(),weight:weight,waist:null,date:today});
+   state.progress.sort(function(a,b){return String(a.date).localeCompare(String(b.date));});
+  }
+  state.profileData=d;
+  state.goalWeight=goalWeight;
+  state.trainingDays=d.days;
+  if(typeof save==='function')save();
+  if(typeof renderProgress==='function')renderProgress();
+  if(typeof updateDashboard==='function')updateDashboard();
+  if(typeof refreshProfileLayout==='function')refreshProfileLayout();
+  closeProfileEdit();
+ });
+ document.querySelectorAll('[data-settings-action]').forEach(function(button){
+  button.addEventListener('click',function(){
+   const action=button.getAttribute('data-settings-action');
+   if(action==='customize'){closeSettings();if(typeof openCustom==='function')openCustom();}
+   else if(action==='install'){installForma();}
+   else if(action==='profile-manager'){openProfileManager();}
+   else if(action==='profile-edit'){openProfileEdit();}
+   else if(action==='account'){closeSettings();const badge=$('profileBadge');if(badge)badge.click();}
+   else if(action==='files'){closeSettings();showTab('configuracoes');if(window.formaOpenFilesWindow)window.formaOpenFilesWindow();}
+  });
+ });
+ $('formaStartTour').addEventListener('click',function(){closeHelp();startTour();});
+ $('formaHelpGoOverview').addEventListener('click',function(){closeHelp();showTab('inicio');});
+ document.querySelectorAll('[data-help-tab]').forEach(function(button){
+  button.addEventListener('click',function(){const tab=button.getAttribute('data-help-tab');closeHelp();showTab(tab);});
+ });
+ $('profileBadge').addEventListener('contextmenu',function(){openSettings();});
+ $('profilesModal').addEventListener('click',function(e){if(e.target===$('profilesModal'))closeProfileManagerDisplay();});
+ $('closeProfiles').addEventListener('click',closeProfileManagerDisplay);
+ function findTourTarget(step){
+  if(step.selector){const explicit=document.querySelector(step.selector);if(explicit&&explicit.getClientRects().length)return explicit;}
+  if(step.tab){
+   const view=$(step.tab);
+   if(view){
+    const heading=view.querySelector('h1,h2,h3');
+    if(heading)return heading.closest('.plan-intro,.plan-section-label,.food-goal-tab-heading,.nutrition-section-heading,.section-heading')||heading.parentElement||heading;
+    return view.firstElementChild||view;
+   }
+  }
+  return $('toolsTrigger')||document.querySelector('.app');
+ }
+ const tourSteps=[
+  {selector:'.area-brand-trigger',title:'Escolha sua área',text:'Toque na marca FORMA para alternar entre Treinos e Nutrição. Cada área reúne ferramentas diferentes, sem misturar suas rotinas.'},
+  {tab:'treino',selector:'#treino .plan-intro',title:'Organize seus treinos',text:'Aqui você consulta sua ficha, escolhe o dia, ajusta exercícios e inicia sessões para registrar cargas, repetições e descanso.'},
+  {tab:'nutritionOverview',title:'Entenda sua alimentação',text:'A visão geral reúne indicadores e metas. Use o menu da área de Nutrição para abrir o diário, o planejamento e a biblioteca.'},
+  {tab:'dieta',title:'Registre seu diário',text:'No diário, adicione os alimentos e as porções consumidas. Os totais ajudam a comparar o registro com suas metas.'},
+  {tab:'nutritionPlanning',title:'Planeje suas refeições',text:'No planejamento, organize metas, refeições e cronogramas. Confira os dados antes de aplicar qualquer alteração.'},
+  {tab:'progresso',title:'Acompanhe sua evolução',text:'Registre peso, medidas e outros dados disponíveis. Compare períodos e observe tendências, não apenas um resultado isolado.'},
+  {tab:'biblioteca',title:'Consulte sua biblioteca',text:'A biblioteca reúne exercícios e recursos alimentares que podem ser reutilizados em suas fichas e refeições.'},
+  {selector:'#profileBadge',title:'Acesse sua conta',text:'O botão de perfil abre a área de conta. Entre com Google ou e-mail para habilitar a sincronização e conferir o status dos dados.'},
+  {selector:'#toolsTrigger',title:'Encontre ações e ajuda',text:'No menu de três pontos estão as configurações, a central de arquivos, a opção para recarregar e os guias de ajuda.'}
+ ];
+ let tourIndex=0;
+ function endTour(){
+  tour.classList.remove('open');tour.setAttribute('aria-hidden','true');
+  $('formaTourTarget').style.display='none';
+  $('formaTourTarget').style.cssText='';
+  try{localStorage.setItem('formaTourCompletedV1','1');}catch(e){}
+ }
+ function updateTourStep(){
+  const step=tourSteps[tourIndex];
+  if(step.tab&&typeof showTab==='function')showTab(step.tab);
+  $('formaTourStepLabel').textContent='ETAPA '+(tourIndex+1)+' DE '+tourSteps.length;
+  $('formaTourTitle').textContent=step.title;
+  $('formaTourText').textContent=step.text;
+  $('formaTourPrev').disabled=tourIndex===0;
+  $('formaTourPrev').style.opacity=tourIndex===0?'.35':'1';
+  $('formaTourNext').textContent=tourIndex===tourSteps.length-1?'Concluir':'Próximo';
+  $('formaTourProgressFill').style.width=((tourIndex+1)/tourSteps.length*100)+'%';
+  requestAnimationFrame(function(){
+   requestAnimationFrame(function(){
+    let target=findTourTarget(step);
+    if(target&&target.scrollIntoView){
+     const rect=target.getBoundingClientRect();
+     if(rect.top<8||rect.bottom>window.innerHeight-180)target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
+    }
+    setTimeout(function(){
+     target=findTourTarget(step);
+     const mark=$('formaTourTarget');
+     if(!target){mark.style.display='none';return;}
+     const rect=target.getBoundingClientRect();
+     const pad=5;
+     mark.style.display='block';
+     mark.style.left=Math.max(5,rect.left-pad)+'px';
+     mark.style.top=Math.max(5,rect.top-pad)+'px';
+     mark.style.width=Math.min(window.innerWidth-10,Math.max(32,rect.width+pad*2))+'px';
+     mark.style.height=Math.min(window.innerHeight-10,Math.max(32,rect.height+pad*2))+'px';
+    },220);
+   });
+  });
+ }
+ function startTour(){
+  tourIndex=0;tour.classList.add('open');tour.setAttribute('aria-hidden','false');
+  updateTourStep();
+ }
+ $('formaTourNext').addEventListener('click',function(){if(tourIndex<tourSteps.length-1){tourIndex++;updateTourStep();}else endTour();});
+ $('formaTourPrev').addEventListener('click',function(){if(tourIndex>0){tourIndex--;updateTourStep();}});
+ $('formaTourExit').addEventListener('click',endTour);
+ document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+   if(tour.classList.contains('open')){endTour();e.preventDefault();e.stopImmediatePropagation();}
+   else if(help.classList.contains('open')){closeHelp();e.preventDefault();e.stopImmediatePropagation();}
+   else if(profileEdit.classList.contains('open')){closeProfileEdit();e.preventDefault();e.stopImmediatePropagation();}
+   else if(settings.classList.contains('open')){closeSettings();e.preventDefault();e.stopImmediatePropagation();}
+  }
+ },true);
+ window.formaOpenSettings=openSettings;
+ window.formaOpenHelp=openHelp;
+ window.formaStartGuidedTour=startTour;
+ window.formaInstallApp=installForma;
 })();
 </script>
 
