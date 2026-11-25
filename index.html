@@ -3864,11 +3864,17 @@ async function readFormaImportPdfText(file){
      const meal=payload.meals[0],byKey=new Map(payload.foods.map(food=>[String(food.key??food.foodKey??food.food_key??''),food]));
      meal.items=(meal.items||[]).map(item=>{const food=byKey.get(String(item.foodKey??item.food_key??''));return food?{...item,name:food.name||'',unit:food.unit||item.unit||'g',snapshot:{...food}}:item;}).filter(item=>Number(item.amount)>0);const usedKeys=new Set(meal.items.map(item=>String(item.foodKey??item.food_key??'')));payload.foods=payload.foods.filter(food=>usedKeys.has(String(food.key??food.foodKey??food.food_key??'')));
     }
-    const sampleName=v=>/^\\s*(?:exemplo\\s*:|\\[\\s*exemplo\\s*\\]|nome do (?:alimento|exercício|plano)|preencher aqui)\\s*/i.test(String(v??''));
-    const sampleCandidates=[...(payload.foods||[]).map(x=>x?.name),...(payload.meals||[]).map(x=>x?.name),...(payload.exercises||[]).map(x=>x?.name),...(payload.days||[]).flatMap(d=>(d?.exercises||[]).map(x=>x?.name)),...(payload.exerciseLibrary||[]).map(x=>x?.name),payload.name,payload.plan?.name,payload.schedule?.name];
-    if(sampleCandidates.some(sampleName))throw new Error("Este PDF ainda contém dados de exemplo. Preencha os campos do documento com os dados reais e salve o PDF antes de importar. O FORMA bloqueou a importação para evitar cadastrar o exemplo.");
+    const samplePattern=/(?:^|\\b)(?:exemplo(?:\\s+did[aá]tico)?|marca\\s+ilustrativa|preencha\\s+este\\s+campo|substitua\\s+por\\s+(?:dados\\s+)?reais|dados\\s+reais|fonte\\s+verificada|fabricante,?\\s*edi[cç][aã]o\\s+ou\\s+url|nome\\s+do\\s+(?:alimento|exerc[ií]cio|plano))(?:\\b|$)/i;
+    const samplePaths=[];
+    const scanSampleValues=(value,path="payload")=>{
+     if(typeof value==="string"){if(samplePattern.test(value))samplePaths.push(path);return;}
+     if(Array.isArray(value)){value.forEach((item,index)=>scanSampleValues(item,path+"["+index+"]"));return;}
+     if(value&&typeof value==="object")for(const [key,item] of Object.entries(value))scanSampleValues(item,path+"."+key);
+    };
+    scanSampleValues(payload);
+    if(samplePaths.length)throw new Error("Este PDF ainda contém textos demonstrativos ou campos de preenchimento pendentes ("+samplePaths.slice(0,5).join(", ")+"). Substitua esses conteúdos por dados reais ou deixe os campos opcionais vazios e salve o PDF antes de importar. O FORMA bloqueou a importação para evitar cadastrar exemplos.");
     return JSON.stringify(payload);
-   }catch(err){if(/PDF ainda contém dados de exemplo/.test(String(err?.message||err)))throw err;console.warn("FORMA: não foi possível ler o anexo interno do PDF",err);}
+   }catch(err){if(/PDF ainda contém textos demonstrativos ou campos de preenchimento pendentes/.test(String(err?.message||err)))throw err;console.warn("FORMA: não foi possível ler o anexo interno do PDF",err);}
   }
  }
  // Campos AcroForm devem ser lidos independentemente da existência do anexo forma-data.json.
