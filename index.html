@@ -4257,7 +4257,106 @@ function closeWorkoutImportPreview(){pendingWorkoutImport=null;$("workoutImportP
 function renderWorkoutImportCurrent(){if($("workoutImportCurrentPlan"))$("workoutImportCurrentPlan").textContent="Plano ativo: "+(String(state.planTitle||"").trim()||"Plano padrão do FORMA");if($("weekPlanCount"))$("weekPlanCount").textContent=`${workouts.length} dia${workouts.length===1?"":"s"}`;}
 function showWorkoutImportPreview(parsed,fileName){pendingWorkoutImport=parsed;$("workoutImportFileName").textContent=fileName;$("workoutImportSummary").innerHTML=`<div class="workout-import-summary"><div class="workout-import-stat"><span>Plano</span><strong>${esc(parsed.name)}</strong></div><div class="workout-import-stat"><span>Dias de treino</span><strong>${parsed.days.length}</strong></div><div class="workout-import-stat"><span>Exercícios</span><strong>${parsed.totalExercises}</strong></div></div>${parsed.objective?`<p class="sub" style="margin:0 0 8px">Objetivo: ${esc(parsed.objective)}</p>`:""}`;$("workoutImportDays").innerHTML=parsed.days.map((day,index)=>`<div class="workout-import-day"><strong>${index+1}. ${esc(day.day)} — ${esc(day.title)}</strong><p>${day.ex.map(ex=>`${esc(ex[0])} · ${esc(ex[1])} · ${esc(ex[2])} · descanso ${esc(ex[3])}`).slice(0,8).join("<br>")}${day.ex.length>8?`<br>+ ${day.ex.length-8} exercício(s)`:""}</p></div>`).join("");$("workoutImportPreview").hidden=false;workoutImportInfo("Arquivo lido e validado. Confira a prévia antes de importar.");}
 function importWorkoutPlan(){if(!pendingWorkoutImport)return;if(state.sessionActive){alert("Finalize ou saia da sessão de treino em andamento antes de importar outro plano. Seus registros atuais não serão alterados.");return;}const plan=pendingWorkoutImport,previousState=JSON.parse(JSON.stringify(state));if(!confirm(`Importar “${plan.name}” e substituir o plano ativo deste perfil?\n\n${plan.days.length} dias · ${plan.totalExercises} exercícios.\n\nO histórico de sessões, cargas e progresso será preservado. As marcações de conclusão da semana serão reiniciadas.`))return;state.generatedWorkoutPlan=plan.days.map(day=>({day:day.day,short:day.short,title:day.title,sub:day.sub,ex:day.ex.map(ex=>ex.slice())}));state.workoutPlanMetadata=plan.metadata||null;const incomingLibrary=Array.isArray(plan.metadata?.exerciseLibrary)?plan.metadata.exerciseLibrary:[];state.customExercises=Array.isArray(state.customExercises)?state.customExercises:[];const existingCatalogNames=new Set((typeof window.getExerciseCatalog==='function'?window.getExerciseCatalog():[]).map(x=>normalizeText(x.name)));for(const raw of incomingLibrary){const name=String(raw.name||'').trim();if(!name)continue;const id='import_'+name.toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');if(state.customExercises.some(x=>x.id===id||normalizeText(x.name)===normalizeText(name))||existingCatalogNames.has(normalizeText(name)))continue;const focus=String(raw.focus||'').trim()||inferMuscleFocus(name,raw);if(/pendente de confirmacao/i.test(normalizeMuscleText(focus)))continue;state.customExercises.push({id,name,muscle:String(raw.muscle||'Não especificado'),focus,secondary:Array.isArray(raw.secondary)?raw.secondary:String(raw.secondary||'').split(/[;,|]/).map(x=>x.trim()).filter(Boolean),equipment:String(raw.equipment||'Não especificado'),type:String(raw.type||'Isolado'),level:String(raw.level||'Não especificado'),pattern:String(raw.pattern||'Não especificado'),tips:Array.isArray(raw.tips)?raw.tips:String(raw.tips||'').split(/[\n;|]/).map(x=>x.trim()).filter(Boolean),errors:Array.isArray(raw.errors)?raw.errors:String(raw.errors||'').split(/[\n;|]/).map(x=>x.trim()).filter(Boolean),alternatives:Array.isArray(raw.alternatives)?raw.alternatives:String(raw.alternatives||'').split(/[;,|]/).map(x=>x.trim()).filter(Boolean),sets:String(raw.sets||'3'),reps:String(raw.reps||'8–12'),rest:String(raw.rest||'90 s'),notes:String(raw.notes||'')});}if(typeof window.applyImportedExercises==='function'){const customs=state.customExercises.map(x=>({...x,focus:String(x.focus||'').trim()||inferMuscleFocus(x.name,x),secondary:Array.isArray(x.secondary)?x.secondary:[],tips:Array.isArray(x.tips)?x.tips:[],errors:Array.isArray(x.errors)?x.errors:[],alternatives:Array.isArray(x.alternatives)?x.alternatives:[]}));window.applyImportedExercises(customs);}state.exerciseFocusOverrides={...(state.exerciseFocusOverrides||{}),...(plan.focusOverrides||{})};state.planTitle=plan.name;state.planObjective=plan.objective;state.customWorkouts={};state.workoutDefaults={};state.selected=0;state.completed={};state.sessionActive=false;state.sessionId=null;state.sessionStartedAt=null;state.sessionFinishedAt=null;state.sessionDay=0;state.sessionExercise=0;state.sessionSet=0;state.guidedMode=false;state.guidedExercise=0;applyProfileEdits();workouts.forEach((w,wi)=>{if(w.ex?.length)state.workoutDefaults[wi]={sets:String(w.ex[0][1]),reps:String(w.ex[0][2]),rest:String(w.ex[0][3])};});if(!save()){state=previousState;applyProfileEdits();renderWeekButtons();renderWorkout();renderWorkoutImportCurrent();return;}renderWeekButtons();renderWorkout();updateDashboard();renderProgress();renderWorkoutImportCurrent();closeWorkoutImportPreview();workoutImportInfo(`✓ Plano “${plan.name}” importado. ${plan.days.length} dias e ${plan.totalExercises} exercícios foram carregados.`);$("workoutImportCard").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});}
+function parseWorkoutTablePdfText(source){
+ const raw=String(source||"").replace(/\u00a0/g," ").replace(/\r/g,"");
+ if(!/^\s*SESS[ÃA]O\s+\d+\s*[—–-]\s*ORGANIZAÇÃO\b/im.test(raw))return null;
+ const lines=raw.split(/\n+/).map(x=>x.replace(/\s+$/,"").trim()).filter(Boolean);
+ const clean=x=>String(x||"").replace(/\s+/g," ").trim();
+ const fieldValue=(block,label)=>{
+  const escaped=label.replace(/[.*+?^{}()|[\]\\]/g,"\\$&");
+  const re=new RegExp("^"+escaped+"(?:\\s*:\\s*|\\s+)(.*)$","i");
+  for(let i=0;i<block.length;i++){
+   const line=clean(block[i]),m=line.match(re);
+   if(m&&m[1].trim())return clean(m[1]);
+   if(new RegExp("^"+escaped+"$","i").test(line)){
+    for(let j=i+1;j<block.length;j++){const next=clean(block[j]);if(next)return next;}
+   }
+  }
+  return "";
+ };
+ const libraryAt=lines.findIndex(x=>/^BIBLIOTECA\s*[—–-]\s*CADASTRO COMPLETO DE EXERCÍCIOS/i.test(x));
+ const libraryLines=libraryAt>=0?lines.slice(libraryAt):[];
+ const library=[];
+ const libraryStarts=[];
+ for(let i=0;i<libraryLines.length;i++){
+  const m=libraryLines[i].match(/^Biblioteca\s*[•·]\s*Cadastro Completo\s*\d+\s*[—–-]\s*(.+)$/i);
+  if(m)libraryStarts.push({index:i,name:clean(m[1])});
+ }
+ for(let i=0;i<libraryStarts.length;i++){
+  const item=libraryStarts[i],block=libraryLines.slice(item.index+1,libraryStarts[i+1]?.index??libraryLines.length);
+  const muscle=fieldValue(block,"Grupo muscular principal");
+  const focus=fieldValue(block,"Foco muscular específico");
+  if(!item.name||!focus)continue;
+  library.push({
+   name:item.name,muscle:muscle||"Não especificado",focus,
+   secondary:fieldValue(block,"Grupos secundários").split(/[;,|]/).map(x=>clean(x)).filter(Boolean),
+   equipment:fieldValue(block,"Equipamento"),type:fieldValue(block,"Tipo de exercício"),
+   level:fieldValue(block,"Nível"),pattern:fieldValue(block,"Padrão de movimento"),
+   tips:fieldValue(block,"Execução técnica"),errors:fieldValue(block,"Erros comuns"),
+   alternatives:fieldValue(block,"Alternativas"),notes:fieldValue(block,"Observações")
+  });
+ }
+ const sessionStarts=[];
+ for(let i=0;i<lines.length;i++){
+  const m=lines[i].match(/^SESS[ÃA]O\s+(\d+)\s*[—–-]\s*ORGANIZAÇÃO\s*\(([^)]+)\)/i);
+  if(m)sessionStarts.push({index:i,number:Number(m[1]),day:clean(m[2]).replace(/\s*[—–-]\s*SESSÃO BÔNUS.*$/i,"").replace(/\s*\(.*$/,"")});
+ }
+ if(!sessionStarts.length)throw new Error("O PDF contém detalhes de treino, mas não encontrei cabeçalhos de sessão reconhecíveis.");
+ const planTitleMatch=raw.match(/Plano de Treino\s*:\s*([^\n]+)/i);
+ const objectiveMatch=raw.match(/Objetivo principal\s*(?:\t+|\s{2,}|\n)\s*([^\n]+)/i);
+ const durationMatch=raw.match(/Duração prevista\s*(?:\t+|\s{2,}|\n)\s*([^\n]+)/i);
+ const frequencyMatch=raw.match(/Frequência semanal\s*(?:\t+|\s{2,}|\n)\s*([^\n]+)/i);
+ const splitMatch=raw.match(/Divisão semanal\s*(?:\t+|\s{2,}|\n)\s*([^\n]+)/i);
+ const days=[];
+ for(let si=0;si<sessionStarts.length;si++){
+  const session=sessionStarts[si],end=sessionStarts[si+1]?.index??(libraryAt>=0?libraryAt:lines.length);
+  const block=lines.slice(session.index,end);
+  const title=fieldValue(block,"Nome da sessão")||"Treino "+(si+1);
+  const focus=fieldValue(block,"Grupos musculares / foco");
+  const warmup=fieldValue(block,"Aquecimento e mobilidade");
+  const duration=fieldValue(block,"Duração estimada");
+  const notes=fieldValue(block,"Observações da sessão");
+  const exerciseStarts=[];
+  for(let i=0;i<block.length;i++){
+   const m=block[i].match(/^Sessão\s+\d+\s*[•·]\s*Exercício\s+\d+\s*[—–-]\s*(.+)$/i);
+   if(m)exerciseStarts.push({index:i,name:clean(m[1])});
+  }
+  if(!exerciseStarts.length)throw new Error("A sessão “"+session.day+"” foi encontrada, mas seus exercícios não foram reconhecidos.");
+  const exercises=[];
+  for(let ei=0;ei<exerciseStarts.length;ei++){
+   const item=exerciseStarts[ei],exerciseBlock=block.slice(item.index+1,exerciseStarts[ei+1]?.index??block.length);
+   const name=fieldValue(exerciseBlock,"Nome do exercício")||item.name;
+   const setsText=fieldValue(exerciseBlock,"Número de séries");
+   const repsText=fieldValue(exerciseBlock,"Repetições / faixa");
+   const restText=fieldValue(exerciseBlock,"Descanso entre séries");
+   const sets=Number((setsText.match(/\d{1,2}/)||[])[0]);
+   if(!Number.isInteger(sets)||sets<1||sets>12)throw new Error(session.day+", "+name+": não consegui ler o número de séries no campo “Número de séries”.");
+   if(!repsText)throw new Error(session.day+", "+name+": não encontrei “Repetições / faixa”.");
+   if(!restText)throw new Error(session.day+", "+name+": não encontrei “Descanso entre séries”.");
+   const reps=repsText.replace(/\s+/g,"").replace(/[–—]/g,"-");
+   const lib=library.find(x=>normalizeText(x.name)===normalizeText(name));
+   const suppliedFocus=lib?.focus||lib?.muscle||"";
+   exercises.push({name,sets,reps,rest:restText,focus:suppliedFocus});
+  }
+  const dayName=session.day.replace(/\s+/g," ").trim();
+  days.push({day:dayName,short:dayName.replace(/-feira$/i,"").slice(0,3).toUpperCase(),title,subtitle:[focus,duration,warmup,notes].filter(Boolean).join(" · "),exercises});
+ }
+ const normalized=normalizeWorkoutImport({
+  format:"FORMA_WORKOUT_PLAN",version:1,
+  name:planTitleMatch?clean(planTitleMatch[1]).slice(0,100):"Plano personalizado",
+  objective:objectiveMatch?clean(objectiveMatch[1]).slice(0,180):"",
+  duration:durationMatch?clean(durationMatch[1]):"",
+  frequency:frequencyMatch?clean(frequencyMatch[1]):"",
+  split:splitMatch?clean(splitMatch[1]):"",
+  days:days.map(d=>({day:d.day,title:d.title,subtitle:d.subtitle,exercises:d.exercises})),
+  exerciseLibrary:library
+ });
+ normalized.metadata={...(normalized.metadata||{}),description:"Plano importado de PDF estruturado em sessões e fichas de exercícios.",duration:durationMatch?clean(durationMatch[1]):"",frequency:frequencyMatch?clean(frequencyMatch[1]):"",split:splitMatch?clean(splitMatch[1]):"",days:days.map(d=>({day:d.day,title:d.title,subtitle:d.subtitle,exercises:d.exercises.map(x=>({name:x.name,sets:x.sets,reps:x.reps,rest:x.rest,focus:x.focus}))})),exerciseLibrary:library};
+ return normalized;
+}
 function parseWorkoutPdfText(source){
+ const tableParsed=parseWorkoutTablePdfText(source);
+ if(tableParsed)return tableParsed;
  const text=String(source||"").replace(/\u00a0/g," ").replace(/\r/g,"");
  const start=text.search(/^\s*PLANO DE TREINO\s*$/im);
  if(start<0)return null;
@@ -4303,8 +4402,7 @@ function parseWorkoutPdfText(source){
  const libMap=new Map(library.map(x=>[normalizeText(x.name),x]));
  for(const day of days)for(const ex of day.exercises){const item=libMap.get(normalizeText(ex.name));if(item)ex.focus=item.focus||item.muscle;}
  const objectiveMatch=planText.match(/Objetivo:\s*([^\n]+)/i);
- const normalized=normalizeWorkoutImport({format:"FORMA_WORKOUT_PLAN",version:1,name:"Plano personalizado",objective:objectiveMatch?objectiveMatch[1].trim():"",days:days.map(d=>({day:d.day,title:d.title,subtitle:d.subtitle,exercises:d.exercises})),exerciseLibrary:library});
- return normalized;
+ return normalizeWorkoutImport({format:"FORMA_WORKOUT_PLAN",version:1,name:"Plano personalizado",objective:objectiveMatch?objectiveMatch[1].trim():"",days:days.map(d=>({day:d.day,title:d.title,subtitle:d.subtitle,exercises:d.exercises})),exerciseLibrary:library});
 }
 
 function parseReadableWorkoutPlan(source){
