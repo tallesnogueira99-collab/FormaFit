@@ -4265,7 +4265,7 @@ function parseWorkoutPdfText(source){
  const libraryAt=body.search(/^\s*Biblioteca de exercícios\s*$/im);
  const planText=(libraryAt>=0?body.slice(0,libraryAt):body).trim();
  const lines=planText.split(/\n+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
- const heading=/^(.+?)\s*[—–-]\s*(Membros superiores|Membros inferiores|Corpo inteiro(?:\s*[—–-]\s*opcional)?)(?:\s+Foco:.*)?$/i;
+ const heading=/^(.+?)\s*[—–-]\s*(Membros superiores|Membros inferiores|Corpo inteiro(?:\s*[—–-]\s*(?:complemento\s*)?opcional)?)(?:\s+Foco:.*)?$/i;
  const days=[];
  let current=null,pending=null;
  const flushExercise=()=>{
