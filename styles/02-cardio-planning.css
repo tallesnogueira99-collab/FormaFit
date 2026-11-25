@@ -1,0 +1,22 @@
+
+/* FORMA v89 — planejamento semanal e biblioteca cardiovascular */
+#workoutCardioPanel .cardio-entry-promo{margin:14px 0 20px;grid-template-columns:auto minmax(0,1fr) auto}
+.cardio-week-planner,.cardio-library{padding:clamp(16px,2.5vw,24px);margin:18px 0}
+.cardio-planner-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px}
+.cardio-planner-head h3{margin:4px 0 6px}.cardio-planner-head p{margin:0}
+.cardio-weekday-tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin:14px 0}
+.cardio-weekday-btn{min-width:0;padding:10px 3px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2,#101a2a);color:var(--text);font-weight:750;cursor:pointer}
+.cardio-weekday-btn small{display:block;margin-top:4px;font-size:10px;color:var(--muted);font-weight:500}
+.cardio-weekday-btn.active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 15%,var(--surface,#111c2d));color:var(--accent)}
+.cardio-day-plan{display:grid;gap:9px;min-height:70px}
+.cardio-plan-exercise{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2,#101a2a)}
+.cardio-plan-exercise strong{display:block}.cardio-plan-exercise small{display:block;color:var(--muted);margin-top:4px}
+.cardio-plan-exercise-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.cardio-plan-exercise-actions .btn{padding:8px 10px}
+.cardio-planner-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.cardio-library-filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:12px;margin-bottom:14px}
+.cardio-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cardio-library-item{padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--surface-2,#101a2a);min-width:0}
+.cardio-library-item .eyebrow{font-size:10px}.cardio-library-item h4{margin:6px 0}.cardio-library-item p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.45}
+.cardio-library-item-actions{display:flex;gap:7px;flex-wrap:wrap}.cardio-empty{padding:18px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+@media(max-width:600px){#workoutCardioPanel .cardio-entry-promo{grid-template-columns:auto minmax(0,1fr);gap:10px}#cardioStartTopBtn{grid-column:1/-1;width:100%;min-height:44px}.cardio-weekday-tabs{gap:4px}.cardio-weekday-btn{font-size:11px;padding:9px 1px}.cardio-weekday-btn small{font-size:9px}.cardio-library-filters,.cardio-library-grid{grid-template-columns:1fr}.cardio-plan-exercise{align-items:flex-start;flex-direction:column}.cardio-plan-exercise-actions{width:100%;justify-content:flex-start}.cardio-plan-exercise-actions .btn{flex:1}}

@@ -1,5 +1,28 @@
-const CACHE_NAME = "forma-pwa-v131";
-const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
+const CACHE_NAME = "forma-pwa-v132";
+const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png",
+  "./styles/01-app-shell.css",
+  "./styles/02-cardio-planning.css",
+  "./styles/03-nutrition-planning.css",
+  "./styles/04-file-library.css",
+  "./styles/05-settings-layout.css",
+  "./styles/06-settings-help-tour.css",
+  "./styles/07-settings-navigation.css",
+  "./js/01-account-profile-fallback.js",
+  "./js/02-app-core.js",
+  "./js/03-training-progress.js",
+  "./js/04-cardio-progress-navigation.js",
+  "./js/05-floating-timer.js",
+  "./js/06-bioimpedance-import-preview.js",
+  "./js/07-cardio-session-engine.js",
+  "./js/08-weekly-cardio-plan.js",
+  "./js/09-import-export-center.js",
+  "./js/10-file-center-workflow.js",
+  "./js/11-data-workflows.js",
+  "./js/12-area-navigation.js",
+  "./js/13-nutrition-planning.js",
+  "./js/14-file-overlay-compatibility.js",
+  "./js/15-settings-help-tour.js",
+  "./js/16-settings-return-navigation.js"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME)

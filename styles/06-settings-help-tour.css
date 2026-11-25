@@ -1,0 +1,38 @@
+²×hº×.¶Ø^•«-ãM4¡ýxÓŽÊ×¬}
+.forma-help-accordion details{border:1px solid #2a3e56;border-radius:13px;background:#0e1a2a;overflow:hidden}
+.forma-help-accordion summary{padding:13px 15px;cursor:pointer;list-style:none;font-size:12px;font-weight:750;display:flex;justify-content:space-between;gap:12px}
+.forma-help-accordion summary::-webkit-details-marker{display:none}
+.forma-help-accordion summary:after{content:"ï¼‹";color:var(--accent);font-size:17px;line-height:1}
+.forma-help-accordion details[open] summary:after{content:"âˆ’"}
+.forma-help-accordion details p,.forma-help-accordion details ul{margin:0;padding:0 15px 14px;color:#aebdd0;font-size:11px;line-height:1.65}
+.forma-help-accordion details ul{padding-left:32px}
+.forma-help-accordion details li{padding:2px 0}
+.forma-help-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.forma-help-actions .btn{min-height:42px}
+.forma-tour-overlay{display:none;position:fixed;inset:0;z-index:15000;background:transparent;touch-action:pan-y}
+.forma-tour-overlay.open{display:block}
+.forma-tour-target{position:fixed;z-index:15001;border:2px solid var(--lime);border-radius:15px;box-shadow:0 0 0 9999px rgba(3,8,16,.78),0 0 0 6px color-mix(in srgb,var(--lime) 20%,transparent);pointer-events:none;transition:all .2s ease}
+.forma-tour-card{position:fixed;z-index:15002;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(490px,calc(100vw - 24px));padding:17px;border:1px solid #3a526b;border-radius:19px;background:#132238;box-shadow:0 20px 60px #000a;color:#f3f6fb}
+.forma-tour-meta{display:flex;justify-content:space-between;gap:12px;color:#9fb2c9;font-size:10px;font-weight:750;letter-spacing:.6px;text-transform:uppercase}
+.forma-tour-card h3{font-size:18px;margin:8px 0 5px}
+.forma-tour-card p{font-size:12px;line-height:1.55;color:#b8c7d9;margin:0}
+.forma-tour-progress{height:4px;border-radius:6px;background:#2a4058;overflow:hidden;margin-top:13px}
+.forma-tour-progress span{display:block;height:100%;background:var(--lime);transition:width .2s}
+.forma-tour-controls{display:flex;align-items:center;gap:8px;margin-top:13px}
+.forma-tour-controls .btn{min-height:38px}
+.forma-tour-controls .tour-spacer{flex:1}
+@media(max-width:620px){
+ .forma-overlay-v2{padding:0;align-items:flex-end}
+ .forma-dialog-v2{width:100%;max-height:92dvh;border-radius:22px 22px 0 0;padding:19px 16px calc(18px + env(safe-area-inset-bottom));}
+ .forma-settings-grid{grid-template-columns:1fr;gap:8px}
+ .forma-setting-card{min-height:70px;padding:11px}
+ .forma-help-hero{grid-template-columns:1fr;padding:18px}
+ .forma-help-visual{display:none}
+ .forma-help-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .forma-help-steps{grid-template-columns:1fr}
+ .forma-profile-edit-grid{grid-template-columns:1fr}
+ .forma-tour-card{bottom:max(8px,env(safe-area-inset-bottom));padding:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .forma-overlay-v2,.forma-setting-card,.forma-tour-target{animation:none!important;transition:none!important}
+}
