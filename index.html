@@ -3864,6 +3864,9 @@ async function readFormaImportPdfText(file){
      const meal=payload.meals[0],byKey=new Map(payload.foods.map(food=>[String(food.key??food.foodKey??food.food_key??''),food]));
      meal.items=(meal.items||[]).map(item=>{const food=byKey.get(String(item.foodKey??item.food_key??''));return food?{...item,name:food.name||'',unit:food.unit||item.unit||'g',snapshot:{...food}}:item;}).filter(item=>Number(item.amount)>0);const usedKeys=new Set(meal.items.map(item=>String(item.foodKey??item.food_key??'')));payload.foods=payload.foods.filter(food=>usedKeys.has(String(food.key??food.foodKey??food.food_key??'')));
     }
+    const sampleName=v=>/^\\s*(?:exemplo\\s*:|\\[\\s*exemplo\\s*\\]|nome do (?:alimento|exercício|plano)|preencher aqui)\\s*/i.test(String(v??''));
+    const sampleCandidates=[...(payload.foods||[]).map(x=>x?.name),...(payload.meals||[]).map(x=>x?.name),...(payload.exercises||[]).map(x=>x?.name),...(payload.days||[]).flatMap(d=>(d?.exercises||[]).map(x=>x?.name)),...(payload.exerciseLibrary||[]).map(x=>x?.name),payload.name,payload.plan?.name,payload.schedule?.name];
+    if(sampleCandidates.some(sampleName))throw new Error("Este PDF ainda contém dados de exemplo. Preencha os campos do documento com os dados reais e salve o PDF antes de importar. O FORMA bloqueou a importação para evitar cadastrar o exemplo.");
     return JSON.stringify(payload);
    }catch(err){console.warn("FORMA: não foi possível ler o anexo interno do PDF",err);}
   }
@@ -6346,7 +6349,23 @@ body.forma-files-mode .top-tabs{display:none!important}
    form.updateFieldAppearances(font);
   }
   drawPageFooter();
-  await d.attach(new TextEncoder().encode(JSON.stringify({format:"FORMA_PDF_CONTAINER",version:1,payload:obj,fields:[]})),"forma-data.json",{mimeType:"application/json",description:"Dados internos para importação no FORMA."});
+  const importInstructions=[
+   "INSTRUÇÕES PARA IA — MODELO DE IMPORTAÇÃO FORMA (VERSÃO 2)",
+   "Este arquivo é um modelo estruturado de importação para o aplicativo FORMA. Identifique a categoria pelo campo format do anexo forma-data.json e mantenha exatamente essa categoria e sua estrutura.",
+   "REGRA PRINCIPAL: substitua integralmente todos os dados demonstrativos, exemplos, nomes fictícios e valores de amostra. Nunca reutilize um exemplo como se fosse dado real. Não misture categorias nem transforme um alimento em refeição, exercício ou plano.",
+   "PREENCHIMENTO: use os campos editáveis visíveis do PDF como fonte principal. Atualize também o payload JSON do anexo forma-data.json para que cada campo preenchido no PDF corresponda ao mesmo campo no JSON. Preserve os nomes técnicos dos campos e a estrutura de arrays/objetos. Não crie propriedades incompatíveis.",
+   "DADOS DESCONHECIDOS: não invente informações. Deixe o campo vazio ou null quando não houver dado confiável; não use zero para representar dado desconhecido. Respeite unidades e bases de referência indicadas no documento.",
+   "ALIMENTOS: confira energia, macronutrientes e micronutrientes na mesma base (normalmente 100 g ou 100 ml), identifique preparo/estado do alimento e informe fonte e referência. Não misture valores de produtos ou preparações diferentes.",
+   "REFEIÇÕES: mantenha ingredientes, quantidades, unidades, rendimento, porções e modo de preparo coerentes. Atualize as quantidades dos itens e os vínculos com os alimentos correspondentes.",
+   "EXERCÍCIOS: preserve grupo muscular principal, foco, músculos secundários, equipamento, padrão de movimento, técnica, erros comuns e alternativas. Não invente prescrição clínica ou cargas individuais.",
+   "PLANOS DE TREINO: preserve dias/sessões, ordem dos exercícios, séries, repetições, carga, descanso, cadência, RIR/RPE, unilateralidade e progressão. Não omita sessões ou exercícios existentes.",
+   "PLANOS NUTRICIONAIS E CRONOGRAMAS: preserve metas, refeições, horários, alimentos, quantidades e distribuição. Confira se os totais e as unidades são coerentes.",
+   "BIOIMPEDÂNCIA: preserve data, unidades e significado de cada medida. Não estime medidas ausentes.",
+   "VALIDAÇÃO FINAL: antes de entregar, confira se não restou nenhum texto de exemplo, se todos os campos visíveis e o JSON estão sincronizados, se a categoria e os índices estão corretos e se o arquivo continua sendo um PDF com os campos preenchíveis. Não declare sucesso se não puder garantir essas verificações."
+  ].join("\\n");
+  const fieldSnapshot=typeof formaPdfValues==="function"?formaPdfValues(obj):{};
+  await d.attach(new TextEncoder().encode(JSON.stringify({format:"FORMA_PDF_CONTAINER",version:2,templateSchemaVersion:2,payload:obj,fields:fieldSnapshot,fieldAuthority:"acroform",instructions:"FORMA-IA-INSTRUCOES.txt"})),"forma-data.json",{mimeType:"application/json",description:"Estrutura de importação e valores sincronizados do modelo FORMA."});
+  await d.attach(new TextEncoder().encode(importInstructions),"FORMA-IA-INSTRUCOES.txt",{mimeType:"text/plain",description:"Instruções para preenchimento assistido por IA. Consulte antes de editar ou devolver este modelo."});
   const bytes=await d.save(),url=URL.createObjectURL(new Blob([bytes],{type:"application/pdf"})),a=document.createElement("a");a.href=url;a.download=(String(titleText||"documento").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toLowerCase()||"documento")+".pdf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
   const statusEl=$("settingsExportStatus");if(statusEl){statusEl.hidden=false;statusEl.classList.remove("error");statusEl.textContent="PDF gerado com conteúdo visual organizado e dados internos anexados para importação.";}return true;
  }catch(e){console.error(e);showStatus("Falha ao gerar PDF: "+(e.message||"erro inesperado"),true);return false;}
