@@ -6434,10 +6434,10 @@ body.forma-files-mode .top-tabs{display:none!important}
   await d.attach(new TextEncoder().encode(importInstructions),"FORMA-IA-INSTRUCOES.txt",{mimeType:"text/plain",description:"Instruções para preenchimento assistido por IA. Consulte antes de editar ou devolver este modelo."});
   // As instruções também ficam impressas como texto selecionável no próprio PDF; os anexos são uma cópia estruturada adicional.
   if(obj?.format!=="FORMA-backup"){
-   const W=595.28,H=841.89,margin=42,contentWidth=W-margin*2;let instructionPage=null,instructionY=H-58,pageNumber=0;
-   const newInstructionPage=()=>{instructionPage=d.addPage([W,H]);pageNumber++;instructionPage.drawRectangle({x:0,y:0,width:W,height:H,color:navy});instructionPage.drawRectangle({x:0,y:H-8,width:W,height:8,color:red});instructionPage.drawText("FORMA · INSTRUÇÕES DE IMPORTAÇÃO",{x:margin,y:H-36,size:9,font:bold,color:red});instructionPage.drawText(String(titleText||"Modelo FORMA").slice(0,70),{x:margin,y:H-52,size:7.5,font,color:muted});instructionY=H-78;};
+   const W=595.28,H=841.89,margin=42,contentWidth=W-margin*2;let instructionPage=null,instructionY=H-58;
+   const newInstructionPage=()=>{instructionPage=d.addPage([W,H]);instructionPage.drawRectangle({x:0,y:0,width:W,height:H,color:navy});instructionPage.drawRectangle({x:0,y:H-8,width:W,height:8,color:red});instructionPage.drawText("FORMA · INSTRUÇÕES DE IMPORTAÇÃO",{x:margin,y:H-36,size:9,font:bold,color:red});instructionPage.drawText(String(titleText||"Modelo FORMA").slice(0,70),{x:margin,y:H-52,size:7.5,font,color:muted});instructionY=H-78;};
    newInstructionPage();
-   for(const rawLine of importInstructions.split(/\\r?\\n/)){
+   for(const rawLine of importInstructions.split(/\r?\n/)){
     const isHeading=/^(INSTRUÇÕES PARA IA|CATEGORIA )/.test(rawLine),lines=wrap(rawLine,contentWidth,isHeading?8.2:7.5,isHeading?bold:font);const needed=lines.length*(isHeading?12:10)+5;
     if(instructionY-needed<52)newInstructionPage();
     for(const lineText of lines){instructionPage.drawText(lineText,{x:margin,y:instructionY,size:isHeading?8.2:7.5,font:isHeading?bold:font,color:isHeading?white:muted});instructionY-=isHeading?12:10;}
