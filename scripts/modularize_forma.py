@@ -2,6 +2,10 @@ from html.parser import HTMLParser
 from pathlib import Path
 import re
 
+def normalize_trailing_whitespace(value):
+    value = re.sub(r"[ \t]+(?=\r?$)", "", value, flags=re.M)
+    return value.rstrip("\r\n") + "\n"
+
 src = Path("index.html").read_text(encoding="utf-8")
 lines = src.splitlines(True)
 starts = [0]
@@ -73,7 +77,10 @@ assert len(groups) == 7, f"Esperados 7 grupos CSS; encontrados {len(groups)}"
 replacements = []
 for group_index, group_items in enumerate(groups):
     name = style_names[group_index]
-    Path("styles", name).write_text("\n".join(x["body"] for x in group_items), encoding="utf-8")
+    css_content = "\n".join(x["body"] for x in group_items)
+    if name == "03-nutrition-planning.css":
+        css_content = normalize_trailing_whitespace(css_content)
+    Path("styles", name).write_text(css_content, encoding="utf-8")
     for item_index, item in enumerate(group_items):
         ident = item["attrs"].get("id")
         if item_index == 0:
@@ -86,7 +93,10 @@ for group_index, group_items in enumerate(groups):
 
 for index, item in enumerate(scripts):
     name = js_names[index]
-    Path("js", name).write_text(item["body"], encoding="utf-8")
+    js_content = item["body"]
+    if name in {"02-app-core.js", "07-cardio-session-engine.js"}:
+        js_content = normalize_trailing_whitespace(js_content)
+    Path("js", name).write_text(js_content, encoding="utf-8")
     ident = item["attrs"].get("id")
     value = "<script" + (f' id="{ident}"' if ident else "") + f' src="./js/{name}"></script>'
     replacements.append((item["start"], item["end"], value))
