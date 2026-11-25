@@ -6733,8 +6733,14 @@ function downloadPdfTemplate(kind){
     requestAnimationFrame(()=>{try{dispatchFile('overviewBioFile',file);}catch(err){alert(err.message);}});return;
    }
    if(kind==='workout'||kind==='nutrition'){
-    const card=$(kind==='workout'?'workoutImportCard':'nutritionImportCard');
-    if(!card)throw new Error('O painel de prévia desta importação não está disponível.');
+    let card=$(kind==='workout'?'workoutImportCard':'nutritionImportCard');
+    // A Central de arquivos pode estar aberta em outra área/aba. Reative a tela proprietária
+    // antes de procurar o painel, para que o componente de prévia esteja montado no DOM.
+    if(!card&&typeof window.showTab==='function'){
+     window.showTab(kind==='workout'?'treino':'dieta');
+     card=$(kind==='workout'?'workoutImportCard':'nutritionImportCard');
+    }
+    if(!card)throw new Error('Não foi possível localizar o painel de prévia. Abra Treinos e tente novamente; nenhum dado foi alterado.');
     modalBody.replaceChildren(status,card);modalTitle.textContent=kind==='workout'?'Prévia do plano de treino':'Prévia do plano nutricional';modalDesc.textContent='Confira os dados reconhecidos pelo FORMA. Nada será substituído até você confirmar a importação.';modal.classList.add('open');modal.setAttribute('aria-hidden','false');
     dispatchFile(kind==='workout'?'workoutImportFile':'nutritionImportFile',file);showStatus('PDF identificado como '+labels[kind]+'. Aguarde a leitura e revise a prévia.',false);return;
    }
