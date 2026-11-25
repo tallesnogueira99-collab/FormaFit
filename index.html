@@ -4354,9 +4354,37 @@ function parseWorkoutTablePdfText(source){
  normalized.metadata={...(normalized.metadata||{}),description:"Plano importado de PDF estruturado em sessões e fichas de exercícios.",duration:durationMatch?clean(durationMatch[1]):"",frequency:frequencyMatch?clean(frequencyMatch[1]):"",split:splitMatch?clean(splitMatch[1]):"",days:days.map(d=>({day:d.day,title:d.title,subtitle:d.subtitle,exercises:d.exercises.map(x=>({name:x.name,sets:x.sets,reps:x.reps,rest:x.rest,focus:x.focus}))})),exerciseLibrary:library};
  return normalized;
 }
+function parseWorkoutPlainPdfText(source){
+ const text=String(source||"").replace(/\u00a0/g," ").replace(/\r/g,"");
+ if(!/PLANO\s+DE\s+TREINO/i.test(text))return null;
+ const lines=text.split(/\n+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
+ const heading=/^(.+?)\s*[—–-]\s*(Membros superiores|Membros inferiores|Corpo inteiro(?:\s*[—–-]\s*(?:complemento\s*)?opcional)?)(?:\s+Foco:.*)?$/i;
+ const starts=[];
+ for(let i=0;i<lines.length;i++){const m=lines[i].match(heading);if(m)starts.push({index:i,day:m[1].trim(),title:m[2].trim()});}
+ if(!starts.length)return null;
+ const libraryAt=lines.findIndex((x,i)=>i>starts[starts.length-1].index&&/^Biblioteca de exercícios$/i.test(x));
+ const end=libraryAt>=0?libraryAt:lines.length,days=[];
+ for(let di=0;di<starts.length;di++){
+  const start=starts[di],stop=Math.min(starts[di+1]?.index??end,end),block=lines.slice(start.index+1,stop);
+  let subtitle="",pending=null;const exercises=[];
+  const flush=()=>{if(!pending)return;const detail=pending.details.join(" ");const sets=detail.match(/\bSéries\s*:\s*(\d{1,2})/i);const reps=detail.match(/\bRepetições\s*:\s*(\d{1,2}\s*[–—-]\s*\d{1,2}|\d{1,2})/i);const rest=detail.match(/\b(?:Descanso|Intervalo)\s*:\s*(\d{1,3}(?:\s*[–—-]\s*\d{1,3})?\s*(?:s|segundos?|min(?:utos?)?)?)/i);if(!sets||!reps||!rest)throw new Error("Não consegui ler séries, repetições e descanso de "+pending.name+" na sessão "+start.day+".");exercises.push({name:pending.name,sets:Number(sets[1]),reps:reps[1].replace(/\s+/g,""),rest:rest[1].trim(),focus:""});pending=null;};
+  for(const line of block){if(/^Foco\s*:/i.test(line)){subtitle=line.replace(/^Foco\s*:\s*/i,"");continue;}const ex=line.match(/^\d{1,2}\.\s+(.+)$/);if(ex){flush();pending={name:ex[1].trim(),details:[]};continue;}if(pending&&/\b(?:Séries|Repetições|Descanso|Intervalo)\s*:/i.test(line))pending.details.push(line);}
+  flush();if(!exercises.length)throw new Error("A sessão "+start.day+" foi identificada, mas nenhum exercício foi encontrado.");
+  days.push({day:start.day,short:start.day.replace(/-feira$/i,"").slice(0,3).toUpperCase(),title:start.title,subtitle,exercises});
+ }
+ const library=[];
+ if(libraryAt>=0){const tail=lines.slice(libraryAt+1);for(let i=0;i<tail.length;i++){const name=tail[i];const group=tail[i+1]?.match(/^Grupo principal\s*:\s*(.+?)\s+Foco\s*:\s*(.+)$/i);if(group){library.push({name,muscle:group[1].trim(),focus:group[2].trim()});i++;}}}
+ const libMap=new Map(library.map(x=>[normalizeText(x.name),x]));
+ for(const day of days)for(const ex of day.exercises){const item=libMap.get(normalizeText(ex.name));if(item)ex.focus=item.focus||item.muscle;}
+ const name=(lines.find(x=>/^Plano\s*:/i.test(x))||"Plano: Plano personalizado").replace(/^Plano\s*:\s*/i,"").trim();
+ const objective=(lines.find(x=>/^Objetivo\s*:/i.test(x))||"").replace(/^Objetivo\s*:\s*/i,"").trim();
+ return normalizeWorkoutImport({format:"FORMA_WORKOUT_PLAN",version:1,name,objective,days:days.map(d=>({day:d.day,title:d.title,subtitle:d.subtitle,exercises:d.exercises})),exerciseLibrary:library});
+}
 function parseWorkoutPdfText(source){
  const tableParsed=parseWorkoutTablePdfText(source);
  if(tableParsed)return tableParsed;
+ const plainParsed=parseWorkoutPlainPdfText(source);
+ if(plainParsed)return plainParsed;
  const text=String(source||"").replace(/\u00a0/g," ").replace(/\r/g,"");
  const start=text.search(/^\s*PLANO DE TREINO\s*$/im);
  if(start<0)return null;
