@@ -3868,7 +3868,7 @@ async function readFormaImportPdfText(file){
     const sampleCandidates=[...(payload.foods||[]).map(x=>x?.name),...(payload.meals||[]).map(x=>x?.name),...(payload.exercises||[]).map(x=>x?.name),...(payload.days||[]).flatMap(d=>(d?.exercises||[]).map(x=>x?.name)),...(payload.exerciseLibrary||[]).map(x=>x?.name),payload.name,payload.plan?.name,payload.schedule?.name];
     if(sampleCandidates.some(sampleName))throw new Error("Este PDF ainda contém dados de exemplo. Preencha os campos do documento com os dados reais e salve o PDF antes de importar. O FORMA bloqueou a importação para evitar cadastrar o exemplo.");
     return JSON.stringify(payload);
-   }catch(err){console.warn("FORMA: não foi possível ler o anexo interno do PDF",err);}
+   }catch(err){if(/PDF ainda contém dados de exemplo/.test(String(err?.message||err)))throw err;console.warn("FORMA: não foi possível ler o anexo interno do PDF",err);}
   }
  }
  // Campos AcroForm devem ser lidos independentemente da existência do anexo forma-data.json.
@@ -6362,7 +6362,7 @@ body.forma-files-mode .top-tabs{display:none!important}
    "PLANOS NUTRICIONAIS E CRONOGRAMAS: preserve metas, refeições, horários, alimentos, quantidades e distribuição. Confira se os totais e as unidades são coerentes.",
    "BIOIMPEDÂNCIA: preserve data, unidades e significado de cada medida. Não estime medidas ausentes.",
    "VALIDAÇÃO FINAL: antes de entregar, confira se não restou nenhum texto de exemplo, se todos os campos visíveis e o JSON estão sincronizados, se a categoria e os índices estão corretos e se o arquivo continua sendo um PDF com os campos preenchíveis. Não declare sucesso se não puder garantir essas verificações."
-  ].join("\\n");
+  ].join("\n");
   const fieldSnapshot=typeof formaPdfValues==="function"?formaPdfValues(obj):{};
   await d.attach(new TextEncoder().encode(JSON.stringify({format:"FORMA_PDF_CONTAINER",version:2,templateSchemaVersion:2,payload:obj,fields:fieldSnapshot,fieldAuthority:"acroform",instructions:"FORMA-IA-INSTRUCOES.txt"})),"forma-data.json",{mimeType:"application/json",description:"Estrutura de importação e valores sincronizados do modelo FORMA."});
   await d.attach(new TextEncoder().encode(importInstructions),"FORMA-IA-INSTRUCOES.txt",{mimeType:"text/plain",description:"Instruções para preenchimento assistido por IA. Consulte antes de editar ou devolver este modelo."});
