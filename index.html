@@ -6611,7 +6611,11 @@ function downloadPdfTemplate(kind){
   return openStructuredPdf(names[kind],'Modelo editável e compatível com importação · PDF',summary,obj);
  }
  function dispatchFile(targetId,file){
-  const input=$(targetId);if(!input)throw new Error('O importador desta categoria não está disponível nesta versão.');
+  let input=targetId?$(targetId):null;
+  // Compatibilidade com telas/versões em que a entrada unificada ainda não está montada.
+  if(!input&&targetId==='unifiedImportFile')input=$('importFoodsFile');
+  if(!input&&targetId==='importFoodsFile')input=$('unifiedImportFile');
+  if(!input)throw new Error('O importador de alimentos não está disponível nesta tela. Abra a Central de arquivos e tente novamente.');
   input.accept='.pdf,application/pdf';
   if(typeof DataTransfer==='undefined')throw new Error('Este navegador não permite encaminhar o PDF automaticamente. Atualize o navegador e tente novamente.');
   const transfer=new DataTransfer();transfer.items.add(file);input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));
