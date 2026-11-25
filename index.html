@@ -6430,8 +6430,21 @@ body.forma-files-mode .top-tabs{display:none!important}
    "FORMATO DE ENTREGA: devolva o próprio PDF editado, mantendo o anexo forma-data.json com format, version e payload. Não entregue somente texto, captura de tela, CSV ou um JSON separado. Não renomeie campos técnicos. Atualize no JSON todos os valores alterados no PDF; quando não puder editar AcroForm, atualize o JSON e mantenha o PDF legível. Nunca remova os anexos forma-data.json e FORMA-IA-INSTRUCOES.txt."
   ].join("\n");
   const fieldSnapshot=typeof formaPdfValues==="function"?formaPdfValues(obj):{};
-  await d.attach(new TextEncoder().encode(JSON.stringify({format:"FORMA_PDF_CONTAINER",version:2,templateSchemaVersion:2,payload:obj,fields:fieldSnapshot,fieldAuthority:"acroform",instructions:"FORMA-IA-INSTRUCOES.txt"})),"forma-data.json",{mimeType:"application/json",description:"Estrutura de importação e valores sincronizados do modelo FORMA."});
+  await d.attach(new TextEncoder().encode(JSON.stringify({format:"FORMA_PDF_CONTAINER",version:3,templateSchemaVersion:3,instructionVersion:3,payload:obj,fields:fieldSnapshot,fieldAuthority:"acroform",schema:{format:obj?.format||null,definition:formatInstructions[obj?.format]||"Preserve o formato e a estrutura do payload original.",fieldMap:formaPdfSchema(obj).map(section=>({section:section.section,fields:section.items.map(([key,label])=>({key,label}))}))},instructions:"FORMA-IA-INSTRUCOES.txt"})),"forma-data.json",{mimeType:"application/json",description:"Estrutura de importação e valores sincronizados do modelo FORMA."});
   await d.attach(new TextEncoder().encode(importInstructions),"FORMA-IA-INSTRUCOES.txt",{mimeType:"text/plain",description:"Instruções para preenchimento assistido por IA. Consulte antes de editar ou devolver este modelo."});
+  // As instruções também ficam impressas como texto selecionável no próprio PDF; os anexos são uma cópia estruturada adicional.
+  if(obj?.format!=="FORMA-backup"){
+   const W=595.28,H=841.89,margin=42,contentWidth=W-margin*2;let instructionPage=null,instructionY=H-58;
+   const newInstructionPage=()=>{instructionPage=d.addPage([W,H]);instructionPage.drawRectangle({x:0,y:0,width:W,height:H,color:navy});instructionPage.drawRectangle({x:0,y:H-8,width:W,height:8,color:red});instructionPage.drawText("FORMA · INSTRUÇÕES DE IMPORTAÇÃO",{x:margin,y:H-36,size:9,font:bold,color:red});instructionPage.drawText(String(titleText||"Modelo FORMA").slice(0,70),{x:margin,y:H-52,size:7.5,font,color:muted});instructionY=H-78;};
+   newInstructionPage();
+   for(const rawLine of importInstructions.split(/\r?\n/)){
+    const isHeading=/^(INSTRUÇÕES PARA IA|CATEGORIA )/.test(rawLine),lines=wrap(rawLine,contentWidth,isHeading?8.2:7.5,isHeading?bold:font);const needed=lines.length*(isHeading?12:10)+5;
+    if(instructionY-needed<52)newInstructionPage();
+    for(const lineText of lines){instructionPage.drawText(lineText,{x:margin,y:instructionY,size:isHeading?8.2:7.5,font:isHeading?bold:font,color:isHeading?white:muted});instructionY-=isHeading?12:10;}
+    instructionY-=5;
+   }
+   instructionPage.drawText("Leia estas regras antes de preencher o modelo. Preserve o payload e os nomes técnicos dos campos.",{x:margin,y:28,size:6.5,font,color:muted});
+  }
   const bytes=await d.save(),url=URL.createObjectURL(new Blob([bytes],{type:"application/pdf"})),a=document.createElement("a");a.href=url;a.download=(String(titleText||"documento").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"").toLowerCase()||"documento")+".pdf";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
   const statusEl=$("settingsExportStatus");if(statusEl){statusEl.hidden=false;statusEl.classList.remove("error");statusEl.textContent="PDF gerado com conteúdo visual organizado e dados internos anexados para importação.";}return true;
  }catch(e){console.error(e);showStatus("Falha ao gerar PDF: "+(e.message||"erro inesperado"),true);return false;}
