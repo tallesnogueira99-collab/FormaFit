@@ -1,0 +1,39 @@
+name: Prepare FORMA modularization
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  modularize:
+    if: github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.head_ref, 'refactor/forma-modularizacao-segura-2026-11-25')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the PR branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Extract CSS and JavaScript without changing logic
+        run: python3 scripts/modularize_forma.py
+
+      - name: Validate JavaScript syntax
+        run: |
+          for file in js/*.js; do node --check "$file"; done
+          node --check sw.js
+
+      - name: Commit generated files to the PR branch
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js js styles MODULARIZACAO.md
+          git diff --cached --check
+          git commit -m "Refactor FORMA HTML into separate CSS and JS assets"
+          git push origin "HEAD:$BRANCH"
