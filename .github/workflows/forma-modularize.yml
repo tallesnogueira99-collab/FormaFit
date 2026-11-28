@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - refactor/forma-modularizacao-main-2026-11-28
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
