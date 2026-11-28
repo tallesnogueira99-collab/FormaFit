@@ -150,9 +150,18 @@
   if(typeof state==='undefined')return;
   applyBackfill();addStyles();renderCalories();
  }
+ function renderCardioKcalStat(){
+  const stats=$('progressCardioStats');if(!stats||typeof state==='undefined')return;
+  const period=$('cardioProgressPeriod')?.value||'30',cutoff=period==='all'?null:new Date(Date.now()-Number(period)*86400000);
+  const items=(Array.isArray(state.cardioSessions)?state.cardioSessions:[]).filter(x=>x&&(!cutoff||!x.date||new Date(String(x.date)+'T23:59:59')>=cutoff));
+  const total=items.reduce((sum,x)=>{const manual=x.calories!==null&&x.calories!==undefined&&x.calories!==''&&Number(x.calories)>0;const estimate=x.calorieEstimate||x.estimatedCalories;return sum+(manual?Number(x.calories):(estimate&&Number(estimate.kcal)>0?Number(estimate.kcal):0));},0);
+  const count=items.filter(x=>(Number(x.calories)>0)||Number((x.calorieEstimate||x.estimatedCalories)?.kcal)>0).length;
+  let card=$('formaCardioKcalStat');if(!card){card=document.createElement('div');card.id='formaCardioKcalStat';card.className='cardio-progress-stat';stats.appendChild(card);}
+  card.innerHTML='<span>Gasto energético</span><strong>'+fmt(total)+' kcal</strong><small>'+count+' sessão(ões) · estimado ou informado</small>';
+ }
  // Keep automatic cardio calculations visible when its progress panel is refreshed.
  const cardioRender=window.renderFormaCardioProgress;
- if(typeof cardioRender==='function')window.renderFormaCardioProgress=function(){const result=cardioRender.apply(this,arguments);refresh();return result;};
+ if(typeof cardioRender==='function')window.renderFormaCardioProgress=function(){const result=cardioRender.apply(this,arguments);refresh();renderCardioKcalStat();return result;};
  const cardioHistory=window.renderCardioHistory;
  if(typeof cardioHistory==='function')window.renderCardioHistory=function(){const result=cardioHistory.apply(this,arguments);refresh();return result;};
  // A completed strength session is persisted by the original handler; estimate it immediately after it finishes.
