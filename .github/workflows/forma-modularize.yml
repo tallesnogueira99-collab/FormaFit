@@ -31,8 +31,8 @@ jobs:
           python3 - <<'PY'
           import pathlib, re
           html = pathlib.Path("index.html").read_text()
-          scripts = re.findall(r'<script\\b[^>]*src="([^"]+)"[^>]*></script>', html, re.I)
-          styles = re.findall(r'<link\\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"', html, re.I)
+          scripts = re.findall(r'<script\b[^>]*src="([^"]+)"[^>]*></script>', html, re.I)
+          styles = re.findall(r'<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"', html, re.I)
           assert len([x for x in scripts if x.startswith("./js/")]) == 16
           assert len([x for x in styles if x.startswith("./styles/")]) == 16
           for path in scripts + styles:
