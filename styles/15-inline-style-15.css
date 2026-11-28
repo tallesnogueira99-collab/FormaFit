@@ -1,0 +1,103 @@
+/* FORMA v2 — menu, configurações, ajuda e orientação assistida */
+#toolsMenu{width:min(326px,calc(100vw - 24px));padding:10px}
+#toolsMenu .menu-item{min-height:52px;padding:9px 10px;gap:12px;border-radius:12px}
+#toolsMenu .menu-item>span:first-child{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 16%,#101827);color:var(--accent);font-size:17px}
+#toolsMenu .menu-item-copy{display:flex;min-width:0;flex-direction:column;gap:3px}
+#toolsMenu .menu-item-copy strong{font-size:13px;line-height:1.2;color:var(--text);font-weight:750}
+#toolsMenu .menu-item-copy small{font-size:10px;line-height:1.35;color:var(--muted);font-weight:500}
+#toolsMenu .menu-item:hover .menu-item-copy strong{color:var(--lime)}
+.tools-menu-divider{height:1px;background:var(--line);margin:6px 5px}
+.forma-overlay-v2{display:none;position:fixed;inset:0;z-index:13000;align-items:center;justify-content:center;padding:18px;background:rgba(3,8,16,.76);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.forma-overlay-v2.open{display:flex;animation:formaOverlayIn .16s ease}
+@keyframes formaOverlayIn{from{opacity:0}to{opacity:1}}
+.forma-dialog-v2{width:min(720px,100%);max-height:min(88dvh,900px);overflow:auto;overscroll-behavior:contain;background:#111d30;border:1px solid color-mix(in srgb,var(--accent) 28%,#31445c);border-radius:24px;box-shadow:0 28px 90px #000b;color:var(--text);padding:22px}
+.forma-dialog-v2.narrow{width:min(620px,100%)}
+.forma-dialog-v2.wide{width:min(880px,100%)}
+.forma-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.forma-dialog-head h2{margin:4px 0 5px;font-size:clamp(22px,3vw,29px);letter-spacing:-.7px}
+.forma-dialog-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.6;max-width:650px}
+.forma-dialog-kicker{font-size:10px;letter-spacing:1.5px;font-weight:850;color:var(--accent);text-transform:uppercase}
+.forma-dialog-close{width:38px;height:38px;flex:0 0 38px;border:1px solid var(--line);border-radius:12px;background:#0c1727;color:var(--text);font-size:20px;display:grid;place-items:center}
+.forma-dialog-close:hover{border-color:var(--accent);color:var(--accent)}
+.forma-settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.forma-setting-card{display:flex;align-items:center;gap:12px;min-height:84px;padding:14px;border:1px solid #2a3e56;border-radius:16px;background:linear-gradient(145deg,#17263b,#111d30);color:var(--text);text-align:left;cursor:pointer;transition:border-color .16s,transform .16s,background .16s}
+.forma-setting-card:hover{border-color:color-mix(in srgb,var(--accent) 65%,#2a3e56);background:#1b2b42;transform:translateY(-1px)}
+.forma-setting-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:13px;background:color-mix(in srgb,var(--accent) 17%,#101827);color:var(--accent);font-size:20px}
+.forma-setting-copy{display:flex;min-width:0;flex:1;flex-direction:column;gap:4px}
+.forma-setting-copy strong{font-size:13px;line-height:1.25}
+.forma-setting-copy small{font-size:10px;line-height:1.4;color:var(--muted)}
+.forma-setting-arrow{color:#8da1ba;font-size:20px}
+.forma-settings-group{margin-top:20px}
+.forma-settings-group-title{display:flex;align-items:center;gap:8px;margin:0 0 10px;color:#9db0c7;font-size:10px;letter-spacing:1.25px;font-weight:850;text-transform:uppercase}
+.forma-settings-note{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:13px 14px;border:1px solid #2d435b;border-radius:14px;background:#0d1929;color:#aebdd0;font-size:11px;line-height:1.55}
+.forma-settings-note strong{color:#eaf0f8}
+.forma-install-help{margin-top:12px;padding:14px;border:1px solid color-mix(in srgb,var(--accent) 35%,#2a3e56);border-radius:15px;background:color-mix(in srgb,var(--accent) 8%,#101a2a);font-size:12px;line-height:1.6;color:#c6d2e1}
+.forma-install-help[hidden]{display:none!important}
+.forma-install-help strong{color:#fff}
+.forma-install-help ol{padding-left:20px;margin:8px 0}
+.forma-install-help li{padding:2px 0}
+.forma-profile-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.forma-profile-edit-grid .field{min-width:0}
+.forma-profile-edit-grid input,.forma-profile-edit-grid select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #31465f;border-radius:11px;background:#0b1626;color:#f2f6fc}
+.forma-profile-edit-grid label{display:block;margin:0 0 6px;color:#bdcadb;font-size:11px;font-weight:700}
+.forma-profile-edit-foot{margin-top:14px;padding:12px 13px;border:1px solid #2c4159;border-radius:12px;background:#0d1929;color:#aebdd0;font-size:11px;line-height:1.55}
+.forma-help-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(150px,.8fr);gap:18px;align-items:center;padding:21px;border:1px solid #2b435c;border-radius:20px;background:radial-gradient(circle at 84% 15%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 37%),linear-gradient(125deg,#1b3048,#111d30 72%)}
+.forma-help-hero h3{font-size:clamp(20px,3vw,27px);line-height:1.15;letter-spacing:-.6px;margin:5px 0 8px}
+.forma-help-hero p{font-size:12px;line-height:1.6;color:#bac8d9;margin:0;max-width:430px}
+.forma-help-visual{display:flex;justify-content:center;align-items:center;min-height:130px}
+.forma-help-visual-card{width:148px;height:116px;position:relative;border:1px solid #45607a;border-radius:18px;background:linear-gradient(145deg,#233b54,#132238);box-shadow:0 15px 30px #0004;transform:rotate(4deg);padding:13px}
+.forma-help-visual-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:var(--accent);color:#101827;font-weight:950;font-size:19px}
+.forma-help-visual-line{height:6px;border-radius:8px;background:#526a84;margin-top:10px;width:80%}
+.forma-help-visual-line.short{width:51%;margin-top:7px}
+.forma-help-visual-pill{position:absolute;right:-12px;bottom:15px;border:1px solid #49627b;border-radius:12px;padding:8px 10px;background:#0b1727;color:#dce6f2;font-size:10px;box-shadow:0 8px 18px #0005}
+.forma-help-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}
+.forma-help-quick{padding:13px 10px;border:1px solid #2a3e56;border-radius:14px;background:#142238;color:var(--text);text-align:left;cursor:pointer;min-height:102px}
+.forma-help-quick:hover{border-color:var(--accent);background:#192b42}
+.forma-help-quick .quick-symbol{display:grid;place-items:center;width:30px;height:30px;margin-bottom:8px;border-radius:10px;background:color-mix(in srgb,var(--accent) 18%,#101827);color:var(--accent);font-size:16px}
+.forma-help-quick strong{display:block;font-size:11px;line-height:1.3}
+.forma-help-quick small{display:block;color:var(--muted);font-size:9px;line-height:1.35;margin-top:4px}
+.forma-help-section{margin-top:21px}
+.forma-help-section h3{font-size:14px;margin:0 0 10px}
+.forma-help-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.forma-help-step{padding:13px;border:1px solid #2a3e56;border-radius:14px;background:#0e1a2a}
+.forma-help-step-num{display:grid;place-items:center;width:26px;height:26px;border-radius:9px;background:color-mix(in srgb,var(--accent) 22%,#101827);color:var(--accent);font-weight:850;font-size:11px}
+.forma-help-step strong{display:block;font-size:11px;margin-top:9px}
+.forma-help-step p{font-size:10px;color:var(--muted);line-height:1.5;margin:5px 0 0}
+.forma-help-accordion{display:grid;gap:8px}
+.forma-help-accordion details{border:1px solid #2a3e56;border-radius:13px;background:#0e1a2a;overflow:hidden}
+.forma-help-accordion summary{padding:13px 15px;cursor:pointer;list-style:none;font-size:12px;font-weight:750;display:flex;justify-content:space-between;gap:12px}
+.forma-help-accordion summary::-webkit-details-marker{display:none}
+.forma-help-accordion summary:after{content:"＋";color:var(--accent);font-size:17px;line-height:1}
+.forma-help-accordion details[open] summary:after{content:"−"}
+.forma-help-accordion details p,.forma-help-accordion details ul{margin:0;padding:0 15px 14px;color:#aebdd0;font-size:11px;line-height:1.65}
+.forma-help-accordion details ul{padding-left:32px}
+.forma-help-accordion details li{padding:2px 0}
+.forma-help-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.forma-help-actions .btn{min-height:42px}
+.forma-tour-overlay{display:none;position:fixed;inset:0;z-index:15000;background:transparent;touch-action:pan-y}
+.forma-tour-overlay.open{display:block}
+.forma-tour-target{position:fixed;z-index:15001;border:2px solid var(--lime);border-radius:15px;box-shadow:0 0 0 9999px rgba(3,8,16,.78),0 0 0 6px color-mix(in srgb,var(--lime) 20%,transparent);pointer-events:none;transition:all .2s ease}
+.forma-tour-card{position:fixed;z-index:15002;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(490px,calc(100vw - 24px));padding:17px;border:1px solid #3a526b;border-radius:19px;background:#132238;box-shadow:0 20px 60px #000a;color:#f3f6fb}
+.forma-tour-meta{display:flex;justify-content:space-between;gap:12px;color:#9fb2c9;font-size:10px;font-weight:750;letter-spacing:.6px;text-transform:uppercase}
+.forma-tour-card h3{font-size:18px;margin:8px 0 5px}
+.forma-tour-card p{font-size:12px;line-height:1.55;color:#b8c7d9;margin:0}
+.forma-tour-progress{height:4px;border-radius:6px;background:#2a4058;overflow:hidden;margin-top:13px}
+.forma-tour-progress span{display:block;height:100%;background:var(--lime);transition:width .2s}
+.forma-tour-controls{display:flex;align-items:center;gap:8px;margin-top:13px}
+.forma-tour-controls .btn{min-height:38px}
+.forma-tour-controls .tour-spacer{flex:1}
+@media(max-width:620px){
+ .forma-overlay-v2{padding:0;align-items:flex-end}
+ .forma-dialog-v2{width:100%;max-height:92dvh;border-radius:22px 22px 0 0;padding:19px 16px calc(18px + env(safe-area-inset-bottom));}
+ .forma-settings-grid{grid-template-columns:1fr;gap:8px}
+ .forma-setting-card{min-height:70px;padding:11px}
+ .forma-help-hero{grid-template-columns:1fr;padding:18px}
+ .forma-help-visual{display:none}
+ .forma-help-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .forma-help-steps{grid-template-columns:1fr}
+ .forma-profile-edit-grid{grid-template-columns:1fr}
+ .forma-tour-card{bottom:max(8px,env(safe-area-inset-bottom));padding:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .forma-overlay-v2,.forma-setting-card,.forma-tour-target{animation:none!important;transition:none!important}
+}

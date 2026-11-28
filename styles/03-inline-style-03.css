@@ -1,0 +1,143 @@
+/* FORMA v71 — reconstrução da experiência Plano de treino / Sessão */
+#treino{--workout-border:#2b3d53;--workout-surface:#111c2d;--workout-surface-2:#0c1625}
+#treino .plan-intro{position:relative;isolation:isolate;min-height:190px;padding:clamp(23px,4vw,36px);border:1px solid #3a4d64;border-radius:26px;background:radial-gradient(ellipse at 88% 12%,color-mix(in srgb, var(--accent) 13%, transparent) 0,transparent 34%),linear-gradient(125deg,#1b3045 0%,#121e30 68%,#241b2b 100%);box-shadow:0 18px 48px #0002}
+#treino .plan-intro:after{content:"";position:absolute;z-index:-1;width:200px;height:200px;right:-62px;bottom:-100px;border:1px solid color-mix(in srgb, var(--accent) 13%, transparent);border-radius:50%;box-shadow:0 0 0 24px color-mix(in srgb, var(--accent) 3%, transparent),0 0 0 48px color-mix(in srgb, var(--accent) 2%, transparent);pointer-events:none}
+#treino .plan-intro h2{font-size:clamp(29px,4vw,39px);letter-spacing:-1.4px}
+#treino .plan-intro p{max-width:560px;line-height:1.7}
+#treino .plan-start{min-height:54px;min-width:190px;padding:14px 20px;border-radius:15px;font-size:14px;box-shadow:0 10px 25px color-mix(in srgb, var(--accent) 13%, transparent);white-space:normal}
+#treino .plan-cardio{border-radius:18px;border-color:var(--workout-border);background:linear-gradient(140deg,#142438,#101a29);padding:17px 19px;gap:15px}
+#treino .cardio-promo-icon{width:44px;height:44px;border-radius:14px;background:color-mix(in srgb, var(--accent) 22%, #111827);color:var(--accent);display:grid;place-items:center;font-size:22px}
+#treino .plan-section-label{margin:25px 0 12px;align-items:end}
+#treino .plan-section-label h3{font-size:18px;letter-spacing:-.45px}
+#treino .plan-section-label p{font-size:12px;line-height:1.5}
+#treino .week{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+#treino .day-select{position:relative;min-height:93px;padding:14px 13px;border-radius:16px;border-color:#2a3b50;background:linear-gradient(145deg,#142137,#101a29);transition:transform .15s,border-color .15s,background .15s;scroll-snap-align:start}
+#treino .day-select:hover{transform:translateY(-1px);border-color:#53657a}
+#treino .day-select.active{border-color:var(--lime);background:linear-gradient(145deg,color-mix(in srgb, var(--accent) 22%, #111827),#172236);box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent) 13%, transparent),0 8px 22px #0001}
+#treino .day-select .dayname{font-size:11px;letter-spacing:.7px;text-transform:uppercase;font-weight:800;margin-bottom:8px}
+#treino .day-select strong{font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+#treino .day-select .day-state{display:block;margin-top:9px;font-size:10px;color:#a9b8ca}
+#treino .day-select.done .day-state{color:#a9efc2}
+#treino .day-select.done:after{display:none}
+#treino .plan-workout-layout{display:block}
+#treino .plan-exercise-card{border-radius:22px;border-color:#2b3d53;background:linear-gradient(150deg,#142137,#101a29);padding:clamp(16px,3vw,27px)}
+#treino .plan-workout-heading{padding-bottom:18px}
+#treino .plan-workout-heading h3{font-size:clamp(22px,3vw,29px);letter-spacing:-.8px;margin:7px 0}
+#treino .workout-dynamic-note{font-size:11px;line-height:1.5;color:#8fa3bb;margin:8px 0 0}
+#treino .plan-edit-hint{border-radius:13px;padding:12px 14px;font-size:12px;line-height:1.55;background:#0d1929;border-color:#2a3b50}
+#treino .plan-list-heading{margin:21px 0 8px;gap:12px}
+#treino .plan-list-heading h4{font-size:16px}
+#treino .plan-default-trigger{min-height:40px;border-radius:12px;padding:9px 12px;background:#192a40;border:1px solid #354a62;color:#dce6f3}
+#treino .exercise-swipe-shell{margin:10px 0;border:1px solid #293b50;border-radius:16px;background:#101a29;box-shadow:0 5px 18px #00012}
+#treino .exercise-swipe-shell .exercise{padding:17px 15px;border:0;border-radius:16px;background:linear-gradient(135deg,#142238,#111b2b)}
+#treino .exercise-swipe-shell .exercise:first-of-type{border-top:0}
+#treino .ex-top{gap:15px}
+#treino .ex-name{font-size:14px;line-height:1.45;font-weight:800}
+#treino .muscle-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+#treino .muscle-tag{display:inline-flex;max-width:100%;padding:4px 7px;border:1px solid #30465c;border-radius:8px;background:#0e1928;color:#bdcde0;font-size:10px;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+#treino .muscle-focus-tag{color:color-mix(in srgb, var(--accent) 58%, white);border-color:color-mix(in srgb, var(--accent) 24%, #101827);background:#2b1c29}
+#treino .ex-meta{font-size:12px;line-height:1.6;margin-top:9px;color:#bdc9d9}
+#treino .saved-sets{display:inline-flex;margin-top:10px;padding:5px 8px;border-radius:8px;background:#0d1927;border:1px solid #263a50;color:#aabbd0;font-size:10px;line-height:1.45}
+#treino .exercise-card-actions{flex-direction:column;align-items:stretch;gap:7px}
+#treino .exercise-order-actions{justify-content:flex-end}
+#treino .exercise-order-btn{width:34px;height:34px;border-radius:10px}
+#treino .edit-btn{min-height:38px;padding:8px 10px;font-size:11px;border-radius:10px}
+#treino .plan-add-btn{width:100%;min-height:52px;margin-top:12px!important;border:1px dashed #53657a;border-radius:14px;background:#132238;color:#e7eef8;font-size:13px}
+#treino .add-exercise-panel,#treino .workout-defaults-panel{border-radius:17px;border-color:#354960;background:#0d1726;padding:16px}
+#treino .add-exercise-grid input,#treino .add-exercise-grid select{min-height:46px;font-size:14px;border-radius:11px}
+#treino .add-exercise-actions button,#treino .workout-defaults-actions button{min-height:46px;border-radius:12px}
+#treino .exercise-editor{margin-top:14px;border-radius:15px}
+#treino .exercise-editor-actions .btn{min-height:46px}
+/* Active session: the exercise list becomes a horizontal stepper; the set form is the visual focus. */
+.session-mode .app{max-width:1120px;padding:12px 18px 34px}
+.session-mode .session-header{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;margin:0 0 14px;padding:12px 0;background:#0b1220ed;border-bottom:1px solid #263750;backdrop-filter:blur(16px)}
+.session-mode .session-heading h2{font-size:clamp(20px,3vw,27px);letter-spacing:-.8px;margin:3px 0}
+.session-mode .session-heading p{font-size:11px;line-height:1.5;margin:0;color:#a9b9cd}
+.session-mode .session-back{border-radius:12px;border:1px solid #304159;background:#142137;color:#dce6f3;min-height:44px;padding:10px 13px}
+.session-mode #sessionFinish{min-height:44px;border-radius:12px}
+.session-mode .session-progress{height:7px;border-radius:99px;overflow:hidden;background:#202e42;margin:0 0 18px}
+.session-mode #sessionProgressFill{border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent));transition:width .2s}
+.session-mode .session-workspace{grid-template-columns:minmax(0,1fr);gap:13px}
+.session-mode .session-exercise-nav{position:static;padding:12px;border-radius:17px;background:#101b2b;border-color:#2b3d53}
+.session-mode .session-exercise-nav h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#a9b9cd;margin:0 0 9px}
+.session-mode .session-nav-list{display:flex;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden;padding:1px 1px 5px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.session-mode .session-nav-item{flex:0 0 205px;min-width:0;min-height:70px;padding:10px;border-radius:13px;scroll-snap-align:start;grid-template-columns:28px minmax(0,1fr);background:#0d1726}
+.session-mode .session-nav-item.active{background:color-mix(in srgb, var(--accent) 22%, #111827);border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--accent) 11%, transparent)}
+.session-mode .session-nav-num{width:27px;height:27px;border-radius:9px}
+.session-mode .session-nav-name{font-size:11px;line-height:1.4}
+.session-mode .session-nav-focus{font-size:10px;line-height:1.35}
+.session-mode .session-main{gap:13px}
+.session-mode .session-exercise-card{padding:clamp(16px,3vw,26px);border-radius:22px;border-color:#2b3d53;background:linear-gradient(145deg,#15243a,#101a29)}
+.session-mode .session-exercise-title{font-size:clamp(25px,4vw,34px);line-height:1.15;letter-spacing:-1px;margin:7px 0}
+.session-mode .session-exercise-meta{font-size:12px;line-height:1.6;margin-bottom:18px}
+.session-mode .session-exercise-focus{display:inline-block;padding:6px 9px;border-radius:9px;border:1px solid color-mix(in srgb, var(--accent) 22%, #111827);background:#2b1c29;font-size:11px;line-height:1.5}
+.session-mode .set-stepper{display:flex;gap:8px;overflow-x:auto;padding:3px 1px 8px;scrollbar-width:thin}
+.session-mode .set-step-btn{flex:0 0 42px;height:42px;border-radius:13px;font-size:13px}
+.session-mode .current-set-card{padding:clamp(14px,3vw,21px);border-radius:19px;background:#0c1726;border-color:#33475e}
+.session-mode .current-set-top{align-items:center;gap:10px;flex-wrap:wrap}
+.session-mode .current-set-badge{border-radius:9px;padding:7px 10px;font-size:10px;letter-spacing:.6px}
+.session-mode .current-set-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:17px}
+.session-mode .current-set-fields .field{min-width:0}
+.session-mode .current-set-fields label{font-size:12px;margin-bottom:7px}
+.session-mode .current-set-fields input{width:100%;min-width:0;min-height:62px;padding:14px;border-radius:14px;font-size:24px;font-weight:850;border-color:#3a4e66;background:#101e30;color:#f5f7fb}
+.session-mode .current-set-rest{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid #263950}
+.session-mode .current-set-rest input{width:100px;min-height:43px;border-radius:11px;background:#101e30;border:1px solid #344960;color:var(--text);padding:9px 12px;font-size:16px}
+.session-mode .current-set-actions{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:9px;margin-top:15px}
+.session-mode .current-set-actions .btn{min-height:51px;border-radius:13px;font-size:12px;line-height:1.4;padding:11px}
+.session-mode .set-nav-controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+.session-mode .set-nav-controls .btn{min-height:44px;border-radius:12px}
+.session-mode .session-tools{margin-top:13px}
+.session-mode .session-tools .btn{min-height:44px;border-radius:12px}
+.session-mode .session-notes{margin-top:17px;padding-top:15px}
+.session-mode .rest-timer-card{border-radius:19px;border-color:color-mix(in srgb, var(--accent) 22%, #111827);background:radial-gradient(ellipse at 100% 0%,color-mix(in srgb, var(--accent) 7%, transparent),transparent 42%),linear-gradient(145deg,#211b2b,#111b2c);padding:clamp(15px,3vw,22px)}
+.session-mode .rest-timer-display{font-size:clamp(39px,7vw,58px);letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.session-mode .rest-timer-controls .btn{min-height:43px;border-radius:11px}
+.session-mode .timer-customize{margin-top:14px;padding-top:13px;border-top:1px solid #3a2a39}
+.session-mode .timer-custom-row input{min-height:44px;border-radius:11px;background:#101a29;border-color:#493548;color:var(--text)}
+.session-mode .session-bottom-nav{position:sticky;bottom:8px;z-index:15;padding:8px;border-radius:16px;background:#0b1220ed;border-color:#304159;backdrop-filter:blur(15px);box-shadow:0 12px 32px #0005}
+.session-mode .session-bottom-nav .btn{min-height:50px;border-radius:12px}
+.session-mode :is(button,input,select,textarea):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(max-width:760px){
+ #treino .plan-intro{align-items:stretch;gap:17px;padding:22px;border-radius:21px}
+ #treino .plan-start{width:100%;min-height:54px}
+ #treino .plan-cardio{grid-template-columns:42px minmax(0,1fr);padding:14px}
+ #treino .plan-cardio>.btn{grid-column:1/-1;width:100%;min-height:46px}
+ #treino .week{grid-template-columns:repeat(5,minmax(115px,1fr));overflow-x:auto;padding:2px 2px 10px;margin-right:-12px;padding-right:12px;scroll-snap-type:x proximity}
+ #treino .day-select{min-height:99px;padding:12px;border-radius:14px}
+ #treino .plan-exercise-card{padding:15px 12px;border-radius:19px}
+ #treino .plan-edit-hint{font-size:11px}
+ #treino .exercise-swipe-shell .exercise{padding:15px 11px}
+ #treino .ex-top{gap:8px}
+ #treino .exercise-card-actions{gap:5px}
+ #treino .exercise-order-btn{width:31px;min-width:31px;height:32px}
+ #treino .edit-btn{padding:7px 8px;font-size:10px}
+ #treino .exercise-editor-grid{grid-template-columns:1fr 1fr}
+ #treino .exercise-editor-grid .editor-name{grid-column:1/-1}
+ #treino .add-exercise-grid{grid-template-columns:1fr 1fr}
+ .session-mode .app{padding:7px 10px calc(22px + env(safe-area-inset-bottom))}
+ .session-mode .session-header{grid-template-columns:auto minmax(0,1fr);gap:8px;padding:7px 0 11px}
+ .session-mode .session-header #sessionFinish{grid-column:1/-1;width:100%;min-height:44px}
+ .session-mode .session-back{min-height:42px;padding:8px 10px;font-size:12px}
+ .session-mode .session-nav-item{flex-basis:175px;min-height:67px}
+ .session-mode .session-exercise-card{padding:16px 13px;border-radius:19px}
+ .session-mode .current-set-fields{gap:9px}
+ .session-mode .current-set-fields input{min-height:58px;padding:11px;font-size:22px}
+ .session-mode .current-set-actions{grid-template-columns:1fr}
+ .session-mode .current-set-actions .btn{min-height:48px}
+ .session-mode .session-notes{grid-template-columns:1fr}
+ .session-mode .rest-timer-main{align-items:flex-start}
+ .session-mode .rest-timer-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+ .session-mode .rest-timer-controls .btn{padding:10px 6px;font-size:11px}
+ .session-mode .timer-custom-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+ .session-mode .timer-custom-row .btn{padding:10px;font-size:11px}
+ .session-mode .session-bottom-nav{bottom:calc(5px + env(safe-area-inset-bottom))}
+}
+@media(max-width:390px){
+ #treino .ex-top{display:block}
+ #treino .exercise-card-actions{flex-direction:row;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid #263750}
+ #treino .exercise-order-actions{justify-content:flex-start}
+ #treino .edit-btn{min-width:90px}
+ .session-mode .session-nav-item{flex-basis:155px}
+ .session-mode .current-set-fields{grid-template-columns:1fr}
+ .session-mode .current-set-fields input{min-height:54px}
+}

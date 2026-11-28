@@ -1,0 +1,96 @@
+#configuracoes{max-width:1120px;margin-inline:auto}
+#configuracoes>.settings-back{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:9px 13px;border:1px solid var(--line);border-radius:12px;color:var(--muted);background:color-mix(in srgb,var(--surface) 82%,transparent);font-size:12px;font-weight:750}
+#configuracoes .settings-hero{position:relative;align-items:center;gap:17px;margin-bottom:18px;padding:clamp(20px,4vw,30px);border-radius:24px;border-color:color-mix(in srgb,var(--accent) 25%,var(--line));background:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 45%),linear-gradient(135deg,color-mix(in srgb,var(--accent) 7%,#142137),#101a2a 72%);box-shadow:0 14px 38px #00000012}
+#configuracoes .settings-hero-icon{width:54px;height:54px;flex-basis:54px;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line));border-radius:17px}
+#configuracoes .settings-hero h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.8px}
+#configuracoes .settings-hero p{max-width:640px;font-size:13px;line-height:1.65}
+.central-files-shell{min-width:0}
+.central-files-home{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.central-home-card{display:flex;align-items:center;gap:14px;min-width:0;min-height:106px;padding:19px;text-align:left;border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 92%,#18263a),color-mix(in srgb,var(--surface) 98%,#0b1422));color:var(--text);cursor:pointer;box-shadow:0 7px 22px #00000010;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.central-home-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 58%,var(--line));box-shadow:0 12px 27px #00000020}
+.central-home-card:focus-visible,.central-route-back:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.central-home-icon{display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;border-radius:15px;background:color-mix(in srgb,var(--accent) 14%,#111c2b);border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));color:var(--accent);font-size:23px;font-weight:800}
+.central-home-copy{display:block;flex:1;min-width:0}
+.central-home-copy strong{display:block;font-size:15px;line-height:1.35;letter-spacing:-.15px}
+.central-home-copy small{display:block;margin-top:5px;color:var(--muted);font-size:11px;line-height:1.5}
+.central-home-arrow{font-size:25px;color:var(--muted);line-height:1}
+.central-files-route{min-width:0;animation:centralRouteIn .18s ease-out}
+.central-files-route[hidden],.central-files-home[hidden]{display:none!important}
+.central-route-heading{display:flex;align-items:flex-start;gap:14px;margin:2px 0 17px;padding:0 2px}
+.central-route-back{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;min-height:36px;padding:8px 11px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--muted);font-size:11px;font-weight:750;cursor:pointer}
+.central-route-back span{font-size:17px;line-height:1}
+.central-route-title-copy{min-width:0;padding-top:2px}
+.central-route-title-copy h3{margin:0 0 5px;font-size:clamp(19px,3vw,24px);letter-spacing:-.45px}
+.central-route-title-copy p{margin:0;color:var(--muted);font-size:12px;line-height:1.55;max-width:660px}
+.central-route-body{display:grid;grid-template-columns:minmax(0,1fr);gap:13px;min-width:0}
+.central-category-list{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.central-category-card{display:flex;align-items:center;gap:13px;min-width:0;width:100%;padding:14px 15px;text-align:left;border:1px solid var(--line);border-radius:15px;background:color-mix(in srgb,var(--surface) 96%,#17263a);color:var(--text);cursor:pointer;transition:border-color .15s ease,background .15s ease,transform .15s ease}
+.central-category-card:hover{border-color:color-mix(in srgb,var(--accent) 58%,var(--line));background:color-mix(in srgb,var(--accent) 4%,var(--surface));transform:translateY(-1px)}
+.central-category-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.central-category-icon{display:grid;place-items:center;width:39px;height:39px;flex:0 0 39px;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,#111c2b);color:var(--accent);font-size:19px;font-weight:800}
+.central-category-copy{flex:1;min-width:0}
+.central-category-copy strong{display:block;font-size:13px;line-height:1.4}
+.central-category-copy small{display:block;margin-top:3px;color:var(--muted);font-size:11px;line-height:1.5}
+.central-category-arrow{color:var(--muted);font-size:24px;line-height:1}
+.central-category-detail[hidden]{display:none!important}
+.central-category-detail-head{display:flex;align-items:center;gap:13px;margin:0 0 13px}
+.central-category-detail-head h4{margin:0;font-size:17px;line-height:1.35}
+.central-category-detail-content{min-width:0}
+.central-category-detail-content>.central-content-card:first-child{margin-top:0}
+.central-content-card{min-width:0;padding:clamp(15px,2.8vw,21px);border:1px solid var(--line);border-radius:18px;background:linear-gradient(150deg,color-mix(in srgb,var(--surface) 98%,#17263a),var(--surface));box-shadow:0 8px 25px #0000000d}
+.central-content-card-head{margin-bottom:14px}
+.central-content-card-head h4{margin:0 0 5px;font-size:15px;line-height:1.4}
+.central-content-card-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.55;max-width:760px}
+.central-content-card-body{display:grid;gap:10px;min-width:0}
+.central-content-card .settings-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.central-content-card .settings-action{min-height:68px;padding:12px;border-radius:13px}
+.central-content-card .settings-action-copy strong{font-size:12px}
+.central-content-card .settings-action-copy small{font-size:10px}
+.central-content-card .settings-format-row{margin:0 0 2px}
+.central-content-card .settings-status{margin:0}
+.central-content-card .settings-preview{margin-top:2px}
+.central-existing-action{width:100%;min-height:44px;justify-content:flex-start;text-align:left}
+.central-content-card .central-existing-action.btn{display:flex;align-items:center;justify-content:flex-start;gap:9px;min-height:44px;width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface) 82%,#0c1727);color:var(--text);font-size:12px;font-weight:750;white-space:normal}
+.central-content-card .central-existing-action.btn:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.central-content-card .central-existing-action.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.central-button-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.central-format-meta{display:block;margin-top:7px;font-size:10px;color:var(--muted);line-height:1.5}
+.central-full-button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;width:100%}
+.central-note{margin-top:2px;font-size:11px}
+.central-status-host{margin-top:12px}
+#configuracoes .workout-import-card{margin:0;padding:clamp(15px,2.8vw,21px);border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 5%,#142137),#101a29);box-shadow:none}
+#configuracoes .workout-import-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+#configuracoes .workout-import-head h3{margin:4px 0;font-size:15px}
+#configuracoes .workout-import-head p{margin:0;max-width:680px;font-size:12px;line-height:1.6;color:var(--muted)}
+#configuracoes .workout-import-head>.btn{flex-shrink:0}
+#configuracoes .workout-import-current{font-size:11px;color:var(--muted);margin-top:8px}
+#configuracoes .workout-import-preview-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#configuracoes .workout-import-preview-actions .btn{flex:1;min-width:180px}
+#configuracoes .nutrition-import-card{margin:0;padding:clamp(15px,2.8vw,21px);border-radius:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 5%,#142137),#101a29);box-shadow:none}
+#configuracoes .nutrition-import-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+#configuracoes .nutrition-import-head h3{margin:4px 0;font-size:15px}
+#configuracoes .nutrition-import-head p{margin:0;max-width:680px;font-size:12px;line-height:1.6;color:var(--muted)}
+#configuracoes .nutrition-import-current{font-size:11px;color:var(--muted);margin-top:8px}
+#configuracoes .nutrition-import-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#configuracoes .nutrition-import-status{white-space:pre-line}
+#configuracoes .settings-privacy-note{margin-top:4px}
+@keyframes centralRouteIn{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:680px){
+ #configuracoes .settings-hero{align-items:flex-start;padding:19px;border-radius:19px}
+ #configuracoes .settings-hero-icon{width:45px;height:45px;flex-basis:45px;border-radius:14px}
+ .central-files-home{grid-template-columns:1fr;gap:10px}
+ .central-home-card{min-height:84px;padding:14px;border-radius:16px;gap:12px}
+ .central-home-icon{width:42px;height:42px;flex-basis:42px;border-radius:13px}
+ .central-home-copy strong{font-size:14px}
+ .central-route-heading{flex-direction:column;gap:10px;margin-bottom:13px}
+ .central-route-back{min-height:34px}
+ .central-content-card .settings-action-grid,.central-button-stack{grid-template-columns:1fr}
+ #configuracoes .workout-import-head,#configuracoes .nutrition-import-head{flex-direction:column;align-items:stretch}
+ #configuracoes .workout-import-head>.btn,#configuracoes .nutrition-import-head>.btn{width:100%}
+ #configuracoes .workout-import-preview-actions{flex-direction:column}
+ #configuracoes .workout-import-preview-actions .btn{width:100%;min-width:0}
+ #configuracoes .nutrition-import-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #configuracoes .nutrition-import-preview-actions{flex-direction:column}
+ #configuracoes .nutrition-import-preview-actions .btn{width:100%;min-width:0}
+}
+@media(prefers-reduced-motion:reduce){.central-files-route,.central-home-card{animation:none;transition:none}}

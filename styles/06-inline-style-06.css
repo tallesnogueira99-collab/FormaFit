@@ -1,0 +1,21 @@
+/* FORMA v95 — bibliotecas por modalidade e configurador cardiovascular compacto */
+.library-modality-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0 18px}
+.library-modality-btn{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--surface);color:var(--text);cursor:pointer;min-width:0}
+.library-modality-btn>span:first-child{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:var(--surface-2,var(--line));font-size:22px}
+.library-modality-btn strong,.library-modality-btn small{display:block}.library-modality-btn strong{font-size:14px}.library-modality-btn small{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}.library-modality-btn.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--surface)}
+.library-modality-section[hidden]{display:none!important}.library-modality-section>.cardio-library{margin-top:0}
+.cardio-workspace-head-compact{margin-bottom:12px}.cardio-builder-grid-compact-main{gap:12px}.cardio-builder-grid-compact-main .field{min-width:0}
+#cardioWorkspace{padding:clamp(14px,2.5vw,22px)}#cardioWorkspace .cardio-builder-actions{display:flex;flex-wrap:wrap;gap:9px}#cardioWorkspace .cardio-builder-actions .btn{flex:1 1 150px}
+@media(max-width:560px){.library-modality-tabs{gap:8px}.library-modality-btn{padding:11px 9px;gap:8px;border-radius:13px}.library-modality-btn>span:first-child{width:34px;height:34px;flex-basis:34px}.library-modality-btn small{font-size:10px}.cardio-workspace-head-compact h3{font-size:20px}}
+
+/* Configurador: atalhos visíveis, sem blocos grandes ou rolagem desnecessária. */
+.cardio-quick-start{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 8px;margin:0 0 14px;scrollbar-width:thin}
+.cardio-quick-start button{display:flex;align-items:center;gap:7px;flex:0 0 auto;min-height:39px;padding:8px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2,var(--surface));color:var(--text);font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.cardio-quick-start button>span{font-size:15px;color:var(--accent)}
+.cardio-quick-start button.active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent)}
+.cardio-builder-grid-compact-main{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#cardioWorkspace .cardio-builder-grid-compact-main .field:first-child{grid-column:1/-1}
+#cardioWorkspace .cardio-builder-grid-compact-main label{font-size:12px}
+#cardioWorkspace .cardio-plan-preview{margin-top:14px}
+#cardioWorkspace .cardio-builder-actions{margin-top:12px}
+@media(max-width:480px){.cardio-builder-grid-compact-main{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cardio-builder-grid-compact-main .field input,.cardio-builder-grid-compact-main .field select{font-size:14px;min-width:0}.cardio-quick-start{margin-bottom:11px}.cardio-quick-start button{padding:8px 10px}}
