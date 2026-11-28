@@ -1,0 +1,4 @@
+/* Subáreas abertas a partir das configurações devem ficar acima da janela principal. */
+#customModal,#profilesModal,#syncModal{z-index:13110!important}
+#configuracoes.settings-view.active{z-index:13100!important}
+#configuracoes .forma-files-modal{z-index:13120!important}

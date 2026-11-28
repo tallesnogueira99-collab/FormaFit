@@ -1,0 +1,12 @@
+/* FORMA v95 — tela exclusiva para execução do treino cardiovascular */
+.cardio-session-overlay[hidden]{display:none!important}
+.cardio-session-overlay{position:fixed;inset:0;z-index:10000;display:block;overflow-y:auto;overscroll-behavior:contain;background:var(--bg,#0b1220);color:var(--text,#eef3fa);padding:clamp(12px,3vw,30px);box-sizing:border-box}
+.cardio-session-overlay-inner{width:min(100%,820px);min-height:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:center}
+.cardio-session-overlay .cardio-live-view{display:block!important;width:100%;box-sizing:border-box;padding:clamp(16px,3vw,28px);border:1px solid var(--line);border-radius:22px;background:var(--surface,#111c2b);box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.cardio-session-overlay .cardio-live-top{align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.cardio-session-header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.cardio-session-header-actions .btn{white-space:nowrap;min-height:40px}
+.cardio-session-overlay .cardio-live-clock{padding:clamp(24px,5vw,42px) 12px;margin-top:16px}
+.cardio-session-overlay .cardio-live-clock strong{font-size:clamp(58px,13vw,94px)}
+.cardio-session-mode{overflow:hidden}
+@media(max-width:600px){.cardio-session-overlay{padding:10px}.cardio-session-overlay-inner{justify-content:flex-start;padding:8px 0}.cardio-session-overlay .cardio-live-view{padding:15px;border-radius:17px}.cardio-session-overlay .cardio-live-top{align-items:stretch;flex-direction:column;gap:10px}.cardio-session-header-actions{width:100%}.cardio-session-header-actions .btn{width:100%}.cardio-session-overlay .cardio-live-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}

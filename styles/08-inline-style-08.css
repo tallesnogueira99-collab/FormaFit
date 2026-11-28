@@ -1,0 +1,16 @@
+/* FORMA v112 — cabeçalhos mais leves em Progresso e Biblioteca */
+#progresso > .section-head, #biblioteca > .section-head{margin-bottom:12px}
+#progresso .progress-switch{display:flex;gap:5px;align-items:center;padding:4px;margin:0 0 14px;border-radius:13px;background:var(--panel,var(--surface));border:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+#progresso .progress-switch::-webkit-scrollbar{display:none}
+#progresso .progress-switch-btn{flex:1 0 auto;min-width:0;min-height:39px;padding:8px 12px;border-radius:10px;font-size:12px;gap:7px;white-space:nowrap}
+#progresso .progress-switch-btn.active{background:color-mix(in srgb,var(--accent) 13%,var(--panel));color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent)}
+#progresso .progress-tab-icon{width:17px;height:17px;flex-basis:17px}
+#biblioteca .library-modality-tabs{display:flex;gap:5px;padding:4px;margin:0 0 14px;border:1px solid var(--line);border-radius:13px;background:var(--panel,var(--surface))}
+#biblioteca .library-modality-btn{flex:1 1 0;min-width:0;justify-content:center;gap:8px;padding:9px 12px;border:0;border-radius:10px;background:transparent;box-shadow:none;text-align:center}
+#biblioteca .library-modality-btn>span:first-child{width:25px;height:25px;flex:0 0 25px;border-radius:7px;background:transparent;color:var(--muted)}
+#biblioteca .library-modality-icon svg{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#biblioteca .library-modality-btn strong{font-size:12px}
+#biblioteca .library-modality-btn small{display:none}
+#biblioteca .library-modality-btn.active{background:color-mix(in srgb,var(--accent) 13%,var(--panel));color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent)}
+#biblioteca .library-modality-btn.active>span:first-child{color:var(--accent)}
+@media(max-width:480px){#progresso .progress-switch-btn{padding-inline:9px;font-size:11px}#progresso .progress-switch-btn .progress-tab-icon{width:16px;height:16px;flex-basis:16px}#biblioteca .library-modality-btn{gap:5px;padding:9px 7px}#biblioteca .library-modality-btn strong{font-size:11px}}

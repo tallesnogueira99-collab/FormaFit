@@ -1,0 +1,244 @@
+/* FORMA v108 — alimentação simplificada */
+#nutritionPlanPanel[hidden],#nutritionImportCard[hidden],#nutritionSchedulePanel[hidden]{display:none!important}
+
+#foodGoalCalculateMount .nutrition-form-step{min-width:0;margin:0;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+#foodGoalCalculateMount .nutrition-form-step legend{padding:0 7px;font-weight:800;font-size:13px;color:var(--text)}
+#foodGoalCalculateMount .nutrition-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#foodGoalCalculateMount .nutrition-form-grid .field{min-width:0;margin:0}
+#foodGoalCalculateMount .nutrition-form-grid input,#foodGoalCalculateMount .nutrition-form-grid select,#foodGoalCalculateMount .nutrition-form-grid textarea{width:100%;min-width:0;box-sizing:border-box}
+#foodGoalCalculateMount .nutrition-form-step-group[hidden],#foodGoalCalculateMount .nutrition-step-controls[hidden]{display:none!important}
+#foodGoalCalculateMount .nutrition-form-step-group{display:grid;gap:10px}
+#foodGoalCalculateMount .nutrition-optional-fields{padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel,var(--bg))}
+#foodGoalCalculateMount .nutrition-optional-fields summary{font-size:12px;font-weight:750;cursor:pointer}
+#foodGoalCalculateMount .nutrition-optional-fields .nutrition-form-grid{margin-top:10px}
+#foodGoalCalculateMount .nutrition-step-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+#foodGoalCalculateMount .nutrition-step-progress{font-size:12px;color:var(--muted);font-weight:700;text-align:center;flex:1}
+#foodGoalCalculateMount .nutrition-plan-result{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+#foodGoalCalculateMount .nutrition-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
+#foodGoalCalculateMount .nutrition-result-energy{grid-template-columns:repeat(2,minmax(0,1fr))}
+#foodGoalCalculateMount .nutrition-result-macros{grid-template-columns:repeat(3,minmax(0,1fr))}
+#foodGoalCalculateMount .nutrition-result-stat{padding:11px;border-radius:11px;background:var(--panel,var(--bg));min-width:0}
+#foodGoalCalculateMount .nutrition-result-stat span{display:block;font-size:11px;color:var(--muted)}
+#foodGoalCalculateMount .nutrition-result-stat strong{display:block;font-size:clamp(17px,3vw,23px);margin-top:3px;overflow-wrap:anywhere}
+#foodGoalCalculateMount .nutrition-manual-adjust{margin:12px 0;padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--panel,var(--bg))}
+#foodGoalCalculateMount .nutrition-manual-adjust summary{font-weight:750;cursor:pointer}
+#foodGoalCalculateMount .nutrition-manual-adjust .nutrition-form-grid{margin:12px 0}
+#foodGoalCalculateMount .nutrition-form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#foodGoalCalculateMount .nutrition-energy-highlight{padding:16px;border-radius:15px;background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));margin:12px 0}
+#foodGoalCalculateMount .nutrition-energy-highlight>span{display:block;font-size:12px;color:var(--muted)}
+#foodGoalCalculateMount .nutrition-energy-highlight>strong{display:block;font-size:clamp(27px,5vw,36px);line-height:1.15;margin:4px 0}
+#foodGoalCalculateMount .nutrition-energy-highlight p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+#foodGoalCalculateMount .nutrition-calculation-details{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:12px;line-height:1.55}
+#foodGoalCalculateMount .nutrition-calculation-details summary{font-weight:750;cursor:pointer}
+#foodGoalCalculateMount .nutrition-calculation-details p{color:var(--muted);margin:8px 0 0}
+@media(max-width:600px){#foodGoalCalculateMount .nutrition-form-grid{grid-template-columns:1fr}#foodGoalCalculateMount .nutrition-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.food-goal-modal .custom-box{width:min(940px,100%);max-width:940px;max-height:92vh;padding:clamp(15px,3vw,26px);overflow:auto}
+.food-goals-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.food-goals-modal-head .eyebrow{font-size:10px;letter-spacing:1px;color:var(--accent);font-weight:850}
+.food-goals-modal-head h2{font-size:23px;margin:3px 0 5px}
+.food-goals-modal-head .sub{margin:0;max-width:680px}
+.food-goals-divider{height:1px;background:var(--line);margin:20px 0}
+.food-goal-manual{margin-top:16px;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+.food-goal-manual summary{font-weight:750;font-size:13px;cursor:pointer}
+.food-goal-manual .custom-grid{margin-top:12px}
+.food-goal-manual .custom-actions{margin-top:12px}
+#foodGoalCalculateMount{min-width:0}
+#foodGoalCalculateMount .nutrition-builder-panel{display:grid!important;margin:0;gap:13px}
+#foodGoalCalculateMount #nutritionImportCard{margin-top:14px}
+#dieta .nutrition-builder-intro{padding:0;border:0;background:none}
+#dieta .nutrition-builder-intro h3{font-size:18px}
+#dieta .nutrition-form-step-group[hidden]{display:none!important}
+#dieta .nutrition-form-step-group{display:grid;gap:10px}
+#dieta .nutrition-step-heading{display:flex;flex-direction:column;gap:3px;padding:11px 13px;border-left:3px solid var(--accent);border-radius:9px;background:var(--panel,var(--bg));font-size:12px;font-weight:800}
+#dieta .nutrition-step-heading:after{content:'';display:block}
+#dieta .nutrition-form-step{padding:12px;border-radius:13px}
+#dieta .nutrition-form-step legend{font-size:13px}
+#dieta .nutrition-form-grid{gap:10px}
+#dieta .nutrition-form-actions{margin-top:10px}
+#dieta .nutrition-result-heading h3{margin:2px 0;font-size:18px}
+#dieta .nutrition-result-heading .eyebrow{font-size:10px;letter-spacing:1px;color:var(--accent);font-weight:850}
+#dieta .nutrition-energy-highlight{padding:16px;border-radius:15px;background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));margin:12px 0}
+#dieta .nutrition-energy-highlight>span{display:block;font-size:12px;color:var(--muted)}
+#dieta .nutrition-energy-highlight>strong{display:block;font-size:clamp(27px,5vw,36px);line-height:1.15;margin:4px 0}
+#dieta .nutrition-energy-highlight small,#dieta .nutrition-result-stat small{font-size:12px;font-weight:650;color:var(--muted)}
+#dieta .nutrition-energy-highlight p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+#dieta .nutrition-result-energy{grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 14px}
+#dieta .nutrition-result-macros{grid-template-columns:repeat(3,minmax(0,1fr));margin:8px 0 14px}
+#dieta .nutrition-calculation-details{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:12px;line-height:1.55}
+#dieta .nutrition-calculation-details summary{font-weight:750;cursor:pointer}
+#dieta .nutrition-calculation-details p{color:var(--muted);margin:8px 0 0}
+#dieta .nutrition-schedule-meal{padding:13px}
+#dieta .nutrition-meal-options{margin-top:13px}
+#dieta .nutrition-meal-options-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+#dieta .nutrition-meal-options-head strong{font-size:13px}
+#dieta .nutrition-meal-options-head span{font-size:11px;color:var(--muted)}
+#dieta .nutrition-meal-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#dieta .nutrition-meal-choice{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-width:0;min-height:82px;padding:9px;border:1px solid var(--line);border-radius:11px;background:var(--panel,var(--bg));color:var(--text);text-align:left;cursor:pointer}
+#dieta .nutrition-meal-choice.selected{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--card))}
+#dieta .nutrition-meal-choice span{font-size:11px;font-weight:750;line-height:1.3}
+#dieta .nutrition-meal-choice strong{font-size:13px}
+#dieta .nutrition-meal-choice small{font-size:10px;color:var(--muted);line-height:1.3}
+#dieta .nutrition-schedule-items{margin-top:12px}
+#dieta .nutrition-schedule-summary .nutrition-result-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:600px){
+ .food-goal-modal{padding:8px;align-items:flex-start;overflow:auto}
+ .food-goal-modal .custom-box{max-height:none;min-height:calc(100vh - 16px);border-radius:16px;padding:14px}
+ #dieta .nutrition-form-grid{grid-template-columns:1fr}
+ #dieta .nutrition-meal-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ #dieta .nutrition-meal-choice{padding:7px 6px;min-height:88px}
+ #dieta .nutrition-meal-choice span{font-size:10px}
+ #dieta .nutrition-meal-choice strong{font-size:12px}
+ #dieta .nutrition-meal-choice small{font-size:9px}
+ #dieta .nutrition-schedule-summary .nutrition-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+
+/* FORMA v111 — correção de reposicionamento automático do cronograma */
+#dieta .nutrition-schedule-summary{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 8%,var(--panel)),var(--panel));border-color:var(--line);padding:13px}
+#dieta .nutrition-schedule-summary .nutrition-result-stat{background:var(--panel2);border:1px solid color-mix(in srgb,var(--line) 85%,transparent)}
+#dieta .nutrition-schedule-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#dieta .nutrition-schedule-primary-actions{display:flex;gap:8px;flex-wrap:wrap}
+#dieta .nutrition-file-tools{position:relative;margin-left:auto}
+#dieta .nutrition-file-tools>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:7px;padding:10px 13px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);font-size:12px;font-weight:750}
+#dieta .nutrition-file-tools>summary::-webkit-details-marker{display:none}
+#dieta .nutrition-file-tools[open]>summary{border-color:var(--accent);color:var(--accent)}
+#dieta .nutrition-file-tools-menu{position:absolute;right:0;top:calc(100% + 7px);z-index:30;width:min(330px,calc(100vw - 40px));padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px #0008}
+#dieta .nutrition-file-tools-menu>div{display:grid;align-content:start;gap:5px;min-width:0}
+#dieta .nutrition-file-tools-menu strong{font-size:11px;color:var(--muted);margin:0 0 3px}
+#dieta .nutrition-file-action{width:100%;text-align:left;padding:8px 9px;border:1px solid transparent;border-radius:8px;background:var(--panel2);color:var(--text);font-size:11px}
+#dieta .nutrition-file-action:hover{border-color:var(--accent);color:var(--accent)}
+#dieta .nutrition-schedule-nav{display:flex;gap:7px;overflow-x:auto;padding:3px 1px 10px;scrollbar-width:thin;overscroll-behavior-x:contain}
+#dieta .nutrition-schedule-nav button{flex:0 0 auto;display:flex;align-items:center;gap:7px;min-height:38px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);color:var(--muted);font-size:11px;font-weight:750;white-space:nowrap}
+#dieta .nutrition-schedule-nav button[aria-current="true"]{background:color-mix(in srgb,var(--accent) 15%,var(--panel));border-color:var(--accent);color:var(--text);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent)}
+#dieta .nutrition-schedule-nav small{font-size:9px;opacity:.8}
+#dieta .nutrition-schedule-carousel{overflow:hidden;border-radius:17px;touch-action:auto}
+#dieta .nutrition-schedule-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+#dieta .nutrition-schedule-track::-webkit-scrollbar{display:none}
+#dieta .nutrition-schedule-meal{flex:0 0 100%;width:100%;min-width:0;scroll-snap-align:start;scroll-snap-stop:always;padding:14px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(155deg,var(--panel),color-mix(in srgb,var(--panel2) 76%,var(--bg)));box-shadow:0 7px 22px #0002;box-sizing:border-box}
+#dieta .nutrition-schedule-meal-head{display:grid;grid-template-columns:minmax(0,1fr) 104px auto;gap:9px;align-items:center}
+#dieta .nutrition-schedule-meal-head .field label{font-size:9px;color:var(--muted)}
+#dieta .nutrition-schedule-meal-head input{background:var(--bg);border-color:var(--line);color:var(--text);min-height:38px}
+#dieta .nutrition-meal-identity{display:flex;align-items:center;gap:8px;margin:2px 0 12px;min-width:0}
+#dieta .nutrition-meal-identity .nutrition-meal-icon{width:34px;height:34px;display:grid;place-items:center;flex:0 0 auto;border-radius:11px;background:color-mix(in srgb,var(--accent) 13%,var(--panel2));color:var(--accent);font-size:17px}
+#dieta .nutrition-meal-identity strong{display:block;font-size:14px;color:var(--text);line-height:1.25}
+#dieta .nutrition-meal-identity small{display:block;margin-top:2px;color:var(--muted);font-size:10px}
+#dieta .nutrition-meal-options{margin:10px 0 12px;padding:10px 0 0;border-top:1px solid var(--line)}
+#dieta .nutrition-meal-options-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}
+#dieta .nutrition-meal-options-head strong{font-size:11px;color:var(--text)}
+#dieta .nutrition-meal-options-head span{font-size:10px;color:var(--muted)}
+#dieta .nutrition-meal-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#dieta .nutrition-meal-choice{min-width:0;min-height:67px;padding:8px 6px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;text-align:left;display:grid;align-content:center;gap:3px}
+#dieta .nutrition-meal-choice.selected{background:color-mix(in srgb,var(--accent) 14%,var(--panel2));border-color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
+#dieta .nutrition-meal-choice span{font-size:10px;color:var(--text);font-weight:700;line-height:1.2}
+#dieta .nutrition-meal-choice strong{font-size:11px;color:var(--text)}
+#dieta .nutrition-meal-choice small{font-size:9px;color:var(--muted)}
+#dieta .nutrition-component-editor{display:grid;gap:7px;margin-top:12px}
+#dieta .nutrition-food-list-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#dieta .nutrition-food-list-head strong{font-size:11px;color:var(--text)}
+#dieta .nutrition-food-list-head small{font-size:9px;color:var(--muted)}
+#dieta .nutrition-food-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}
+#dieta .nutrition-food-row-main{display:grid;grid-template-columns:minmax(0,1fr) 78px;gap:7px;align-items:center;min-width:0}
+#dieta .nutrition-food-row select,#dieta .nutrition-food-row input{width:100%;min-width:0;min-height:35px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:11px}
+#dieta .nutrition-food-meta{grid-column:1/-1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+#dieta .nutrition-food-role{font-size:9px;font-weight:750;color:var(--accent);letter-spacing:.15px}
+#dieta .nutrition-food-amount-label{font-size:9px;color:var(--muted)}
+#dieta .nutrition-food-row-actions{display:flex;gap:3px;align-items:center}
+#dieta .nutrition-food-row-actions button{width:29px;height:29px;padding:0;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--muted);font-size:13px}
+#dieta .nutrition-food-row-actions button:disabled{opacity:.3}
+#dieta .nutrition-food-row-actions button:last-child{color:var(--danger,var(--muted))}
+#dieta .nutrition-food-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;margin-top:5px}
+#dieta .nutrition-food-add select{min-width:0;width:100%;padding:9px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:11px}
+#dieta .nutrition-schedule-totals{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 0 2px;margin-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:10px}
+#dieta .nutrition-schedule-totals strong{color:var(--text);font-size:14px}
+#dieta .nutrition-schedule-card-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+#dieta .nutrition-schedule-card-footer .food-note{margin:0;font-size:9px}
+#dieta .nutrition-schedule-card-footer button{white-space:nowrap}
+#dieta .nutrition-schedule-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}
+#dieta .nutrition-schedule-pagination span{font-size:10px;color:var(--muted)}
+#dieta .nutrition-schedule-pagination button{min-width:38px;min-height:34px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text)}
+@media(max-width:600px){
+ #dieta .nutrition-schedule-toolbar{align-items:stretch}
+ #dieta .nutrition-schedule-primary-actions{flex:1}
+ #dieta .nutrition-file-tools{margin-left:0}
+ #dieta .nutrition-file-tools-menu{right:0;grid-template-columns:1fr 1fr}
+ #dieta .nutrition-schedule-meal{padding:11px}
+ #dieta .nutrition-schedule-meal-head{grid-template-columns:minmax(0,1fr) 88px}
+ #dieta .nutrition-schedule-meal-head button{grid-column:1/-1;justify-self:start}
+ #dieta .nutrition-meal-choice-grid{gap:5px}
+ #dieta .nutrition-meal-choice{padding:7px 4px;min-height:65px}
+ #dieta .nutrition-meal-choice span{font-size:9px}
+ #dieta .nutrition-meal-choice strong{font-size:10px}
+ #dieta .nutrition-meal-choice small{font-size:8px}
+ #dieta .nutrition-food-row{grid-template-columns:minmax(0,1fr) auto;padding:7px}
+ #dieta .nutrition-food-row-main{grid-template-columns:minmax(0,1fr) 68px;gap:5px}
+}
+
+/* FORMA v111 — iconografia preservada; navegação sem movimento ao editar */
+#dieta .diet-section-head{align-items:center;gap:14px}
+#dieta .diet-goals-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:10px 14px;white-space:nowrap}
+#dieta .diet-goals-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex:0 0 18px}
+#dieta .food-section-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0 18px;padding:6px;border:1px solid var(--line);border-radius:17px;background:color-mix(in srgb,var(--panel,#101b2b) 82%,transparent);box-shadow:0 8px 22px rgba(0,0,0,.12)}
+#dieta .food-section-nav button{display:flex;align-items:center;justify-content:flex-start;gap:11px;min-width:0;min-height:66px;padding:10px 12px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--muted);text-align:left;transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
+#dieta .food-section-nav button>svg{width:23px;height:23px;flex:0 0 23px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+#dieta .food-section-nav .food-nav-copy{display:grid;gap:3px;min-width:0;margin:0;opacity:1}
+#dieta .food-section-nav .food-nav-copy strong{font-size:13px;line-height:1.15;font-weight:760;color:inherit}
+#dieta .food-section-nav .food-nav-copy small{font-size:10px;line-height:1.2;font-weight:500;color:var(--muted);white-space:nowrap}
+#dieta .food-section-nav button.active{background:color-mix(in srgb,var(--accent) 14%,var(--card,#172538));border-color:color-mix(in srgb,var(--accent) 38%,var(--line));color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 10%,transparent)}
+#dieta .food-section-nav button.active .food-nav-copy small{color:color-mix(in srgb,var(--accent) 72%,var(--muted))}
+#dieta .food-section-nav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#dieta .food-section-nav button:active{transform:scale(.985)}
+#dieta .food-entry-choice .choice-icon{display:grid;place-items:center}
+#dieta .food-entry-choice .choice-icon svg,#dieta .food-library-subnav button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block}
+#dieta .food-library-subnav button{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+#dieta .food-title-with-icon{display:flex;align-items:center;gap:11px;min-width:0}
+#dieta .food-title-with-icon>div{min-width:0}
+#dieta .food-heading-icon{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--accent) 9%,var(--panel));color:var(--accent)}
+#dieta .food-heading-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+#dieta .inline-action-icon{width:17px;height:17px;vertical-align:-4px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:650px){#dieta .food-section-nav{gap:5px;padding:5px}#dieta .food-section-nav button{min-height:62px;gap:7px;padding:9px 7px;justify-content:center;flex-direction:column;text-align:center}#dieta .food-section-nav button>svg{width:21px;height:21px;flex-basis:21px}#dieta .food-section-nav .food-nav-copy{gap:2px}#dieta .food-section-nav .food-nav-copy strong{font-size:11px}#dieta .food-section-nav .food-nav-copy small{display:none}}
+@media(max-width:390px){#dieta .food-section-nav{gap:4px}#dieta .food-section-nav button{padding:8px 3px;min-height:58px}#dieta .food-section-nav .food-nav-copy strong{font-size:10px}#dieta .diet-goals-btn{padding:9px 10px;font-size:11px;gap:6px}}
+@media(prefers-reduced-motion:reduce){#dieta .food-section-nav button{transition:none}}
+
+
+.workout-defaults-selectors{display:flex;flex-wrap:wrap;gap:10px 16px;margin:12px 0;padding:11px 12px;border:1px solid var(--border,rgba(255,255,255,.12));border-radius:12px}
+.workout-defaults-selectors label{display:flex;align-items:center;gap:7px;font-size:.88rem;color:var(--text);cursor:pointer}
+.workout-defaults-selectors input{accent-color:var(--accent,#8b7cff);width:17px;height:17px}
+
+/* Reorganização do gerenciamento de metas e planos nutricionais */
+.food-goal-modal .custom-box.food-goals-shell{width:min(860px,calc(100vw - 28px));max-width:860px;max-height:min(91vh,920px);overflow-y:auto;padding:clamp(16px,3vw,26px)}
+.food-goals-shell .food-goals-modal-head{align-items:flex-start}
+.food-goals-shell .food-goals-modal-head h2{margin:3px 0 5px}
+.food-goals-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;padding:5px;border:1px solid var(--line);border-radius:14px;background:var(--panel,#101b2b);margin:16px 0}
+.food-goals-tabs button{min-width:0;min-height:42px;padding:9px 8px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:12px;font-weight:750;line-height:1.25;cursor:pointer}
+.food-goals-tabs button.active,.food-goals-tabs button[aria-selected="true"]{border-color:var(--accent-border,var(--line));background:var(--card);color:var(--text);box-shadow:0 2px 8px #0002}
+.food-goal-tab-panel[hidden]{display:none!important}
+.food-goal-tab-heading{margin:8px 0 14px}
+.food-goal-tab-heading h3{margin:4px 0 5px;font-size:19px}
+.food-goal-tab-heading .sub{margin:0}
+.food-goals-current-summary{border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--card)}
+.food-goals-current-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.food-goal-current-stat{min-width:0;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--panel,#101b2b)}
+.food-goal-current-stat span,.food-goal-current-stat strong{display:block}
+.food-goal-current-stat span{font-size:11px;color:var(--muted);margin-bottom:6px}
+.food-goal-current-stat strong{font-size:clamp(16px,2.2vw,21px);line-height:1.2;overflow-wrap:anywhere}
+.food-goal-current-stat strong small{font-size:10px;color:var(--muted);font-weight:600}
+.food-goals-current-note{font-size:12px;line-height:1.5;color:var(--muted);margin:12px 0 0}
+.food-goals-quick-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.food-goals-quick-actions .btn{flex:1 1 180px}
+.food-goal-manual{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--card)}
+.food-goal-manual .custom-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.food-goal-manual .custom-actions{margin-top:14px}
+.nutrition-overview-schedule-card{grid-column:1/-1;min-width:0;display:grid;grid-template-columns:minmax(0,1fr);align-items:stretch;gap:12px;margin:0}.nutrition-overview-schedule-card #nutritionOverviewPlanStatus{min-width:0}.nutrition-overview-schedule-card>.nutrition-overview-action{justify-self:stretch;width:100%;margin:0}.nutrition-overview-schedule-card .nutrition-overview-empty{margin:0}.food-goal-import-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 8px}.food-goal-import-actions .btn{width:100%;min-height:44px}.nutrition-overview-meal-plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.nutrition-overview-meal-plan-card{min-width:0;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel,#101b2b)}.nutrition-overview-meal-plan-card>strong{display:block;font-size:13px;line-height:1.35;overflow-wrap:anywhere;margin-bottom:5px}.nutrition-overview-meal-plan-card .meal-plan-kcal{font-size:16px;font-weight:750;line-height:1.3}.nutrition-overview-meal-plan-card .meal-plan-macros{display:block;margin-top:4px;font-size:11px;line-height:1.45;color:var(--muted)}.nutrition-overview-plan-card{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;margin:0}
+.nutrition-overview-plan-copy{min-width:0}
+.nutrition-overview-plan-copy h3{margin:4px 0}
+.nutrition-overview-plan-copy .sub{margin:0}
+.nutrition-overview-targets{grid-column:1/-1;min-width:0}
+.nutrition-overview-targets-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.nutrition-overview-targets-grid>div{min-width:0;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel,#101b2b)}
+.nutrition-overview-targets-grid span,.nutrition-overview-targets-grid strong{display:block}
+.nutrition-overview-targets-grid span{font-size:10px;color:var(--muted);margin-bottom:4px}
+.nutrition-overview-targets-grid strong{font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+.nutrition-overview-targets-grid strong small{font-size:10px;color:var(--muted);font-weight:600}
+.nutrition-overview-plan-card .nutrition-planning-actions{grid-column:1/-1;display:flex;justify-content:flex-start}
+@media(max-width:650px){.food-goal-import-actions{grid-template-columns:1fr}.nutrition-overview-meal-plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.food-goals-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.food-goals-current-grid,.nutrition-overview-targets-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nutrition-overview-plan-card{grid-template-columns:minmax(0,1fr)}.nutrition-overview-plan-card .nutrition-planning-actions{grid-column:1}.food-goal-manual .custom-grid{grid-template-columns:1fr}.food-goal-modal .custom-box.food-goals-shell{width:calc(100vw - 18px);max-height:94vh;padding:14px}}
